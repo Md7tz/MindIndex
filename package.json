@@ -8,7 +8,7 @@
     "dev": "nodemon -L --experimental-modules app.mjs",
     "build": "next build",
     "start": "next start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests/**/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -18,7 +18,10 @@
     "flashcards"
   ],
   "author": "= <medhatusama@gmail.com>",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "bugs": {
     "url": "https://github.com/ScientiaLiber/MindIndex/issues"
   },
@@ -40,6 +43,8 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.22",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.2"

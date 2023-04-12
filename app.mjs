@@ -14,6 +14,8 @@ import swaggerDocs from './config/swagger.mjs';
 
 import api from './routes/api.mjs';
 
+import dotenv from 'dotenv';
+dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== 'production';
