@@ -1,13 +1,13 @@
 import express from 'express';
 import next from 'next';
 import cors from 'cors';
-import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import multer from 'multer';
 import knex from 'knex';
 import morgan from 'morgan';
 // import { Model } from 'objection';
+import dbConfig from './config/knexfile.mjs';
 
 import api from './routes/api.mjs';
 
@@ -26,7 +26,6 @@ server.use(cors());
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 server.use(cookieParser());
-// server.use(helmet());
 server.use(compression());
 server.use(upload.any());
 server.use(morgan('dev'));

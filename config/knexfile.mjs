@@ -16,10 +16,10 @@ const dockerDbConfig = {
   client: 'pg',
   connection: {
     host: 'host.docker.internal',
-    user: process.env.POSTGRES_USER || 'root',
-    password: process.env.POSTGRES_PASSWORD || 'toor',
-    database: process.env.POSTGRES_DB || 'database',
-    port: process.env.POSTGRES_PORT || 5432,
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || 'toor',
+    database: process.env.DB_NAME || 'database',
+    port: process.env.DB_PORT || 5432,
   },
 };
 
