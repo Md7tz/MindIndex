@@ -1,0 +1,47 @@
+{
+  "name": "mindindex",
+  "version": "1.0.0",
+  "description": "Flashcard webapp using spaced repetition, a technique from cognitive science for memorization.",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon -L --experimental-modules app.mjs",
+    "build": "next build",
+    "start": "next start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ScientiaLiber/MindIndex.git"
+  },
+  "keywords": [
+    "flashcards"
+  ],
+  "author": "= <medhatusama@gmail.com>",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/ScientiaLiber/MindIndex/issues"
+  },
+  "homepage": "https://github.com/ScientiaLiber/MindIndex#readme",
+  "dependencies": {
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "helmet": "^6.1.2",
+    "knex": "^2.4.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "next": "^13.3.0",
+    "objection": "^3.0.1",
+    "pg": "^8.10.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.2"
+  }
+}
