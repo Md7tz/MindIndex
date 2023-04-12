@@ -8,11 +8,11 @@ import multer from 'multer';
 import knex from 'knex';
 import morgan from 'morgan';
 // import { Model } from 'objection';
-import dbConfig from './knexfile.mjs';
 
-// routers
 import api from './routes/api.mjs';
 
+
+const PORT = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
@@ -31,11 +31,14 @@ server.use(compression());
 server.use(upload.any());
 server.use(morgan('dev'));
 
-
 // Serve static files from the 'public' directory
 server.use(express.static('public'));
 
+// Routers
 server.use(`/api`, api);
+
+// Serve Swagger UI at /docs
+server.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Handle all other routes
 server.all('*', (req, res) => {
@@ -43,12 +46,11 @@ server.all('*', (req, res) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });
 
 // Bind the database instance to the Objection.js Model
-// Model.knex(db);
+Model.knex(db);
 
 export default server;

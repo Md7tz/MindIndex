@@ -1,11 +1,10 @@
 import express from 'express';
+import Controller from '../controllers/index.mjs';
 
-// Path: routes\api\index.mjs
 const router = express.Router();
 
-router.get('/test', (req, res, next) => {
-    res.json({ msg: 'Get request to /api/test' });
-});
+
+router.get('/test', Controller.testGet);
 
 router.post('/test', (req, res, next) => {
     res.json({ msg: 'Post request to /api/test' });
@@ -22,6 +21,5 @@ router.delete('/test', (req, res, next) => {
 router.patch('/test', (req, res, next) => {
     res.json({ msg: 'Patch request to /api/test' });
 });
-
 
 export default router;
