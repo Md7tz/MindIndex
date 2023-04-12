@@ -6,8 +6,11 @@ import cookieParser from 'cookie-parser';
 import multer from 'multer';
 import knex from 'knex';
 import morgan from 'morgan';
-// import { Model } from 'objection';
+import swaggerUi from 'swagger-ui-express';
+import { Model } from 'objection';
+
 import dbConfig from './config/knexfile.mjs';
+import swaggerDocs from './config/swagger.mjs';
 
 import api from './routes/api.mjs';
 
