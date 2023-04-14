@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "nodemon -L --experimental-modules app.mjs",
     "build": "next build",
+    "build:ci": "next build && next export",
     "start": "next start",
     "test": "mocha tests/**/*.test.js"
   },
@@ -32,6 +33,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "firebase": "^9.19.1",
     "helmet": "^6.1.2",
     "knex": "^2.4.2",
     "morgan": "^1.10.0",
