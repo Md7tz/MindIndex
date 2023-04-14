@@ -1,4 +1,4 @@
-.PHONY: start log interact stop restart
+.PHONY: start log interact stop restart clean migrate
 
 start:
 	docker-compose up -d
@@ -19,5 +19,5 @@ clean: # Remove all containers and images
 	docker-compose down --rmi all --volumes
 
 migrate: # Run knex migrations
-	docker exec -it app knex migrate:latest
+	docker exec -it app npx knex migrate:latest
 
