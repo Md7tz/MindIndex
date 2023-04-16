@@ -5,7 +5,13 @@ import moment from 'moment';
 
 const visibility = visibilityPlugin.default;
 
-export default class BaseModel extends visibility(softDelete(Model)) {
+const soft = softDelete({
+    columnName: 'deleted_at',
+    deletedValue: moment().format('YYYY-MM-DDTHH:mm:ssZ'),
+    notDeletedValue: null
+})
+
+export default class BaseModel extends visibility(soft(Model)) {
     static get softDelete() {
         return true;
     }
