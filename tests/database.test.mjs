@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import knex from 'knex';
 import dotenv from 'dotenv';
 import _dbConfig from '../knexfile.js';
+import Note from '../models/note.mjs';
 
 dotenv.config();
 
@@ -18,7 +19,7 @@ switch (process.env.NODE_ENV) {
         throw new Error(`Unknown environment: ${NODE_ENV}`);
 }
 
-describe('Database connection test', () => {  
+describe('Database connection test', () => {
     it('should connect to the database', async () => {
         const db = knex(dbConfig);
         await db.raw('SELECT 1');
@@ -49,9 +50,9 @@ describe('Database connection test', () => {
 
         expect(error).to.exist;
     }).timeout(10000);
-    describe('Coupon class', () => {
-        it('table name should be "coupons"', () => {
-          expect(Coupon.tableName).to.equal('coupons');
+    describe('Note class', () => {
+        it('table name should be "notes"', () => {
+            expect(Note.tableName).to.equal('notes');
         });
-      });
+    });
 });
