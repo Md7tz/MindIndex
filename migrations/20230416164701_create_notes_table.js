@@ -3,7 +3,7 @@
  * @returns { Promise<void> }
  */
 exports.up = function (knex) {
-  knex.schema
+  return knex.schema
     .createTable("notes", function (table) {
       table.increments("id");
       table.string("title", 255).notNullable();
@@ -17,10 +17,8 @@ exports.up = function (knex) {
     })
     .catch((error) => {
       console.error(`Error creating table: ${error}`);
+      throw error;
     })
-    .finally(() => {
-      knex.destroy();
-    });
 };
 
 /**
@@ -28,5 +26,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-    return knex.schema.dropTable('notes');
+    return knex.schema.dropTableIfExists('notes');
 };
