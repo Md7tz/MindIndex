@@ -1,11 +1,25 @@
 import { expect } from 'chai';
 import knex from 'knex';
 import dotenv from 'dotenv';
-import dbConfig from '../config/knexfile.mjs';
+import _dbConfig from '../knexfile.js';
+import Note from '../models/note.mjs';
 
 dotenv.config();
 
-describe('Database connection test', () => {  
+let dbConfig = null;
+
+switch (process.env.NODE_ENV) {
+    case 'development':
+        dbConfig = _dbConfig.development;
+        break;
+    case 'test':
+        dbConfig = _dbConfig.docker;
+        break;
+    default:
+        throw new Error(`Unknown environment: ${NODE_ENV}`);
+}
+
+describe('Database connection test', () => {
     it('should connect to the database', async () => {
         const db = knex(dbConfig);
         await db.raw('SELECT 1');
@@ -36,4 +50,9 @@ describe('Database connection test', () => {
 
         expect(error).to.exist;
     }).timeout(10000);
+    describe('Note class', () => {
+        it('table name should be "notes"', () => {
+            expect(Note.tableName).to.equal('notes');
+        });
+    });
 });

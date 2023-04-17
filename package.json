@@ -8,7 +8,7 @@
     "build": "next build",
     "build:ci": "next build && next export",
     "start": "next start",
-    "test": "mocha tests/**/*.test.js"
+    "test": "mocha tests/**/*.test.mjs"
   },
   "repository": {
     "type": "git",

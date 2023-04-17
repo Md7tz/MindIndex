@@ -1,5 +1,4 @@
 const dotenv = require('dotenv');
-
 dotenv.config();
 
 /**
@@ -7,7 +6,7 @@ dotenv.config();
  */
 module.exports = {
   development: {
-    client: process.env.DB_CONNECTION,
+    client: process.env.DB_CONNECTION || 'pg',
     useNullAsDefault: true,
     connection: {
       host: process.env.DB_HOST || 'host.docker.internal',
@@ -26,7 +25,7 @@ module.exports = {
   },
 
   docker: {
-    client: process.env.DB_CONNECTION,
+    client: process.env.DB_CONNECTION || 'pg',
     useNullAsDefault: true,
     connection: {
       host: process.env.DB_HOST || 'db',
