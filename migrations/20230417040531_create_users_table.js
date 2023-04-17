@@ -11,8 +11,8 @@ exports.up = function (knex) {
       table.string("email", 255).notNullable();
       table.string("fullname", 255).notNullable();
       table.timestamp("created_at").defaultTo(knex.fn.now()).notNullable();
-      table.timestamp("updated_at").defaultTo(knex.fn.now()).notNullable();
-      table.timestamp("deleted_at").defaultTo(knex.fn.now()).notNullable();
+      table.timestamp("updated_at");
+      table.timestamp("deleted_at");
     })
     .then(() => {
       console.log("The users Table has been successfully created");

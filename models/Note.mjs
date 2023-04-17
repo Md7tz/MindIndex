@@ -9,7 +9,7 @@ import { MAX_STRING_LENGTH, MAX_TEXT_LENGTH } from '../config/constants.mjs';
  *
  * @property {Number} id               - The incremental ID of the note.
  * @property {String} title            - The title of the note.
- * @property {String|Text} body             - The body of the note.
+ * @property {String|Text} body        - The body of the note.
  * @property {Date} created_at         - The timestamp of when the note was created.
  * @property {Date|null} updated_at    - The timestamp of when the note was last updated, or null if it has not been updated.
  * @property {Date|null} deleted_at    - The timestamp of when the note was deleted, or null if it has not been deleted.
