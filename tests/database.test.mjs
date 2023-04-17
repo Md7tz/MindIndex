@@ -2,8 +2,11 @@ import { expect } from "chai";
 import knex from "knex";
 import dotenv from "dotenv";
 import _dbConfig from "../knexfile.js";
+
 import Note from "../models/note.mjs";
 import User from "../models/User.mjs";
+import Collection from "../models/Collection.mjs";
+import Flashcard from "../models/Flashcard.mjs";
 
 dotenv.config();
 
@@ -52,15 +55,27 @@ describe("Database connection test", () => {
     expect(error).to.exist;
   }).timeout(10000);
 
-  describe("Note class", () => {
+  describe("Note Model", () => {
     it('table name should be "notes"', () => {
       expect(Note.tableName).to.equal("notes");
     });
   });
 
-  describe("User class", () => {
+  describe("User Model", () => {
     it('table name should be "users"', () => {
       expect(User.tableName).to.equal("users");
+    });
+  });
+
+  describe("Collection Model", () => {
+    it('table name should be "collections"', () => {
+      expect(Collection.tableName).to.equal("collections");
+    });
+  });
+
+  describe("Flashcard Model", () => {
+    it('table name should be "flashcards"', () => {
+      expect(Flashcard.tableName).to.equal("flashcards");
     });
   });
 });

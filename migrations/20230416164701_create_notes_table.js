@@ -13,7 +13,7 @@ exports.up = function (knex) {
       table.timestamp("deleted_at");
     })
     .then(() => {
-      console.log('Table "notes" has been created!');
+      console.log("Table 'notes' has been created!");
     })
     .catch((error) => {
       console.error(`Error creating table: ${error}`);
