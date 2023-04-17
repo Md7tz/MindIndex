@@ -6,7 +6,7 @@ exports.up = function (knex) {
   return knex.schema
     .createTable("users", function (table) {
       table.increments("id");
-      table.string("username", 50).notNullable();
+      table.string("username", 255).notNullable();
       table.string("password", 255).notNullable();
       table.string("email", 255).notNullable();
       table.string("fullname", 255).notNullable();
@@ -15,7 +15,7 @@ exports.up = function (knex) {
       table.timestamp("deleted_at");
     })
     .then(() => {
-      console.log("The users Table has been successfully created");
+      console.log("Table 'users' has been created!");
     })
     .catch((error) => {
       console.error(`Error creating table: ${error}`);
