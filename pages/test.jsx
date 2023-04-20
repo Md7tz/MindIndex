@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.css";
+import { faGear } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Test() {
   const [data, setData] = useState({});
@@ -46,7 +49,21 @@ export default function Test() {
       </div>
       <div className="d-flex justify-content-center">
         <button className="btn btn-primary m-4 w-25" onClick={testToast}>
-          Test Toast!
+          <FontAwesomeIcon
+            icon={faGear}
+            style={{ color: "white" }}
+            size="1x"
+            spin
+            fixedWidth
+          />{" "}
+          Test Toast{" "}
+          <FontAwesomeIcon
+            icon={faGear}
+            style={{ color: "white" }}
+            size="1x"
+            spin
+            fixedWidth
+          />
         </button>
         <ToastContainer />
       </div>
