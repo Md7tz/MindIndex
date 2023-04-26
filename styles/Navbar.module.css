@@ -1,3 +1,23 @@
-.navbar{
-    background-color: #0d1117;
+.custom-navbar {
+  background-color: rgb(15, 18, 22);
 }
+
+.search-box{
+  background-color: inherit;
+  border: 1px solid rgb(42, 47, 35);
+  border-radius: 3px;
+  color: white;
+}
+
+.search-box:focus{
+  background-color: white;
+  border-color: rgb(29, 110, 234);
+  color: white;
+
+}
+.form-control::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  color: white;
+}
+
