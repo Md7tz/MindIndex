@@ -10,14 +10,10 @@
 }
 
 .search-box:focus{
-  background-color: white;
+  background-color: inherit;
   border-color: rgb(29, 110, 234);
-  color: white;
+  color: inherit;
 
 }
-.form-control::-webkit-search-cancel-button {
-  -webkit-appearance: none;
-  appearance: none;
-  color: white;
-}
+
 
