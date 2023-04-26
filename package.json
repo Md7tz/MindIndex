@@ -5,8 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon -L --experimental-modules app.mjs",
-    "build": "next build",
-    "build:ci": "next build && next export",
+    "build:ci": "next build",
     "start": "next start",
     "test": "mocha tests/**/*.test.mjs"
   },
