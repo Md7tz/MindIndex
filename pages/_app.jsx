@@ -6,6 +6,9 @@ import Script from "next/script";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { config, dom } from "@fortawesome/fontawesome-svg-core";
+config.autoAddCss = false;
+
 export default function MyApp({ Component, pageProps }) {
   return (
     <>
@@ -17,6 +20,7 @@ export default function MyApp({ Component, pageProps }) {
           integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
           crossOrigin="anonymous"
         />
+        <style>{dom.css()}</style>
       </Head>
 
       <Layout>
