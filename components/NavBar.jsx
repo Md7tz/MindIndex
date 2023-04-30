@@ -1,54 +1,108 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import styles from "../styles/Navbar.module.css";
+import Image from "next/image";
+import Logo from "./imgs/Logo.jpg";
 
 export default function NavBar() {
   return (
-    <Navbar bg="light" expand="lg" className="grid text-center">
-      <Container fluid>
-        <Navbar.Brand href="#" className="col-1">
-          MindIndex
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="navbarScroll" />
-        <Navbar.Collapse id="navbarScroll">
-          <Nav
-            className="me-auto my-2 my-lg-0"
-            style={{ maxHeight: "100px" }}
-            navbarScroll
-          >
-            <Nav.Link href="#action1">Home</Nav.Link>
-            <Nav.Link href="#action2">Link</Nav.Link>
-            <NavDropdown title="Link" id="navbarScrollingDropdown">
-              <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action4">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">
-                Something else here
-              </NavDropdown.Item>
-            </NavDropdown>
-            <Nav.Link href="#" disabled>
-              Link
-            </Nav.Link>
-          </Nav>
-          <div className="col-5"></div>
-          <Form className="d-flex col-5">
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
+    <nav
+      className={`${styles["custom-navbar"]} navbar navbar-expand-lg custom-navbar`}
+    >
+      <div className="container-fluid text-white">
+        <div className={`d-flex ${styles.brand}`}>
+          <a className={`navbar-brand me-1 ${styles.logolink}`} href="#">
+            <Image
+              src={Logo}
+              alt="MindIndex"
+              className={`me-1 ${styles.logo}`}
+              width={40}
+              height={40}
             />
-            &nbsp; &nbsp;
-            <Button variant="outline-success">Search</Button>
-          </Form>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+          </a>
+          <a
+            className={`navbar-brand text-white ${styles.milink} fs-7 pe-3 m-1`}
+            href="#"
+          >
+            MindIndex
+          </a>
+          <div className="border-end"></div>
+        </div>
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <a
+                className="nav-link active text-white"
+                aria-current="page"
+                href="#"
+              >
+                <div className="d-flex align-items-center ps-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    class="bi bi-house "
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z" />
+                  </svg>
+                  <span className="px-2 mt-2!important ">Home</span>
+                </div>
+              </a>
+            </li>
+            <li className="nav-item">
+              <a
+                className="nav-link active text-white"
+                aria-current="page"
+                href="#"
+              >
+                <div className="d-flex align-items-center ps-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    class="bi bi-person-circle"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                    <path
+                      fill-rule="evenodd"
+                      d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+                    />
+                  </svg>
+                  <span className="px-2">Account</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+
+          <form className="d-flex input-group w-auto ms-lg-3 my-3 my-lg-0">
+            <input
+              type="search"
+              className={`form-control ${styles["search-box"]}`}
+              placeholder="Search MindIndex"
+              aria-label="Search MindIndex"
+            />
+            <button
+              className="btn btn-dark"
+              type="button"
+              data-mdb-ripple-color="dark"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="bi bi-search"
+                viewBox="0 0 16 16"
+              >
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </nav>
   );
 }

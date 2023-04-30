@@ -36,7 +36,7 @@ export default function Test() {
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      theme: "light",
+      theme: "dark",
     });
 
   return (
@@ -55,13 +55,6 @@ export default function Test() {
             fixedWidth
           />{" "}
           Test Toast{" "}
-          <FontAwesomeIcon
-            icon={faGear}
-            style={{ color: "white" }}
-            size="1x"
-            spin
-            fixedWidth
-          />
         </button>
       </div>
     </>
