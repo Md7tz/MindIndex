@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "nodemon -L --experimental-modules app.mjs",
     "build": "next build",
-    "build:ci": "next build && next export",
     "start": "next start",
     "test": "mocha tests/**/*.test.mjs"
   },
@@ -27,6 +26,11 @@
   },
   "homepage": "https://github.com/ScientiaLiber/MindIndex#readme",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-brands-svg-icons": "^6.4.0",
+    "@fortawesome/free-regular-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -44,7 +48,8 @@
     "objection-visibility": "^1.2.0",
     "pg": "^8.10.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-toastify": "^9.1.2"
   },
   "devDependencies": {
     "chai": "^4.3.7",
