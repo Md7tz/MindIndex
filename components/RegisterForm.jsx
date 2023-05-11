@@ -35,7 +35,111 @@ export default function RegisterForm() {
                 aria-label="Close"
               ></button>
             </div>
-            <div className="modal-body"></div>
+            <div className="modal-body">
+              <div
+                className=""
+                id="pills-register"
+                aria-labelledby="tab-register"
+              >
+                <form>
+                  <div className="text-center mb-2">
+                    <p>Continue with:</p>
+                    <button
+                      type="button"
+                      className="btn btn-link btn-floating mx-1"
+                    >
+                      <FontAwesomeIcon
+                        icon={faFacebook}
+                        color="white"
+                        size="2x"
+                      />
+                    </button>
+
+                    <button
+                      type="button"
+                      className="btn btn-link btn-floating mx-1"
+                    >
+                      <FontAwesomeIcon
+                        icon={faGoogle}
+                        color="white"
+                        size="2x"
+                      />
+                    </button>
+
+                    <button
+                      type="button"
+                      className="btn btn-link btn-floating mx-1"
+                    >
+                      <FontAwesomeIcon
+                        icon={faTwitter}
+                        color="white"
+                        size="2x"
+                      />
+                    </button>
+                  </div>
+
+                  <p className="text-center">or:</p>
+
+                  <div className="form-outline mb-4">
+                    <input
+                      type="text"
+                      id="registerName"
+                      className="form-control"
+                      placeholder="Name"
+                    />
+                  </div>
+
+                  <div className="form-outline mb-4">
+                    <input
+                      type="text"
+                      id="registerUsername"
+                      className="form-control"
+                      placeholder="Username"
+                    />
+                  </div>
+
+                  <div className="form-outline mb-4">
+                    <input
+                      type="email"
+                      id="registerEmail"
+                      className="form-control"
+                      placeholder="Email"
+                    />
+                  </div>
+
+                  <div className="form-outline mb-4">
+                    <input
+                      type="password"
+                      id="registerPassword"
+                      className="form-control"
+                      placeholder="Password"
+                    />
+                  </div>
+
+                  <div className="form-outline mb-4">
+                    <input
+                      type="password"
+                      id="registerRepeatPassword"
+                      className="form-control"
+                      placeholder="Repeat password"
+                    />
+                  </div>
+
+                  <div className="form-check d-flex justify-content-center mb-2">
+                    <input
+                      className="form-check-input me-2"
+                      type="checkbox"
+                      value=""
+                      id="registerCheck"
+                      aria-describedby="registerCheckHelpText"
+                    />
+                    <label className="form-check-label" for="registerCheck">
+                      I have read and agree to the terms
+                    </label>
+                  </div>
+                </form>
+              </div>
+            </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-success">
                 Sign Up
