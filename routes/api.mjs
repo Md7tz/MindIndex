@@ -21,9 +21,10 @@ router.delete("/test", (req, res, next) => {
 router.patch("/test", (req, res, next) => {
   res.json({ msg: "Patch request to /api/test" });
 });
-router.get("/api/notes", NotesController.getAll);
-router.get("/api/notes/:id", NotesController.getById);
-router.post("/api/notes", NotesController.create);
-router.put("/api/notes/:id", NotesController.update);
-router.delete("/api/notes/:id", NotesController.delete);
+
+router.get("/notes", NotesController.getAll);
+router.get("/notes/:id", NotesController.getById);
+router.post("/notes", NotesController.create);
+router.put("/notes/:id", NotesController.update);
+router.delete("/notes/:id", NotesController.delete);
 export default router;
