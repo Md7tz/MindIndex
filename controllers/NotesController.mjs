@@ -177,7 +177,7 @@ export default class NotesController {
       const { title, body } = req.body;
   
       // Insert the new note into the database
-      const [noteId] = await db("notes").insert({ title, body }, ['id']);
+      const [{ id: noteId }] = await db("notes").insert({ title, body }, ['id']);
   
       // Retrieve the new note from the database
       const newNote = await db("notes").where({ id: noteId }).first();
