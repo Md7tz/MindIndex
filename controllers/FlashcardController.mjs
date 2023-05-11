@@ -7,7 +7,7 @@ export default class FlashcardController {
   /**
    * @function getAll
    * @async
-   * @memberof Model.Flashcard
+   * @memberof FlashcardController
    * @description Retrieves all flashcards.
    *
    * @returns {Promise<Array<Model.Flashcard>>} The list of all flashcards.
@@ -26,14 +26,14 @@ export default class FlashcardController {
   }
 
   /**
-   * @function deleteById
+   * @function getById
    * @async
-   * @memberof Model.Flashcard
-   * @description Deletes a flashcard by ID.
+   * @memberof FlashcardController
+   * @description Reterives a flashcard by ID.
    *
-   * @param {Number} id - The ID of the flashcard to delete.
+   * @param {Number} id - The ID of the flashcard to reterive.
    *
-   * @returns {Promise<void>} A promise that resolves when the flashcard has been deleted.
+   * @returns {Promise<void>} A promise that resolves when the flashcard has been reterived.
    *
    * @throws {Error} If the flashcard with the specified ID is not found.
    */
@@ -63,7 +63,7 @@ export default class FlashcardController {
   /**
    *@function delete
    *@async
-   *@memberof Model.Flashcard
+   *@memberof FlashcardController
    *@description Deletes a flashcard by ID.
    *@param {Number} id - The ID of the flashcard to delete.
    *@returns {Promise<void>} A Promise that resolves when the flashcard is deleted.
@@ -98,7 +98,7 @@ export default class FlashcardController {
   /**
    * @function update
    * @async
-   * @memberof Model.Flashcard
+   * @memberof FlashcardController
    * @description Updates a flashcard by ID.
    *
    * @param {Number} id - The ID of the flashcard to update.
@@ -139,7 +139,7 @@ export default class FlashcardController {
 
   /**
    * @function create
-   * @memberof Controller.Flashcard
+   * @memberof FlashcardController
    * @description Creates a new flashcard.
    * @async
    * @param {Object} req - The request object.
