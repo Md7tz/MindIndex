@@ -5,16 +5,12 @@ const db = knex(config.development);
 
 export default class NotesController {
   /**
-   * @openapi
-   * /api/notes:
-   *   get:
-   *     summary: Get all notes
-   *     description: Retrieve a list of all notes.
-   *     responses:
-   *       200:
-   *         description: Returns a JSON array of notes
-   *       500:
-   *         description: Internal server error
+   * @function getAll
+   * @async
+   * @memberof NotesController
+   * @description Retrieves all notes.
+   *
+   * @returns {Promise<Array<Model.Notes>>} The list of all notes.
    */
   static async getAll(req, res, next) {
     try {
@@ -30,25 +26,16 @@ export default class NotesController {
   }
 
   /**
-   * @openapi
-   * /api/notes/{id}:
-   *   get:
-   *     summary: Get a note by ID
-   *     description: Retrieve a note by its ID.
-   *     parameters:
-   *       - in: path
-   *         name: id
-   *         schema:
-   *           type: integer
-   *         required: true
-   *         description: The ID of the note to retrieve
-   *     responses:
-   *       200:
-   *         description: Returns a JSON object representing the note
-   *       404:
-   *         description: Note not found
-   *       500:
-   *         description: Internal server error
+   * @function getById
+   * @async
+   * @memberof NotesController
+   * @description Reterive a note by ID.
+   *
+   * @param {Number} id - The ID of the note to reterived.
+   *
+   * @returns {Promise<void>} A promise that resolves when the note has been reterived.
+   *
+   * @throws {Error} If the note with the specified ID is not found.
    */
   static async getById(req, res, next) {
     try {
@@ -71,25 +58,13 @@ export default class NotesController {
     }
   }
   /**
-   * @openapi
-   * /api/notes/{id}:
-   *   delete:
-   *     summary: Delete a note by ID
-   *     description: Delete a note with the specified ID from the database.
-   *     parameters:
-   *       - in: path
-   *         name: id
-   *         schema:
-   *           type: integer
-   *         required: true
-   *         description: The ID of the note to delete
-   *     responses:
-   *       204:
-   *         description: Note deleted successfully
-   *       404:
-   *         description: Note not found
-   *       500:
-   *         description: Internal server error
+   *@function delete
+   *@async
+   *@memberof NotesController
+   *@description Deletes a note by ID.
+   *@param {Number} id - The ID of the note to delete.
+   *@returns {Promise<void>} A Promise that resolves when the note is deleted.
+   *@throws {Error} If the note with the specified ID is not found.
    */
   static async delete(req, res, next) {
     try {
@@ -114,6 +89,19 @@ export default class NotesController {
       next(error);
     }
   }
+  /**
+   * @function update
+   * @async
+   * @memberof NotesController
+   * @description Updates a note by ID.
+   *
+   * @param {Number} id - The ID of the note to update.
+   * @param {Object} updateData - The data to update the note with.
+   *
+   * @returns {Promise<Model.note>} The updated note.
+   *
+   * @throws {Error} If the note with the specified ID is not found.
+   */
   static async update(req, res, next) {
     try {
       // Get the note ID from the URL parameters
@@ -141,51 +129,31 @@ export default class NotesController {
     }
   }
   /**
-   * @openapi
-   * /api/notes:
-   *   post:
-   *     summary: Create a new note
-   *     description: Create a new note with the specified title and body.
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             properties:
-   *               title:
-   *                 type: string
-   *                 description: The title of the note
-   *               body:
-   *                 type: string
-   *                 description: The content of the note
-   *             required:
-   *               - title
-   *               - body
-   *     responses:
-   *       201:
-   *         description: Returns a JSON object representing the newly created note
-   *       400:
-   *         description: Invalid request body
-   *       500:
-   *         description: Internal server error
+   * @function create
+   * @memberof NotesController
+   * @description Creates a new note.
+   * @async
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @param {Function} next - The next middleware function.
+   * @returns {Object} The newly created note.
+   * @throws {Error} If there was an error creating the note.
    */
-
   static async create(req, res, next) {
     try {
       // Extract the note data from the request body
       const { title, body } = req.body;
-  
+
       // Insert the new note into the database
-      const [{ id: noteId }] = await db("notes").insert({ title, body }, ['id']);
-  
+      const [{ id: noteId }] = await db("notes").insert({ title, body }, [
+        "id",
+      ]);
+
       // Retrieve the new note from the database
       const newNote = await db("notes").where({ id: noteId }).first();
 
-  
       // Return the new note as JSON
       res.status(201).json(newNote);
-
     } catch (error) {
       // If an error occurs, pass it to the next middleware
       next(error);
