@@ -1,5 +1,6 @@
 import express from 'express';
 import Controller from '../controllers/index.mjs';
+import FlashcardController from '../controllers/FlashcardController.mjs';
 
 const router = express.Router();
 
@@ -21,5 +22,13 @@ router.delete('/test', (req, res, next) => {
 router.patch('/test', (req, res, next) => {
     res.json({ msg: 'Patch request to /api/test' });
 });
+
+router.get('/flashcards', FlashcardController.getAll);
+router.get('/flashcards/:id', FlashcardController.getById);
+router.post('/flashcards', FlashcardController.create);
+router.put('/flashcards/:id', FlashcardController.update);
+router.delete('/flashcards/:id', FlashcardController.delete );
+
+
 
 export default router;
