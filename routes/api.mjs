@@ -4,27 +4,18 @@ import NotesController from "../controllers/NotesController.mjs";
 
 const router = express.Router();
 
+// Test Routes
 router.get("/test", Controller.testGet);
+router.post("/test", Controller.testPost);
+router.put("/test", Controller.testPut);
+router.delete("/test", Controller.testDelete);
+router.patch("/test", Controller.testPatch);
 
-router.post("/test", (req, res, next) => {
-  res.json({ msg: "Post request to /api/test" });
-});
-
-router.put("/test", (req, res, next) => {
-  res.json({ msg: "Put request to /api/test" });
-});
-
-router.delete("/test", (req, res, next) => {
-  res.json({ msg: "Delete request to /api/test" });
-});
-
-router.patch("/test", (req, res, next) => {
-  res.json({ msg: "Patch request to /api/test" });
-});
-
+// Notes Routes
 router.get("/notes", NotesController.getAll);
 router.get("/notes/:id", NotesController.getById);
 router.post("/notes", NotesController.create);
 router.put("/notes/:id", NotesController.update);
 router.delete("/notes/:id", NotesController.delete);
+
 export default router;

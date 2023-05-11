@@ -12,5 +12,18 @@ export default class IndexController {
     static async testGet(req, res, next) {
         res.json({ msg: 'Get request to /api/test' });
     }
+    static async testPost(req, res, next) {
+        res.json({ msg: "Post request to /api/test" });
+    }
+    static async testPut(req, res, next) {
+        res.json({ msg: "Put request to /api/test" });
+    }
+    static async testDelete(req, res, next) {
+        res.json({ msg: "Delete request to /api/test" });
+    }
+    static async testPatch(req, res, next) {
+        res.json({ msg: "Patch request to /api/test" });
+    }
+    
 
 }
