@@ -8,14 +8,16 @@ export default class FlashcardController {
    * @function getAll
    * @async
    * @memberof FlashcardController
-   * @description Retrieves all flashcards.
+   * @description Retrieves all collection's flashcards using the collection_id.
    *
    * @returns {Promise<Array<Model.Flashcard>>} The list of all flashcards.
    */
   static async getAll(req, res, next) {
     try {
       // Get all flashcards from the database
-      const flashcards = await db("flashcards").select("*");
+      const flashcards = await db("flashcards").where({
+        collection_id: req.params.collectionId,
+      });
 
       // Return the flashcards as JSON
       res.json(flashcards);
@@ -26,40 +28,31 @@ export default class FlashcardController {
   }
 
   /**
-   * @function getById
+   * @function deleteAll
    * @async
    * @memberof FlashcardController
-   * @description Reterives a flashcard by ID.
+   * @description Deletes all flashcards associated with a given collection_id.
    *
-   * @param {Number} id - The ID of the flashcard to reterive.
-   *
-   * @returns {Promise<void>} A promise that resolves when the flashcard has been reterived.
-   *
-   * @throws {Error} If the flashcard with the specified ID is not found.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @param {Function} next - The next middleware function in the Express chain.
+   * @returns {Promise<void>} Nothing is returned.
    */
-  static async getById(req, res, next) {
+  static async deleteAll(req, res, next) {
     try {
-      // Get the flashcard ID from the URL parameters
-      const flashcardId = Number(req.params.id);
+      // Delete all flashcards associated with the collection_id
+      await db("flashcards")
+        .where({ collection_id: req.params.collectionId })
+        .del();
 
-      // Try to find the flashcard with the specified ID in the database
-      const flashcard = await db("flashcards")
-        .where({ id: flashcardId })
-        .first();
-
-      // If no flashcard was found, return a 404 response
-      if (!flashcard) {
-        return res.status(404).json({ error: "flashcard not found" });
-      }
-
-      // Return the flashcard as JSON
-      res.json(flashcard);
+      // Send a success response
+      res.status(200).json({ message: "All flashcards deleted successfully." });
     } catch (error) {
       // If an error occurs, pass it to the next middleware
       next(error);
     }
   }
-
+  
   /**
    *@function delete
    *@async
@@ -169,4 +162,5 @@ export default class FlashcardController {
       return next(error);
     }
   }
+
 }
