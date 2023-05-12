@@ -16,7 +16,7 @@ export default class FlashcardController {
     try {
       // Get all flashcards from the database
       const flashcards = await db("flashcards").where({
-        collection_id: req.params.collectionId,
+        collection_id: Number(req.params.collectionId),
       });
 
       // Return the flashcards as JSON
@@ -42,7 +42,7 @@ export default class FlashcardController {
     try {
       // Delete all flashcards associated with the collection_id
       await db("flashcards")
-        .where({ collection_id: req.params.collectionId })
+        .where({ collection_id: Number(req.params.collectionId) })
         .del();
 
       // Send a success response
@@ -52,7 +52,7 @@ export default class FlashcardController {
       next(error);
     }
   }
-  
+
   /**
    *@function delete
    *@async
@@ -143,13 +143,13 @@ export default class FlashcardController {
    */
   static async create(req, res, next) {
     try {
-      const { question, answer, collectionId } = req.body;
+      const { question, answer} = req.body;
 
       const [{ id: flashcardId }] = await db("flashcards").insert(
         {
           question,
           answer,
-          collection_id: collectionId,
+          collection_id: Number(req.params.collectionId),
         },
         ["id"]
       );
