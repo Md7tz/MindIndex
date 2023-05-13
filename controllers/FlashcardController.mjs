@@ -4,28 +4,6 @@ import config from "../knexfile.js";
 const db = knex(config.development);
 
 export default class FlashcardController {
-  /**
-   * @function getAll
-   * @async
-   * @memberof FlashcardController
-   * @description Retrieves all collection's flashcards using the collection_id.
-   *
-   * @returns {Promise<Array<Model.Flashcard>>} The list of all flashcards.
-   */
-  static async getAll(req, res, next) {
-    try {
-      // Get all flashcards from the database
-      const flashcards = await db("flashcards").where({
-        collection_id: Number(req.params.collectionId),
-      });
-
-      // Return the flashcards as JSON
-      res.json(flashcards);
-    } catch (error) {
-      // If an error occurs, pass it to the next middleware
-      next(error);
-    }
-  }
 
   /**
    * @function deleteAll
@@ -127,39 +105,6 @@ export default class FlashcardController {
     } catch (error) {
       // If an error occurs, pass it to the next middleware
       next(error);
-    }
-  }
-
-  /**
-   * @function create
-   * @memberof FlashcardController
-   * @description Creates a new flashcard.
-   * @async
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @param {Function} next - The next middleware function.
-   * @returns {Object} The newly created flashcard.
-   * @throws {Error} If there was an error creating the flashcard.
-   */
-  static async create(req, res, next) {
-    try {
-      const { question, answer} = req.body;
-
-      const [{ id: flashcardId }] = await db("flashcards").insert(
-        {
-          question,
-          answer,
-          collection_id: Number(req.params.collectionId),
-        },
-        ["id"]
-      );
-      const newFlashcard = await db("flashcards")
-        .where({ id: flashcardId })
-        .first();
-
-      return res.status(201).json(newFlashcard);
-    } catch (error) {
-      return next(error);
     }
   }
 
