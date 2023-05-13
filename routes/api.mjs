@@ -24,11 +24,9 @@ router.patch('/test', (req, res, next) => {
 });
 
 // Flashcards routes
-router.get('/flashcards/:collectionId', FlashcardController.getAll);
-router.post('/flashcards/:collectionId', FlashcardController.create);
 router.put('/flashcards/:id', FlashcardController.update);
 router.delete('/flashcards/:id', FlashcardController.delete );
-router.delete('/flashcards/deleteAll/:collectionId', FlashcardController.deleteAll );
+
 
 
 

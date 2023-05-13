@@ -5,32 +5,7 @@ const db = knex(config.development);
 
 export default class FlashcardController {
 
-  /**
-   * @function deleteAll
-   * @async
-   * @memberof FlashcardController
-   * @description Deletes all flashcards associated with a given collection_id.
-   *
-   * @param {Object} req - The Express request object.
-   * @param {Object} res - The Express response object.
-   * @param {Function} next - The next middleware function in the Express chain.
-   * @returns {Promise<void>} Nothing is returned.
-   */
-  static async deleteAll(req, res, next) {
-    try {
-      // Delete all flashcards associated with the collection_id
-      await db("flashcards")
-        .where({ collection_id: Number(req.params.collectionId) })
-        .del();
-
-      // Send a success response
-      res.status(200).json({ message: "All flashcards deleted successfully." });
-    } catch (error) {
-      // If an error occurs, pass it to the next middleware
-      next(error);
-    }
-  }
-
+  
   /**
    *@function delete
    *@async
