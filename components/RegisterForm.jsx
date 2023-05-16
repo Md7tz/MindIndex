@@ -15,7 +15,7 @@ export default function RegisterForm() {
         id="registerForm"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="registerStaticBackdropLabel"
         aria-hidden="true"
       >
@@ -133,7 +133,7 @@ export default function RegisterForm() {
                       id="registerCheck"
                       aria-describedby="registerCheckHelpText"
                     />
-                    <label className="form-check-label" for="registerCheck">
+                    <label className="form-check-label" htmlFor="registerCheck">
                       I have read and agree to the terms
                     </label>
                   </div>
