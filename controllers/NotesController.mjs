@@ -1,7 +1,4 @@
-import knex from "knex";
-import config from "../knexfile.js";
-
-const db = knex(config.development);
+import Note from "../models/Note.mjs";
 
 export default class NotesController {
   /**
@@ -15,7 +12,7 @@ export default class NotesController {
   static async getAll(req, res, next) {
     try {
       // Get all notes from the database
-      const notes = await db("notes").select("*");
+      const notes = await Note.query();
 
       // Return the notes as JSON
       res.json(notes);
@@ -43,7 +40,7 @@ export default class NotesController {
       const noteId = Number(req.params.id);
 
       // Try to find the note with the specified ID in the database
-      const note = await db("notes").where({ id: noteId }).first();
+      const note = await Note.query().findById(noteId);
 
       // If no note was found, return a 404 response
       if (!note) {
@@ -72,7 +69,7 @@ export default class NotesController {
       const noteId = Number(req.params.id);
 
       // Try to find the note with the specified ID in the database
-      const note = await db("notes").where({ id: noteId }).first();
+      const note = await Note.query().findById(noteId);
 
       // If no note was found, return a 404 response
       if (!note) {
@@ -80,8 +77,7 @@ export default class NotesController {
       }
 
       // Delete the note from the database
-      await db("notes").where({ id: noteId }).del();
-
+      await Note.query().deleteById(noteId);
       // Return a 204 response to indicate success
       res.sendStatus(204);
     } catch (error) {
@@ -107,18 +103,9 @@ export default class NotesController {
       // Get the note ID from the URL parameters
       const noteId = Number(req.params.id);
 
-      // Try to find the note with the specified ID in the database
-      const note = await db("notes").where({ id: noteId }).first();
-
-      // If no note was found, return a 404 response
-      if (!note) {
-        return res.status(404).json({ error: "Note not found" });
-      }
-
       // Update the note with the new data
-      const updatedNote = await db("notes")
-        .where({ id: noteId })
-        .update(req.body)
+      const updatedNote = await Note.query()
+        .patchAndFetchById(noteId, req.body)
         .returning("*");
 
       // Return the updated note as JSON
@@ -128,6 +115,7 @@ export default class NotesController {
       next(error);
     }
   }
+
   /**
    * @function create
    * @memberof NotesController
@@ -136,21 +124,16 @@ export default class NotesController {
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @param {Function} next - The next middleware function.
-   * @returns {Object} The newly created note.
    * @throws {Error} If there was an error creating the note.
    */
   static async create(req, res, next) {
     try {
+      
       // Extract the note data from the request body
       const { title, body } = req.body;
 
-      // Insert the new note into the database
-      const [{ id: noteId }] = await db("notes").insert({ title, body }, [
-        "id",
-      ]);
-
-      // Retrieve the new note from the database
-      const newNote = await db("notes").where({ id: noteId }).first();
+      // Create a new note using Objection.js
+      const newNote = await Note.query().insert({ title, body });
 
       // Return the new note as JSON
       res.status(201).json(newNote);
