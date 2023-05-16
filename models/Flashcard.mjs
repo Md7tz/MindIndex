@@ -27,12 +27,12 @@ export default class Flashcard extends BaseModel {
         relation: BaseModel.BelongsToOneRelation,
         modelClass: Collection,
         join: {
-          from: 'flashcards.collection_id',
-          to: 'collections.id'
-        }
-      }
-    }
-  };
+          from: "flashcards.collection_id",
+          to: "collections.id",
+        },
+      },
+    };
+  }
 
   // JSON schema for Flashcard objects
   static jsonSchema = {
@@ -40,7 +40,7 @@ export default class Flashcard extends BaseModel {
     required: ["question", "answer"],
     properties: {
       id: { type: "integer" },
-      naquestione: { type: "string", maxLength: MAX_STRING_LENGTH },
+      question: { type: "string", maxLength: MAX_STRING_LENGTH },
       answer: { type: "string", maxLength: MAX_STRING_LENGTH },
       created_at: { type: "string", format: "date-time" },
       updated_at: { type: ["string", "null"], format: "date-time" },
@@ -48,4 +48,3 @@ export default class Flashcard extends BaseModel {
     },
   };
 }
-
