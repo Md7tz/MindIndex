@@ -1,11 +1,9 @@
 import Validator from "validatorjs";
-import { transaction } from "objection";
 
 // Model
 import Note from "../models/Note.mjs";
 
 // constants
-import { MAX_STRING_LENGTH, MAX_TEXT_LENGTH } from "../config/constants.mjs";
 import { HTTP } from "../config/constants.mjs";
 
 export default class NoteController {
@@ -42,7 +40,7 @@ export default class NoteController {
 
       await Note.transaction(async (trx) => {
         // Create a new note using Objection.js
-        const newNote = await Note.query().insert({ title, body });
+        const newNote = await Note.query(trx).insert({ title, body });
         // Return the new note as JSON
         res.status(HTTP.CREATED).json({ message: "Note created", newNote });
       });
@@ -149,10 +147,14 @@ export default class NoteController {
       }
 
       await Note.transaction(async (trx) => {
+        // Extract the note data from the request body
+        const { title, body } = req.body;
         // Update the note with the new data
         const updatedNote = await Note.query(trx)
-          .patchAndFetchById(id, req.body)
+          .patchAndFetchById(id, { title, body })
           .returning("*");
+
+        // If no note was found, return a 404 response
         if (!updatedNote) {
           return res.status(HTTP.NOT_FOUND).json({
             message: "Note not found.",
