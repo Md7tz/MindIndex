@@ -1,21 +1,27 @@
+import Flashcard from "../models/Flashcard.mjs";
 import Validator from "validatorjs";
-
-// constants
 import { HTTP } from "../config/constants.mjs";
 
-// Model
-import Flashcard from "../models/Flashcard.mjs";
-
 export default class FlashcardController {
+
   /**
-   *@function deleteFlashcard
-   *@async
-   *@memberof FlashcardController
-   *@description Deletes a flashcard by ID.
-   *@param {Number} id - The ID of the flashcard to delete.
-   *@returns {Promise<void>} A Promise that resolves when the flashcard is deleted.
-   *@throws {Error} If the flashcard with the specified ID is not found.
-   */
+ * @openapi
+ * /api/flashcards/{id}:
+ *   delete:
+ *     summary: Delete a flashcard.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the flashcard to delete.
+ *     responses:
+ *       '204':
+ *         description: Flashcard deleted successfully.
+ *       '404':
+ *         description: Flashcard not found.
+ */
   static async deleteFlashcard(req, res, next) {
     try {
       // Get the flashcard ID from the URL parameters
@@ -44,17 +50,34 @@ export default class FlashcardController {
   }
 
   /**
-   * @function updateFlashcard
-   * @async
-   * @memberof FlashcardController
-   * @description Updates a flashcard by ID.
+   * @openapi
+   * /api/flashcards/{id}:
+   *   put:
+   *     summary: Update a flashcard.
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: The ID of the flashcard to update.
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               question:
+   *                 type: string
+   *               answer:
+   *                 type: string
+   *     responses:
+   *       '200':
+   *         description: Flashcard updated successfully.
+   *       '400':
+   *         description: Validation failed.
    *
-   * @param {Number} id - The ID of the flashcard to update.
-   * @param {Object} updateData - The data to update the flashcard with.
-   *
-   * @returns {Promise<Model.Flashcard>} The updated flashcard.
-   *
-   * @throws {Error} If the flashcard with the specified ID is not found.
    */
   static async updateFlashcard(req, res, next) {
     try {
@@ -85,7 +108,6 @@ export default class FlashcardController {
         // Update the flashcard with the new data
         const updatedFlashcard = await Flashcard.query(trx)
           .patchAndFetchById(id, { question, answer })
-          .returning("*");
 
         // If no flashcard was found, return a 404 response
         if (!updatedFlashcard) {
