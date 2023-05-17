@@ -10,7 +10,7 @@ exports.up = function (knex) {
       table.string("avatar_url", 255);
       table.string("address", 255);
       table.string("birth_date", 255);
-      table.string("gender", 1);
+      table.enu("gender", ["M", "F"]);
       table.string("occupation", 255);
       table.string("interests", 255);
       table.timestamp("created_at").defaultTo(knex.fn.now()).notNullable();
