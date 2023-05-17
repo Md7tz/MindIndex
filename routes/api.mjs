@@ -1,15 +1,14 @@
 import express from "express";
-import Controller from "../controllers/index.mjs";
+
+// Controllers
+import Collection from '../controllers/Collection.mjs';
 import NotesController from "../controllers/NotesController.mjs";
+
+// Middleware
+import ErrorHandler from '../middlewares/ErrorHandler.mjs';
 
 const router = express.Router();
 
-// Test Routes
-router.get("/test", Controller.testGet);
-router.post("/test", Controller.testPost);
-router.put("/test", Controller.testPut);
-router.delete("/test", Controller.testDelete);
-router.patch("/test", Controller.testPatch);
 
 // Notes Routes
 router.get("/notes", NotesController.getAll);
@@ -18,4 +17,14 @@ router.post("/notes", NotesController.create);
 router.put("/notes/:id", NotesController.update);
 router.delete("/notes/:id", NotesController.delete);
 
+// Collection Routes
+router.get('/collections', Collection.getAllCollections);
+router.get('/collections/:id', Collection.getCollectionById);
+router.post('/collections', Collection.createCollection);
+router.put('/collections/:id', Collection.updateCollection);
+router.delete('/collections/:id', Collection.deleteCollection);
+
+router.use(ErrorHandler);
+
 export default router;
+

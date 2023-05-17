@@ -1,9 +1,9 @@
-import BaseModel from './index.mjs';
+import Model from './index.mjs';
 import { MAX_STRING_LENGTH, MAX_TEXT_LENGTH } from '../config/constants.mjs';
 
 /**
  * @class Note
- * @extends BaseModel
+ * @extends Model
  * @memberof Model
  * @description Represents a note in the database.
  *
@@ -14,7 +14,7 @@ import { MAX_STRING_LENGTH, MAX_TEXT_LENGTH } from '../config/constants.mjs';
  * @property {Date|null} updated_at    - The timestamp of when the note was last updated, or null if it has not been updated.
  * @property {Date|null} deleted_at    - The timestamp of when the note was deleted, or null if it has not been deleted.
  */
-export default class Note extends BaseModel {
+export default class Note extends Model {
   // Set the database table name for Note objects
   static tableName = 'notes';
 
@@ -26,9 +26,9 @@ export default class Note extends BaseModel {
       id: { type: 'integer' },
       title: { type: 'string', maxLength: MAX_STRING_LENGTH },
       body: { type: 'text', maxLength: MAX_TEXT_LENGTH },
-      created_at: { type: 'string', format: 'date-time' },
-      updated_at: { type: ['string', 'null'], format: 'date-time' },
-      deleted_at: { type: ['string', 'null'], format: 'date-time' },
+      created_at: { type: 'string' },
+      updated_at: { type: ['string', 'null'] },
+      deleted_at: { type: ['string', 'null'] },
     },
   };
 }

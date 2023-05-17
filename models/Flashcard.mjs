@@ -1,10 +1,10 @@
-import BaseModel from "./index.mjs";
+import Model from "./index.mjs";
 import Collection from "./Collection.mjs";
 import { MAX_STRING_LENGTH } from "../config/constants.mjs";
 
 /**
  * @class Flashcard
- * @extends BaseModel
+ * @extends Model
  * @memberof Model
  * @description Represents a flashcard in the database.
  *
@@ -16,7 +16,7 @@ import { MAX_STRING_LENGTH } from "../config/constants.mjs";
  * @property {Date|null} deleted_at    - The timestamp of when the flashcard was deleted, or null if it has not been deleted.
  */
 
-export default class Flashcard extends BaseModel {
+export default class Flashcard extends Model {
   // Table name for Flashcard objects
   static tableName = "flashcards";
 
@@ -24,7 +24,7 @@ export default class Flashcard extends BaseModel {
   static get relationMappings() {
     return {
       collection: {
-        relation: BaseModel.BelongsToOneRelation,
+        relation: Model.BelongsToOneRelation,
         modelClass: Collection,
         join: {
           from: 'flashcards.collection_id',
@@ -40,11 +40,11 @@ export default class Flashcard extends BaseModel {
     required: ["question", "answer"],
     properties: {
       id: { type: "integer" },
-      naquestione: { type: "string", maxLength: MAX_STRING_LENGTH },
+      question: { type: "string", maxLength: MAX_STRING_LENGTH },
       answer: { type: "string", maxLength: MAX_STRING_LENGTH },
-      created_at: { type: "string", format: "date-time" },
-      updated_at: { type: ["string", "null"], format: "date-time" },
-      deleted_at: { type: ["string", "null"], format: "date-time" },
+      created_at: { type: "string" },
+      updated_at: { type: ["string", "null"] },
+      deleted_at: { type: ["string", "null"] },
     },
   };
 }
