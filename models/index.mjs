@@ -1,4 +1,4 @@
-import { Model } from 'objection';
+import { Model, QueryBuilder } from 'objection';
 import visibilityPlugin from 'objection-visibility';
 import softDelete from 'objection-soft-delete';
 import moment from 'moment';
@@ -9,13 +9,12 @@ const soft = softDelete({
     columnName: 'deleted_at',
     deletedValue: moment().format('YYYY-MM-DDTHH:mm:ssZ'),
     notDeletedValue: null
-})
+});
+
+// Extend the QueryBuilder prototype with the mergeContext function
+QueryBuilder.prototype.mergeContext = QueryBuilder.prototype.context;
 
 export default class BaseModel extends visibility(soft(Model)) {
-    static get softDelete() {
-        return true;
-    }
-
     $beforeInsert() {
         this.created_at = moment().format('YYYY-MM-DDTHH:mm:ssZ');
     }
@@ -24,14 +23,3 @@ export default class BaseModel extends visibility(soft(Model)) {
         this.updated_at = moment().format('YYYY-MM-DDTHH:mm:ssZ');
     }
 }
-
-BaseModel.tableName = 'base_model';
-BaseModel.jsonSchema = {
-    type: 'object',
-    properties: {
-        id: { type: 'integer' },
-        created_at: { type: 'string', format: 'date-time' },
-        updated_at: { type: ['string', 'null'], format: 'date-time' },
-        deleted_at: { type: ['string', 'null'], format: 'date-time' },
-    },
-};
