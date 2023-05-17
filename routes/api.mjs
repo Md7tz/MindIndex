@@ -2,7 +2,7 @@ import express from "express";
 
 // Controllers
 import Collection from '../controllers/Collection.mjs';
-import NotesController from "../controllers/NotesController.mjs";
+import Note from "../controllers/Note.mjs";
 
 // Middleware
 import ErrorHandler from '../middlewares/ErrorHandler.mjs';
@@ -11,11 +11,11 @@ const router = express.Router();
 
 
 // Notes Routes
-router.get("/notes", NotesController.getAll);
-router.get("/notes/:id", NotesController.getById);
-router.post("/notes", NotesController.create);
-router.put("/notes/:id", NotesController.update);
-router.delete("/notes/:id", NotesController.delete);
+router.get("/notes", Note.getAllNotes);
+router.get("/notes/:id", Note.getNoteById);
+router.post("/notes", Note.createNote);
+router.put("/notes/:id", Note.updateNote);
+router.delete("/notes/:id", Note.deleteNote);
 
 // Collection Routes
 router.get('/collections', Collection.getAllCollections);
