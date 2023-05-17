@@ -276,19 +276,29 @@ export default class CollectionController {
 
             await transaction(Collection.knex(), async (trx) => {
                 // Check if the collection exists
-                const collection = await Collection.query(trx).findById(id);
-                console.log(collection);
+                let collection = await Collection.query(trx).findById(id);
+
                 if (!collection) {
                     return res.status(HTTP.NOT_FOUND).json({
                         message: "Collection not found.",
                     });
                 }
 
-                // Delete the collection and its associated flashcards
-                await collection.$relatedQuery("flashcards", trx).delete();
-                await collection.$query(trx).delete();
+                if (collection.deleted_at != null) {
+                    collection = await collection.$query(trx).undelete().returning("*");
+                    collection.flashcards = await collection.$relatedQuery("flashcards", trx).undelete().returning('*');
+                    
+                    return res.status(HTTP.OK).json({
+                        message: "Collection undeleted successfully.",
+                        collection,
+                    });
+                } else {
+                    // Delete the collection and its associated flashcards
+                    await collection.$relatedQuery("flashcards", trx).delete();
+                    await collection.$query(trx).delete();
 
-                return res.status(HTTP.NO_CONTENT).end();
+                    return res.status(HTTP.NO_CONTENT).end();
+                }
             });
         } catch (error) {
             console.error(error);

@@ -232,17 +232,24 @@ export default class NoteController {
       // Start a transaction
       await Note.transaction(async (trx) => {
         // Fetch note by id
-        const note = await Note.query(trx).findById(id);
+        let note = await Note.query(trx).findById(id);
 
         // If no note was found, return a 404 response
         if (!note) {
           return res.status(HTTP.NOT_FOUND).json({ message: "Note not found" });
         }
 
-        // Delete the note from the database
-        await Note.query(trx).deleteById(id);
-
-        return res.status(HTTP.NO_CONTENT).end();
+        if (note.deleted_at !== null) {
+          note = await Note.query(trx).findById(id).undelete().returning('*');
+          return res.status(HTTP.OK).json({
+            message: "Note undeleted successfully.",
+            note,
+          });
+        } else {
+          // Delete the note
+          await Note.query(trx).deleteById(id);
+          return res.status(HTTP.NO_CONTENT).end();
+        }
       });
     } catch (error) {
       console.error(error);

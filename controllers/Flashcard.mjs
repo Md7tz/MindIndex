@@ -29,18 +29,26 @@ export default class FlashcardController {
 
       await Flashcard.transaction(async (trx) => {
         // Try to find the flashcard with the specified ID in the database
-        const flashcard = await Flashcard.query(trx).findById(id);
+        let flashcard = await Flashcard.query(trx).findById(id);
 
-        console.log(flashcard);
         // If no flashcard was found, return a 404 response
         if (!flashcard) {
           return res.status(HTTP.NOT_FOUND).json({
             message: "Flashcard not found.",
           });
         }
-        // Delete the flashcard from the database
-        await Flashcard.query(trx).deleteById(id);
-        return res.status(HTTP.NO_CONTENT).end();
+
+        if (flashcard.deleted_at !== null) {
+          flashcard = await Flashcard.query(trx).findById(id).undelete().returning('*');
+          return res.status(HTTP.OK).json({
+            message: "Flashcard undeleted successfully.",
+            flashcard,
+          });
+        } else {
+          // Delete the flashcard
+          await Flashcard.query(trx).deleteById(id);
+          return res.status(HTTP.NO_CONTENT).end();
+        }
       });
     } catch (error) {
       console.error(error);
