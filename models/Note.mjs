@@ -25,7 +25,7 @@ export default class Note extends Model {
     properties: {
       id: { type: 'integer' },
       title: { type: 'string', maxLength: MAX_STRING_LENGTH },
-      body: { type: 'text', maxLength: MAX_TEXT_LENGTH },
+      body: { type: 'string', maxLength: MAX_TEXT_LENGTH },
       created_at: { type: 'string' },
       updated_at: { type: ['string', 'null'] },
       deleted_at: { type: ['string', 'null'] },
