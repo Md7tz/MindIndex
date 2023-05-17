@@ -1,9 +1,9 @@
-import BaseModel from "./index.mjs";
+import Model from "./index.mjs";
 import { MAX_STRING_LENGTH } from "../config/constants.mjs";
 
 /**
  * @class Profile
- * @extends BaseModel
+ * @extends Model
  * @memberof Model
  * @description Represents a profile in the database.
  *
@@ -21,7 +21,7 @@ import { MAX_STRING_LENGTH } from "../config/constants.mjs";
  * @property {string} deleted_at    - The timestamp when the profile record was soft-deleted.
  */
 
-export default class Profile extends BaseModel {
+export default class Profile extends Model {
   // Table name for Profile objects
   static tableName = "profiles";
 
@@ -38,9 +38,9 @@ export default class Profile extends BaseModel {
       gender: { type: "string", maxLength: 1 },
       occupation: { type: "string", maxLength: MAX_STRING_LENGTH },
       interests: { type: "string", maxLength: MAX_STRING_LENGTH },
-      created_at: { type: "string", format: "date-time" },
-      updated_at: { type: "string", format: "date-time" },
-      deleted_at: { type: "string", format: "date-time" },
+      created_at: { type: "string" },
+      updated_at: { type: ["string", "null"] },
+      deleted_at: { type: ["string", "null"] },
     },
   };
 }
