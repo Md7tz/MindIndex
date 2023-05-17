@@ -1,21 +1,30 @@
-import Validator from "validatorjs";
-
-// Model
 import Note from "../models/Note.mjs";
-
-// constants
+import Validator from "validatorjs";
 import { HTTP } from "../config/constants.mjs";
 
 export default class NoteController {
+
   /**
-   * @function createNote
-   * @memberof NoteController
-   * @description Creates a new note.
-   * @async
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @param {Function} next - The next middleware function.
-   * @throws {Error} If there was an error creating the note.
+   * @openapi
+   * /api/notes:
+   *   post:
+   *     summary: Create a new note.
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               title:
+   *                 type: string
+   *               body:
+   *                 type: string
+   *     responses:
+   *       '201':
+   *         description: Note created successfully.
+   *       '400':
+   *         description: Validation failed.
    */
   static async createNote(req, res, next) {
     try {
@@ -39,10 +48,12 @@ export default class NoteController {
       const { title, body } = req.body;
 
       await Note.transaction(async (trx) => {
-        // Create a new note using Objection.js
         const newNote = await Note.query(trx).insert({ title, body });
-        // Return the new note as JSON
-        res.status(HTTP.CREATED).json({ message: "Note created", newNote });
+
+        res.status(HTTP.CREATED).json({
+          message: "Note created successfully",
+          note: newNote
+        });
       });
     } catch (error) {
       console.error(error);
@@ -52,19 +63,19 @@ export default class NoteController {
   }
 
   /**
-   * @function getAllNotes
-   * @async
-   * @memberof NoteController
-   * @description Retrieves all notes.
-   *
-   * @returns {Promise<Array<Model.Notes>>} The list of all notes.
+   * @openapi
+   * /api/notes:
+   *   get:
+   *     summary: Get all notes.
+   *     responses:
+   *       '200':
+   *         description: Notes retrieved successfully.
    */
   static async getAllNotes(req, res, next) {
     try {
-      // Get all notes from the database
-      const notes = await Note.query();
+      // Fetch all the notes
+      const notes = await Note.query().whereNotDeleted();
 
-      // Return the notes as JSON
       res
         .status(HTTP.OK)
         .json({ message: "Notes retrieved successfully.", notes });
@@ -76,31 +87,36 @@ export default class NoteController {
   }
 
   /**
-   * @function getNoteById
-   * @async
-   * @memberof NoteController
-   * @description Reterive a note by ID.
-   *
-   * @param {Number} id - The ID of the note to reterived.
-   *
-   * @returns {Promise<void>} A promise that resolves when the note has been reterived.
-   *
-   * @throws {Error} If the note with the specified ID is not found.
+   * @openapi
+   * /api/notes/{id}:
+   *   get:
+   *     summary: Get a note by ID.
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: ID of the note to retrieve.
+   *     responses:
+   *       '200':
+   *         description: Note retrieved successfully.
+   *       '404':
+   *         description: Note not found.
    */
   static async getNoteById(req, res, next) {
     try {
       // Get the note ID from the URL parameters
       const { id } = req.params;
 
-      // Try to find the note with the specified ID in the database
-      const note = await Note.query().findById(id);
+      // Fetch note bu id
+      const note = await Note.query().findById(id).whereNotDeleted();;
 
       // If no note was found, return a 404 response
       if (!note) {
         return res.status(HTTP.NOT_FOUND).json({ message: "Note not found" });
       }
 
-      // Return the note as JSON
       return res.status(HTTP.OK).json({
         message: "Note retrieved successfully.",
         note,
@@ -111,28 +127,45 @@ export default class NoteController {
       next(error);
     }
   }
+
   /**
-   * @function updateNote
-   * @async
-   * @memberof NoteController
-   * @description Updates a note by ID.
-   *
-   * @param {Number} id - The ID of the note to update.
-   * @param {Object} updateData - The data to update the note with.
-   *
-   * @returns {Promise<Model.note>} The updated note.
-   *
-   * @throws {Error} If the note with the specified ID is not found.
+   * @openapi
+   * /api/notes/{id}:
+   *   put:
+   *     summary: Update a note by ID.
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: ID of the note to update.
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               title:
+   *                 type: string
+   *               body:
+   *                 type: string
+   *     responses:
+   *       '200':
+   *         description: Note updated successfully.
+   *       '400':
+   *         description: Validation failed.
    */
   static async updateNote(req, res, next) {
     try {
       // Get the note ID from the URL parameters
       const { id } = req.params;
 
-      // Define the validation rules using Validator.js
+      // Define the validation rules
       const validationRules = {
-        title: "string",
-        body: "string",
+        title: "string|required",
+        body: "string|required",
       };
 
       // Create a new validator instance with the data and validation rules
@@ -146,13 +179,13 @@ export default class NoteController {
         });
       }
 
+      // Extract the note data from the request body
+      const { title, body } = req.body;
+
       await Note.transaction(async (trx) => {
-        // Extract the note data from the request body
-        const { title, body } = req.body;
         // Update the note with the new data
         const updatedNote = await Note.query(trx)
           .patchAndFetchById(id, { title, body })
-          .returning("*");
 
         // If no note was found, return a 404 response
         if (!updatedNote) {
@@ -174,13 +207,22 @@ export default class NoteController {
   }
 
   /**
-   *@function deleteNote
-   *@async
-   *@memberof NoteController
-   *@description Deletes a note by ID.
-   *@param {Number} id - The ID of the note to delete.
-   *@returns {Promise<void>} A Promise that resolves when the note is deleted.
-   *@throws {Error} If the note with the specified ID is not found.
+   * @openapi
+   * /api/notes/{id}:
+   *   delete:
+   *     summary: Delete a note by ID.
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: ID of the note to delete.
+   *     responses:
+   *       '204':
+   *         description: Note deleted successfully.
+   *       '404':
+   *         description: Note not found.
    */
   static async deleteNote(req, res, next) {
     try {
@@ -189,9 +231,9 @@ export default class NoteController {
 
       // Start a transaction
       await Note.transaction(async (trx) => {
-        // Try to find the note with the specified ID in the database
+        // Fetch note by id
         const note = await Note.query(trx).findById(id);
-        console.log(note);
+
         // If no note was found, return a 404 response
         if (!note) {
           return res.status(HTTP.NOT_FOUND).json({ message: "Note not found" });
