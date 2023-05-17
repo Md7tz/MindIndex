@@ -17,8 +17,8 @@ router.put('/collections/:id', Collection.updateCollection);
 router.delete('/collections/:id', Collection.deleteCollection);
 
 // Flashcards routes
-router.put('/flashcards/:id', FlashcardController.update);
-router.delete('/flashcards/:id', FlashcardController.delete );
+router.put('/flashcards/:id', Flashcard.updateFlashcard);
+router.delete('/flashcards/:id', Flashcard.deleteFlashcard );
 
 router.use(ErrorHandler);
 
