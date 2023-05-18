@@ -20,9 +20,9 @@ router.put("/users/:id", User.updateUser);
 router.delete("/users/:id", User.deleteUser);
 
 // Profile Routes
-router.get("/profiles/:id", Profile.getProfileByUserId);
-router.post("/profiles/:id", Profile.createProfile);
-router.put("/profiles/:id", Profile.updateProfile);
+router.get("users/:id/profiles", Profile.getProfileByUserId);
+router.post("users/:id/profiles", Profile.createProfile);
+router.put("users/:id/profiles", Profile.updateProfile);
 
 // Notes Routes
 router.get("/notes", Note.getAllNotes);
