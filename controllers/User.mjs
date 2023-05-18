@@ -141,7 +141,7 @@ export default class UserController {
    * @openapi
    * /api/user/{id}:
    *   put:
-   *     summary: Update a user and its associated flashcards.
+   *     summary: Update a user.
    *     parameters:
    *       - in: path
    *         name: id
