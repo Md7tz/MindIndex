@@ -31,7 +31,7 @@ export default class UserController {
 
   /**
    * @openapi
-   * /api/users/{id}:
+   * /api/user/{id}:
    *   get:
    *     summary: Get a user by its ID.
    *     parameters:
@@ -71,7 +71,7 @@ export default class UserController {
 
   /**
    * @openapi
-   * /api/users:
+   * /api/user:
    *   post:
    *     summary: Create a new user.
    *     requestBody:
@@ -139,7 +139,7 @@ export default class UserController {
 
   /**
    * @openapi
-   * /api/users/{id}:
+   * /api/user/{id}:
    *   put:
    *     summary: Update a user and its associated flashcards.
    *     parameters:
@@ -225,7 +225,7 @@ export default class UserController {
 
   /**
    * @openapi
-   * /api/users/{id}:
+   * /api/user/{id}:
    *   delete:
    *     summary: Delete a user.
    *     parameters:
