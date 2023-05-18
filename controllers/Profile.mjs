@@ -5,7 +5,7 @@ import { HTTP } from "../config/constants.mjs";
 export default class ProfileController {
   /**
    * @openapi
-   * /api/profile/{id}:
+   * /api/profiles/{id}:
    *   get:
    *     summary: Get the profile of a user by his ID.
    *     parameters:
@@ -49,7 +49,7 @@ export default class ProfileController {
 
   /**
    * @openapi
-   * /api/profile/{id}:
+   * /api/profiles/{id}:
    *   post:
    *     summary: Create an empty profile for the user. Will be used if no profile is found for a user.
    *     parameters:
@@ -87,7 +87,7 @@ export default class ProfileController {
 
   /**
    * @openapi
-   * /api/profile/{id}:
+   * /api/profiles/{id}:
    *   put:
    *     summary: Update a profile.
    *     parameters:

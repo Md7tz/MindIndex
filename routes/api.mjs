@@ -14,15 +14,15 @@ const router = express.Router();
 
 // User Routes
 router.get("/users", User.getAllUsers);
-router.get("/user/:id", User.getUserById);
-router.post("/user", User.createUser);
-router.put("/user/:id", User.updateUser);
-router.delete("/user/:id", User.deleteUser);
+router.get("/users/:id", User.getUserById);
+router.post("/users", User.createUser);
+router.put("/users/:id", User.updateUser);
+router.delete("/users/:id", User.deleteUser);
 
 // Profile Routes
-router.get("/profile/:id", Profile.getProfileByUserId);
-router.post("/profile/:id", Profile.createProfile);
-router.put("/profile/:id", Profile.updateProfile);
+router.get("/profiles/:id", Profile.getProfileByUserId);
+router.post("/profiles/:id", Profile.createProfile);
+router.put("/profiles/:id", Profile.updateProfile);
 
 // Notes Routes
 router.get("/notes", Note.getAllNotes);
