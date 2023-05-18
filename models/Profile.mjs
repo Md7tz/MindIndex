@@ -27,16 +27,18 @@ export default class Profile extends Model {
   static tableName = "profiles";
 
   // Relation mappings for Profile objects
-  static relationMappings = {
-    user: {
-      relation: Model.BelongsToOneRelation,
-      modelClass: User,
-      join: {
-        from: "profiles.user_id",
-        to: "users.id",
+  static get relationMappings() {
+    return {
+      user: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
+        join: {
+          from: "profiles.user_id",
+          to: "users.id",
+        },
       },
-    },
-  };
+    };
+  }
 
   // JSON schema for profile objects
   static jsonSchema = {

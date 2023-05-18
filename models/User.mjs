@@ -1,4 +1,5 @@
 import Model from "./index.mjs";
+import Profile from "./Profile.mjs";
 import { MAX_STRING_LENGTH } from "../config/constants.mjs";
 
 /**
@@ -21,6 +22,20 @@ export default class User extends Model {
   // Table name for User objects
   static tableName = "users";
 
+  // Relations
+  static get relationMappings() {
+    return {
+      profiles: {
+        relation: Model.HasOneRelation,
+        modelClass: Profile,
+        join: {
+          from: "users.id",
+          to: "profiles.user_id",
+        },
+      },
+    };
+  }
+
   // JSON schema for User objects
   static jsonSchema = {
     type: "object",
@@ -37,4 +52,3 @@ export default class User extends Model {
     },
   };
 }
-
