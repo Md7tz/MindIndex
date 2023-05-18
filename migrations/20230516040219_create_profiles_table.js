@@ -6,6 +6,7 @@ exports.up = function (knex) {
   return knex.schema
     .createTable("profiles", function (table) {
       table.increments("id");
+      table.bigInteger("user_id").unsigned();
       table.string("bio", 255);
       table.string("avatar_url", 255);
       table.string("address", 255);
