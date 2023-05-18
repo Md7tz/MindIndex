@@ -6,6 +6,88 @@ export default class ProfileController {
   /**
    * @openapi
    * /api/profile/{id}:
+   *   get:
+   *     summary: Get the profile of a user by his ID.
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: ID of the user to retrieve his profile.
+   *     responses:
+   *       '200':
+   *         description: Profile retrieved successfully.
+   *       '404':
+   *         description: No user is registered with this ID.
+   */
+  static async getProfileByUserId(req, res, next) {
+    try {
+      // Get the user ID from the URL parameters
+      const { id } = req.params;
+
+      // Fetch the profile by user id
+      const profile = await Profile.query().where("user_id", id).first();
+
+      // If no profile was found, means no user is registered with that ID, return a 404 response
+      if (!profile) {
+        return res
+          .status(HTTP.NOT_FOUND)
+          .json({ message: "No User is registered with this ID." });
+      }
+
+      return res.status(HTTP.OK).json({
+        message: "Profile retrieved successfully.",
+        profile,
+      });
+    } catch (error) {
+      console.error(error);
+      // If an error occurs, pass it to the next middleware
+      next(error);
+    }
+  }
+
+  /**
+   * @openapi
+   * /api/profile/{id}:
+   *   post:
+   *     summary: Create an empty profile for the user. Will be used if no profile is found for a user.
+   *     parameters:
+   *        - in: path
+   *          name: id
+   *          required: true
+   *          schema:
+   *            type: string
+   *          description: The ID of the user to create a profile for.
+   *     responses:
+   *       '201':
+   *         description: Profile created successfully.
+   *       '400':
+   *         description: Validation failed.
+   */
+  static async createProfile(req, res, next) {
+    try {
+      // Get the user ID from the URL parameters
+      const { id } = req.params;
+
+      await Profile.transaction(async (trx) => {
+        const newProfile = await Profile.query(trx).insert({ user_id: id });
+
+        res.status(HTTP.CREATED).json({
+          message: "Profile created successfully",
+          profile: newProfile,
+        });
+      });
+    } catch (error) {
+      console.error(error);
+      // If an error occurs, pass it to the next middleware
+      next(error);
+    }
+  }
+
+  /**
+   * @openapi
+   * /api/profile/{id}:
    *   put:
    *     summary: Update a profile.
    *     parameters:
@@ -14,7 +96,7 @@ export default class ProfileController {
    *         required: true
    *         schema:
    *           type: string
-   *         description: The ID of the profile to update.
+   *         description: The ID of the user owning the profile to be updated.
    *     requestBody:
    *       required: true
    *       content:
@@ -83,21 +165,23 @@ export default class ProfileController {
         } = req.body;
 
         // Update the profile with the new data
-        const updatedProfile = await Profile.query(trx).patchAndFetchById(id, {
-          bio,
-          avatar_url,
-          address,
-          birth_date,
-          gender,
-          occupation,
-          interests,
-        });
+        const updatedProfile = await Profile.query(trx)
+          .where("user_id", id)
+          .patch({
+            bio,
+            avatar_url,
+            address,
+            birth_date,
+            gender,
+            occupation,
+            interests,
+          });
 
-        // If no profile was found, return a 404 response
+        // If no profile was found when prompted to update, return a 404 response.
         if (!updatedProfile) {
-          return res
-            .status(HTTP.NOT_FOUND)
-            .json({ error: "Profile not found" });
+          return res.status(HTTP.NOT_FOUND).json({
+            message: "No profile found for this user.",
+          });
         }
 
         // Return the updated profile as JSON
