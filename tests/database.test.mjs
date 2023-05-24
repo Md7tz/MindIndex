@@ -3,10 +3,11 @@ import knex from "knex";
 import dotenv from "dotenv";
 import _dbConfig from "../knexfile.js";
 
-import Note from "../models/note.mjs";
+import Note from "../models/Note.mjs";
 import User from "../models/User.mjs";
 import Collection from "../models/Collection.mjs";
 import Flashcard from "../models/Flashcard.mjs";
+import Profile from "../models/Profile.mjs";
 
 dotenv.config();
 
@@ -76,6 +77,12 @@ describe("Database connection test", () => {
   describe("Flashcard Model", () => {
     it('table name should be "flashcards"', () => {
       expect(Flashcard.tableName).to.equal("flashcards");
+    });
+  });
+
+  describe("Profile Model", () => {
+    it('table name should be "profiles"', () => {
+      expect(Profile.tableName).to.equal("profiles");
     });
   });
 });
