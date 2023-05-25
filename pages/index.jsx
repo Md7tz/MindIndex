@@ -5,7 +5,7 @@ import MindIndexPremium from "../components/imgs/Premium.png";
 import { faStar, faRocket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function landing() {
+export default function Landing() {
   return (
     <>
       <div className="container px-4 px-lg-5">
