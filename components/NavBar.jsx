@@ -12,7 +12,7 @@ export default function NavBar() {
     >
       <div className="container-fluid text-white">
         <div className={`d-flex ${styles.brand}`}>
-          <a className={`navbar-brand me-1 ${styles.logolink}`} href="#">
+          <a className={`navbar-brand me-1 ${styles.logolink}`} href="/landing">
             <Image
               src={Logo}
               alt="MindIndex"
@@ -23,7 +23,7 @@ export default function NavBar() {
           </a>
           <a
             className={`navbar-brand text-white ${styles.milink} fs-7 pe-3 m-1`}
-            href="#"
+            href="/landing"
           >
             MindIndex
           </a>
@@ -35,7 +35,7 @@ export default function NavBar() {
               <a
                 className="nav-link active text-white"
                 aria-current="page"
-                href="#"
+                href="/landing"
               >
                 <div className="d-flex align-items-center ps-2">
                   <svg
