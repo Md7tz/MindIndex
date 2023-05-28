@@ -1,11 +1,74 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../styles/Navbar.module.css";
 import Image from "next/image";
 import Logo from "./imgs/Logo.jpg";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
+import axios from "axios";
 
 export default function NavBar() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [collections, setCollections] = useState([]);
+  const [notes, setNotes] = useState([]);
+  const [filteredCollections, setFilteredCollections] = useState([]);
+  const [filteredNotes, setFilteredNotes] = useState([]);
+  useEffect(() => {
+    const fetchCollections = async () => {
+      try {
+        const response = await axios.get("/api/collections");
+        setCollections(response.data["collections"]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const fetchNotes = async () => {
+      try {
+        const response = await axios.get("/api/notes");
+        setNotes(response.data["notes"]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchCollections();
+    fetchNotes();
+  }, []);
+
+  useEffect(() => {
+    const filterData = () => {
+      const filteredCollections = collections.filter((collection) =>
+        collection.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      const filteredNotes = notes.filter((note) =>
+        note.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredCollections(filteredCollections);
+      setFilteredNotes(filteredNotes);
+    };
+
+    filterData();
+  }, [searchQuery, collections, notes]);
+
+  // onChange function
+  const onChange = async (event) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+
+    try {
+      console.log(filteredCollections);
+      console.log(filteredNotes);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // handleSubmit function
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevents page reload on form submission
+    console.log(event);
+    console.log("HI");
+  };
   return (
     <nav
       className={`${styles["custom-navbar"]} navbar navbar-expand-lg custom-navbar`}
@@ -116,16 +179,22 @@ export default function NavBar() {
             </li>
           </ul>
 
-          <form className="d-flex input-group w-auto ms-lg-3 my-3 my-lg-0">
+          <form
+            className="d-flex input-group w-auto ms-lg-3 my-3 my-lg-0"
+            onSubmit={handleSubmit}
+          >
             <input
               type="search"
+              name="searchQuery"
+              value={searchQuery}
               className={`form-control ${styles["search-box"]}`}
+              onChange={onChange}
               placeholder="Search MindIndex"
               aria-label="Search MindIndex"
             />
             <button
               className="btn btn-dark"
-              type="button"
+              type="submit"
               data-mdb-ripple-color="dark"
             >
               <svg
@@ -139,6 +208,23 @@ export default function NavBar() {
                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
               </svg>
             </button>
+            {/* Display filtered collections as a dropdown list */}
+            <select>
+              {filteredCollections.map((collection) => (
+                <option key={collection.id} value={collection.id}>
+                  {collection.name}
+                </option>
+              ))}
+            </select>
+
+            {/* Display filtered notes as a dropdown list */}
+            <select>
+              {filteredNotes.map((note) => (
+                <option key={note.id} value={note.id}>
+                  {note.title}
+                </option>
+              ))}
+            </select>
           </form>
         </div>
       </div>
