@@ -1,42 +1,45 @@
 .list-view-container {
-    
-    color: black;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 100;
-  }
-  
-  .list-view {
-    max-height: 200px;
-    overflow-y: auto;
-  }
-  
-  .list-view-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .list-view-table th,
-  .list-view-table td {
-    padding: 12px;
-    border-bottom: 1px solid #ccc;
-  }
-  
-  .list-view-table th {
-    font-weight: bold;
-    background-color: #f2f2f2;
-  }
-  
-  .list-view-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .list-view-table tbody tr:hover {
-    background-color: #eaeaea;
-  }
-  
+  color: black;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.list-view {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.list-view-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.list-view-table th,
+.list-view-table td {
+  padding: 12px;
+  border-bottom: 1px solid #ccc;
+}
+
+.list-view-table th {
+  font-weight: bold;
+  background-color: #f2f2f2;
+}
+
+.list-view-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.list-view-table tbody tr:hover {
+  background-color: #eaeaea;
+}
+.link-style {
+  color: inherit; /* Inherit the text color from parent */
+  text-decoration: none; /* Remove underline */
+  cursor: pointer; /* Change cursor to pointer on hover */
+}

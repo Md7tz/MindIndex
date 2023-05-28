@@ -7,8 +7,7 @@ const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [collections, setCollections] = useState([]);
   const [notes, setNotes] = useState([]);
-  const [filteredCollections, setFilteredCollections] = useState([]);
-  const [filteredNotes, setFilteredNotes] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   useEffect(() => {
     const fetchCollections = async () => {
@@ -35,26 +34,32 @@ const SearchBar = () => {
 
   useEffect(() => {
     const filterData = () => {
-      const collectionsOptions = {
-        keys: ["name"], // Specify the keys to search within the collection objects
+      const options = {
+        keys: ["title", "body", "description", "name"], // Specify the keys to search within the collection and note objects
         includeScore: true, // Include search score for ranking
         threshold: 0.4, // Set the matching threshold
       };
-      const notesOptions = {
-        keys: ["title"], // Specify the keys to search within the collection objects
-        includeScore: true, // Include search score for ranking
-        threshold: 0.4, // Set the matching threshold
-      }
-      const fuseCollections = new Fuse(collections, collectionsOptions);
-      const fuseNotes = new Fuse(notes, notesOptions);
-      console.log(`notes: ${notes}`);
-      const filteredCollections = fuseCollections.search(searchQuery);
-      const filteredNotes = fuseNotes.search(searchQuery);
 
-      setFilteredCollections(filteredCollections.map((result) => result.item));
-      setFilteredNotes(filteredNotes.map((result) => result.item));
+      // Add a unique identifier to each collection and note
+      const collectionsWithId = collections.map((collection) => ({
+        ...collection,
+        merged_id: `collection_${collection.id}`, // Add prefix to distinguish collections
+        type: "collection", // Add type property
+      }));
+      const notesWithId = notes.map((note) => ({
+        ...note,
+        merged_id: `note_${note.id}`, // Add prefix to distinguish notes
+        type: "note", // Add type property
+      }));
+
+      const fuseData = new Fuse(
+        [...collectionsWithId, ...notesWithId],
+        options
+      );
+      const filteredData = fuseData.search(searchQuery);
+
+      setFilteredData(filteredData.map((result) => result.item));
     };
-
     filterData();
   }, [searchQuery, collections, notes]);
   // onChange function
@@ -63,8 +68,7 @@ const SearchBar = () => {
     setSearchQuery(query);
 
     try {
-      console.log(filteredCollections);
-      console.log(filteredNotes);
+      console.log(filteredData);
     } catch (error) {
       console.error(error);
     }
@@ -108,9 +112,7 @@ const SearchBar = () => {
           <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
         </svg>
       </button>
-      {isSearchFocused && (
-        <ListView collections={filteredCollections} notes={filteredNotes} />
-      )}
+      {isSearchFocused && <ListView data={filteredData} />}
     </form>
   );
 };
