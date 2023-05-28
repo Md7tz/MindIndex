@@ -1,75 +1,12 @@
-import React, { useEffect, useState } from "react";
 import styles from "../styles/Navbar.module.css";
 import Image from "next/image";
 import Logo from "./imgs/Logo.jpg";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
-import axios from "axios";
 import SearchBar from "./SearchBar";
 
 export default function NavBar() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [collections, setCollections] = useState([]);
-  const [notes, setNotes] = useState([]);
-  const [filteredCollections, setFilteredCollections] = useState([]);
-  const [filteredNotes, setFilteredNotes] = useState([]);
-  useEffect(() => {
-    const fetchCollections = async () => {
-      try {
-        const response = await axios.get("/api/collections");
-        setCollections(response.data["collections"]);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    const fetchNotes = async () => {
-      try {
-        const response = await axios.get("/api/notes");
-        setNotes(response.data["notes"]);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchCollections();
-    fetchNotes();
-  }, []);
-
-  useEffect(() => {
-    const filterData = () => {
-      const filteredCollections = collections.filter((collection) =>
-        collection.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      const filteredNotes = notes.filter((note) =>
-        note.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredCollections(filteredCollections);
-      setFilteredNotes(filteredNotes);
-    };
-
-    filterData();
-  }, [searchQuery, collections, notes]);
-
-  // onChange function
-  const onChange = async (event) => {
-    const query = event.target.value;
-    setSearchQuery(query);
-
-    try {
-      console.log(filteredCollections);
-      console.log(filteredNotes);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // handleSubmit function
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Prevents page reload on form submission
-    console.log(event);
-    console.log("HI");
-  };
+  
   return (
     <nav
       className={`${styles["custom-navbar"]} navbar navbar-expand-lg custom-navbar`}
@@ -180,13 +117,7 @@ export default function NavBar() {
             </li>
           </ul>
 
-          <SearchBar
-            handleSubmit={handleSubmit}
-            searchQuery={searchQuery}
-            onChange={onChange}
-            filteredCollections={filteredCollections}
-            filteredNotes={filteredNotes}
-          />
+          <SearchBar/>
         </div>
       </div>
       <LoginForm />
