@@ -2,6 +2,7 @@ import styles from "../styles/Navbar.module.css";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ListView from "./ListView";
+import Fuse from "fuse.js";
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [collections, setCollections] = useState([]);
@@ -34,19 +35,28 @@ const SearchBar = () => {
 
   useEffect(() => {
     const filterData = () => {
-      const filteredCollections = collections.filter((collection) =>
-        collection.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      const filteredNotes = notes.filter((note) =>
-        note.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredCollections(filteredCollections);
-      setFilteredNotes(filteredNotes);
+      const collectionsOptions = {
+        keys: ["name"], // Specify the keys to search within the collection objects
+        includeScore: true, // Include search score for ranking
+        threshold: 0.4, // Set the matching threshold
+      };
+      const notesOptions = {
+        keys: ["title"], // Specify the keys to search within the collection objects
+        includeScore: true, // Include search score for ranking
+        threshold: 0.4, // Set the matching threshold
+      }
+      const fuseCollections = new Fuse(collections, collectionsOptions);
+      const fuseNotes = new Fuse(notes, notesOptions);
+      console.log(`notes: ${notes}`);
+      const filteredCollections = fuseCollections.search(searchQuery);
+      const filteredNotes = fuseNotes.search(searchQuery);
+
+      setFilteredCollections(filteredCollections.map((result) => result.item));
+      setFilteredNotes(filteredNotes.map((result) => result.item));
     };
 
     filterData();
   }, [searchQuery, collections, notes]);
-
   // onChange function
   const onChange = async (event) => {
     const query = event.target.value;
@@ -97,14 +107,10 @@ const SearchBar = () => {
         >
           <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
         </svg>
-        
       </button>
       {isSearchFocused && (
-              <ListView
-                collections={filteredCollections}
-                notes={filteredNotes}
-              />
-            )}
+        <ListView collections={filteredCollections} notes={filteredNotes} />
+      )}
     </form>
   );
 };

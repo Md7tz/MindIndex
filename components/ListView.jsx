@@ -9,7 +9,7 @@ const ListView = ({ collections, notes }) => {
           <thead>
             <tr>
               <th>Item</th>
-              <th>Content</th> {/* New column for collection description */}
+              <th>Content</th>
             </tr>
           </thead>
           <tbody>
