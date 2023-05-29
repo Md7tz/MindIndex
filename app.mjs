@@ -13,6 +13,7 @@ import _dbConfig from './knexfile.js';
 import swaggerDocs from './config/swagger.mjs';
 
 import api from './routes/api.mjs';
+import Passport from './middlewares/Passport.mjs';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -69,5 +70,6 @@ server.listen(PORT, () => {
 
 // Bind the database instance to the Objection.js Model
 Model.knex(db);
+Passport.initialize();
 
 export default server;
