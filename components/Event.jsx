@@ -53,8 +53,19 @@ class Event extends EventEmitter {
         this.emitter.off(event, listener);
     }
 
+    /**
+     * @param {String} event
+     * @param  {...any} args
+     * @returns {void}
+     * @memberof Event
+     * @description Emits an event to the event emitter.
+     * @example
+     * event.on("test", (arg1, arg2) => console.log(arg1, arg2));
+     * event.emit("test", "test1", "test2"); // "test1" "test2"
+     * The listener will not be called again.
+     */
     emit(event, ...args) {
-        if(typeof window === "undefined") return;
+        if (typeof window === "undefined") return;
 
         if (this.emitter.listenerCount(event) > 0
             || this.emitter.rawListeners(event).length > 0) {
