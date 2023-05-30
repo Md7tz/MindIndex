@@ -13,6 +13,9 @@ import ErrorHandler from "../middlewares/ErrorHandler.mjs";
 
 const router = express.Router();
 
+// Auth routes
+router.post("/auth/login", Auth.login);
+router.post("/auth/register", Auth.register);
 
 // User Routes
 router.get("/users", User.getAllUsers);
