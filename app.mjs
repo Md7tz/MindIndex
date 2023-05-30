@@ -70,6 +70,7 @@ server.listen(PORT, () => {
 
 // Bind the database instance to the Objection.js Model
 Model.knex(db);
+// Initialize bearer authentication
 Passport.initialize();
 
 export default server;
