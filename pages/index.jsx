@@ -1,14 +1,13 @@
 import React from "react";
 import styles from "../styles/Landing.module.css";
 import Image from "next/image";
-import MindIndexPremium from "../components/imgs/Premium.png";
 import { faStar, faRocket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Landing() {
   return (
     <>
-      <div className="container px-4 px-lg-5">
+      <div className="container">
         <div className="row gx-4 gx-lg-5 align-items-center my-5">
           <div className="col-lg-7">
             <img
@@ -17,7 +16,7 @@ export default function Landing() {
               alt="Friends' group studying"
             />
           </div>
-          <div className="col-lg-5 text-white">
+          <div className="col-lg-5 text-dark">
             <h1 className="font-weight-light">
               The best digital flashcards and study tools
             </h1>
@@ -122,7 +121,7 @@ export default function Landing() {
                 </p>
                 <div className="d-flex justify-content-center">
                   <Image
-                    src={MindIndexPremium}
+                    src={"/img/Premium.png"}
                     alt="MindIndex Premium"
                     className={`${styles.logo}`}
                     width={300}
