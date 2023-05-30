@@ -6,12 +6,12 @@ dotenv.config();
 
 export default class Token {
     static generate(user_id, ttl = 86400, nonce = null) {
-
+        const iat = moment().unix();
         const payload = {
             sub: user_id,
             iss: process.env.NEXT_PUBLIC_BASEPATH,
             ttl: ttl,
-            iat: moment().unix(),
+            iat: iat,
             exp: iat + ttl,
             nonce: nonce
         };

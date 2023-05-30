@@ -2,7 +2,11 @@ console.log(process.env.NEXT_PUBLIC_BASEPATH);
 
 export default class Basepath {
   static get(url) {
-    return `${process.env.NEXT_PUBLIC_BASEPATH || ''}${url}`;
+    // replace /# with # to avoid page reload
+    url = `${process.env.NEXT_PUBLIC_BASEPATH || ''}${url}`;
+    url = url.replace(/\/#/g, "#");
+    console.log(url);
+    return url;
   }
 }
 
@@ -12,6 +16,7 @@ export class Navigate {
   }
 
   static replace(url) {
+
     window.location.replace(Basepath.get(url));
   }
 

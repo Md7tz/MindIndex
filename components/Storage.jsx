@@ -1,6 +1,6 @@
 class Storage {
     static get(key) {
-        return localStorage.getItem(key);
+        return window.localStorage.getItem(key);
     }
 
     static multiGet(keys) {
@@ -8,7 +8,7 @@ class Storage {
     }
 
     static set(key, value) {
-        localStorage.setItem(key, value);
+        window.localStorage.setItem(key, value);
     }
 
     static multiSet(keyValuePairs) {
@@ -16,10 +16,36 @@ class Storage {
     }
 
     static remove(key) {
-        localStorage.removeItem(key);
+        window.localStorage.removeItem(key);
     }
 
     static clear() {
-        localStorage.clear();
+        window.localStorage.clear();
     }
 }
+
+
+class MockStorage {
+    static set(key, value) { }
+
+    static get(key) {
+        return null
+    }
+
+    static remove(key) { }
+
+    static multiGet(keys) {
+        return []
+    }
+
+    static multiSet(keyValuePairs) { }
+
+    static clear() { }
+}
+
+let storage = (function () {
+    return typeof window !== `undefined` ? Storage : MockStorage
+})()
+
+export default storage;
+

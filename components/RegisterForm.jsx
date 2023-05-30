@@ -36,6 +36,7 @@ export default function RegisterForm() {
 
       if (response.ok) {
         const data = await response.json();
+        toast.success(data.message);
         Navigate.push("/#loginForm");
       } else {
         const error = await response.json();

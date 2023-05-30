@@ -1,6 +1,6 @@
 import EventEmitter from "eventemitter3";
 
-class Event extends EventEmitter {
+class Event {
     constructor() {
         this.emitter = new EventEmitter();
     }
@@ -65,13 +65,9 @@ class Event extends EventEmitter {
      * The listener will not be called again.
      */
     emit(event, ...args) {
-        if (typeof window === "undefined") return;
+        // if (typeof window === "undefined") return;
 
-        if (this.emitter.listenerCount(event) > 0
-            || this.emitter.rawListeners(event).length > 0) {
-            console.log(`Event: ${event} ${args}`);
-            this.emitter.emit(event, ...args);
-        }
+        this.emitter.emit(event, ...args);
     }
 }
 
