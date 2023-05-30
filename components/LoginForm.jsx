@@ -14,7 +14,7 @@ export default function LoginForm() {
         aria-hidden="true"
       >
         <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content bg-dark">
+          <div className="modal-content bg-light">
             <div className="modal-header">
               <h5
                 className="modal-title w-100 text-center"
