@@ -1,14 +1,16 @@
-import styles from "../styles/Navbar.module.css";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ListView from "./ListView";
 import Fuse from "fuse.js";
+import styles from "../styles/Navbar.module.css";
+
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [collections, setCollections] = useState([]);
   const [notes, setNotes] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+
   useEffect(() => {
     const fetchCollections = async () => {
       try {
@@ -35,51 +37,41 @@ const SearchBar = () => {
   useEffect(() => {
     const filterData = () => {
       const options = {
-        keys: ["title", "body", "description", "name"], // Specify the keys to search within the collection and note objects
-        includeScore: true, // Include search score for ranking
-        threshold: 0.4, // Set the matching threshold
+        keys: ["title", "body", "description", "name"],
+        includeScore: true,
+        threshold: 0.4,
       };
 
-      // Add a unique identifier to each collection and note
       const collectionsWithId = collections.map((collection) => ({
         ...collection,
-        merged_id: `collection_${collection.id}`, // Add prefix to distinguish collections
-        type: "collection", // Add type property
+        merged_id: `collection_${collection.id}`,
+        type: "collection",
       }));
       const notesWithId = notes.map((note) => ({
         ...note,
-        merged_id: `note_${note.id}`, // Add prefix to distinguish notes
-        type: "note", // Add type property
+        merged_id: `note_${note.id}`,
+        type: "note",
       }));
 
-      const fuseData = new Fuse(
-        [...collectionsWithId, ...notesWithId],
-        options
-      );
+      const fuseData = new Fuse([...collectionsWithId, ...notesWithId], options);
       const filteredData = fuseData.search(searchQuery);
 
       setFilteredData(filteredData.map((result) => result.item));
     };
+
     filterData();
   }, [searchQuery, collections, notes]);
-  // onChange function
+
   const onChange = async (event) => {
     const query = event.target.value;
     setSearchQuery(query);
-
-    try {
-      console.log(filteredData);
-    } catch (error) {
-      console.error(error);
-    }
   };
 
-  // handleSubmit function
   const handleSubmit = (event) => {
-    event.preventDefault(); // Prevents page reload on form submission
-    console.log(event);
+    event.preventDefault();
     console.log("HI");
   };
+
   return (
     <form
       className="d-flex input-group w-auto ms-lg-3 my-3 my-lg-0"
@@ -112,7 +104,9 @@ const SearchBar = () => {
           <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
         </svg>
       </button>
-      {isSearchFocused && <ListView data={filteredData} />}
+      {isSearchFocused && searchQuery.length > 0 && (
+        <ListView data={filteredData} />
+      )}
     </form>
   );
 };
