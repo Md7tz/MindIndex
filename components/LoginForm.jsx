@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import styles from "../styles/Auth.module.css";
 import { Navigate } from "./Basepath";
+import ClientApi from "./ClientApi";
+import { toast } from "react-toastify";
+import Event from "./Event";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
@@ -11,7 +14,7 @@ export default function LoginForm() {
 
     // Make the API request to login
     try {
-      const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH+"api/auth/login", {
+      const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH + "/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -24,6 +27,11 @@ export default function LoginForm() {
 
       if (response.ok) {
         const data = await response.json();
+        await ClientApi.storeToken(data.token);
+        await ClientApi.storeUser(data.user);
+
+        // toast.success(data.message);
+        Event.emit("welcome", data.user);
         Navigate.push("/");
       } else {
         const error = await response.json();
@@ -66,7 +74,6 @@ export default function LoginForm() {
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="mb-2">Email address</label>
-                  // Email address input
                   <input
                     type="email"
                     className="form-control"
@@ -77,7 +84,6 @@ export default function LoginForm() {
                 </div>
                 <div className="mb-3">
                   <label className="mb-2">Password</label>
-                  // Password input
                   <input
                     type="password"
                     className="form-control"
@@ -110,12 +116,12 @@ export default function LoginForm() {
                     here
                   </a>
                 </p>
+                <div className="modal-footer">
+                  <button type="submit" className="btn btn-success">
+                    Sign In
+                  </button>
+                </div>
               </form>
-            </div>
-            <div className="modal-footer">
-              <button type="submit" className="btn btn-success">
-                Sign In
-              </button>
             </div>
           </div>
         </div>
