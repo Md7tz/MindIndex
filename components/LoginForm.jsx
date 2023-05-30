@@ -1,7 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "../styles/Auth.module.css";
+import { Navigate } from "./Basepath";
 
 export default function LoginForm() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Make the API request to login
+    try {
+      const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH+"api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        Navigate.push("/");
+      } else {
+        const error = await response.json();
+        toast.error("Error: " + error.message);
+      }
+    } catch (error) {
+      // console.error("Error:", error);
+      toast.error("Error: " + error);
+    }
+  };
+
   return (
     <>
       <div
@@ -30,21 +63,27 @@ export default function LoginForm() {
               ></button>
             </div>
             <div className="modal-body">
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="mb-2">Email address</label>
+                  // Email address input
                   <input
                     type="email"
                     className="form-control"
                     placeholder="Enter email"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
                 <div className="mb-3">
                   <label className="mb-2">Password</label>
+                  // Password input
                   <input
                     type="password"
                     className="form-control"
                     placeholder="Enter password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
                 <div className="d-flex justify-content-evenly">
@@ -74,7 +113,7 @@ export default function LoginForm() {
               </form>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-success">
+              <button type="submit" className="btn btn-success">
                 Sign In
               </button>
             </div>
