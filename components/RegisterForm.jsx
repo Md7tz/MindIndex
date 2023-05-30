@@ -60,7 +60,7 @@ export default function RegisterForm() {
         aria-hidden="true"
       >
         <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content bg-dark">
+          <div className="modal-content bg-light">
             <div className="modal-header">
               <h5
                 className="modal-title w-100 text-center"
@@ -88,33 +88,21 @@ export default function RegisterForm() {
                       type="button"
                       className="btn btn-link btn-floating mx-1"
                     >
-                      <FontAwesomeIcon
-                        icon={faFacebook}
-                        color="white"
-                        size="2x"
-                      />
+                      <FontAwesomeIcon icon={faGoogle} size="2x" />
                     </button>
 
                     <button
                       type="button"
                       className="btn btn-link btn-floating mx-1"
                     >
-                      <FontAwesomeIcon
-                        icon={faGoogle}
-                        color="white"
-                        size="2x"
-                      />
+                      <FontAwesomeIcon icon={faFacebook} size="2x" />
                     </button>
 
                     <button
                       type="button"
                       className="btn btn-link btn-floating mx-1"
                     >
-                      <FontAwesomeIcon
-                        icon={faTwitter}
-                        color="white"
-                        size="2x"
-                      />
+                      <FontAwesomeIcon icon={faTwitter} size="2x" />
                     </button>
                   </div>
 
