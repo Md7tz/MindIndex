@@ -9,7 +9,7 @@ export default class Token {
 
         const payload = {
             sub: user_id,
-            iss: process.env.APP_URL,
+            iss: process.env.NEXT_PUBLIC_BASEPATH,
             ttl: ttl,
             iat: moment().unix(),
             exp: iat + ttl,

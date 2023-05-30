@@ -4,6 +4,7 @@ import Image from "next/image";
 import Logo from "./imgs/Logo.jpg";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
+import Basepath from "./Basepath";
 
 export default function NavBar() {
   return (
@@ -12,7 +13,7 @@ export default function NavBar() {
     >
       <div className="container-fluid text-white">
         <div className={`d-flex ${styles.brand}`}>
-          <a className={`navbar-brand me-1 ${styles.logolink}`} href="/">
+          <a className={`navbar-brand me-1 ${styles.logolink}`} href={Basepath.get('/')}>
             <Image
               src={Logo}
               alt="MindIndex"
@@ -23,7 +24,7 @@ export default function NavBar() {
           </a>
           <a
             className={`navbar-brand text-white ${styles.milink} fs-7 pe-3 m-1`}
-            href="/"
+            href={Basepath.get('/')}
           >
             MindIndex
           </a>
@@ -35,7 +36,7 @@ export default function NavBar() {
               <a
                 className="nav-link active text-white"
                 aria-current="page"
-                href="/home"
+                href={Basepath.get("/")}
               >
                 <div className="d-flex align-items-center ps-2">
                   <svg
