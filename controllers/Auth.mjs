@@ -46,7 +46,6 @@ export default class Auth {
    *         description: Username or email already in use
    */
   static async register(req, res, next) {
-    console.log(req.body);
     const validation = new Validator(
       req.body,
       {

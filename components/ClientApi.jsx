@@ -61,11 +61,9 @@ class ClientApi {
     async checkToken() {
         this.getToken().then(async () => {
             if (!this.token) {
-                console.log("this.token not found");
                 throw new Error("Token not found");
             }
 
-            console.log("after");
             const decoded = jwt_decode(this.token);
 
             // token expiration check
