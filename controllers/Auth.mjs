@@ -9,7 +9,7 @@ export default class Auth {
 
   /**
    * @openapi
-   * /register:
+   * /api/auth/register:
    *   post:
    *     summary: Register a new user
    *     description: Create a new user account
@@ -101,7 +101,7 @@ export default class Auth {
 
   /**
    * @openapi
-   * /login:
+   * /api/auth/login:
    *   post:
    *     summary: User login
    *     description: Log in with username and password
@@ -184,5 +184,37 @@ export default class Auth {
     } catch (error) {
       return next(error);
     }
+  }
+  /**
+   * @openapi
+   * /api/auth/refresh:
+   *   post:
+   *     summary: Refresh user token
+   *     description: Refresh user token
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               token:
+   *                 type: string
+   *                 maxLength: 255
+   *             required:
+   *               - token
+   *     responses:
+   *       '200':
+   *         description: Token refreshed successfully
+   */
+  static async refreshToken(req, res, next) {
+    const { user } = req;
+    const token = Token.generate(user.id);
+
+    return res.status(HTTP.OK).json({
+      message: "Token refreshed successfuly.",
+      user,
+      token
+    });
   }
 }

@@ -59,7 +59,7 @@ class ClientApi {
 
     // Modify the checkToken function to incorporate the suggested approach
     async checkToken() {
-        this.getToken().then(() => {
+        this.getToken().then(async () => {
             if (!this.token) {
                 console.log("this.token not found");
                 throw new Error("Token not found");
@@ -73,26 +73,24 @@ class ClientApi {
                 throw new Error("Token expired");
             }
 
-            // // token refresh check
-            // if (moment().isAfter(moment(decoded.exp * 1000 - 43200))) {
-            //     const response = await fetch(this.baseUrl + "/api/auth/refresh", {
-            //         method: "POST",
-            //         headers: {
-            //             "Content-Type": "application/json",
-            //         },
-            //         body: JSON.stringify({
-            //             token: this.token,
-            //         }),
-            //     });
+            // token refresh check
+            if (moment().isAfter(moment(decoded.exp * 1000 - 43200))) {
+                const response = await fetch(this.baseUrl + "/auth/refresh", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${this.token}`, // Include the token in the Authorization header
+                    },
+                });
 
-            //     if (response.ok) {
-            //         const data = await response.json();
-            //         this.token = data.token;
-            //         await this.storeToken();
-            //     } else {
-            //         throw new Error("Token refresh failed");
-            //     }
-            // }
+                if (response.ok) {
+                    const data = await response.json();
+                    this.token = data.token;
+                    await this.storeToken();
+                } else {
+                    throw new Error("Token refresh failed");
+                }
+            }
 
             Event.emit("token:valid");
 
