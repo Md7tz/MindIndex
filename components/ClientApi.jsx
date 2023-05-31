@@ -73,7 +73,7 @@ class ClientApi {
 
             // token refresh check
             if (moment().isAfter(moment(decoded.exp * 1000 - 43200))) {
-                const response = await fetch(this.baseUrl + "/auth/refresh", {
+                const response = await fetch(this.baseUrl + "/api/auth/refresh", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
