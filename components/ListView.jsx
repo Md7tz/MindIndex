@@ -3,7 +3,7 @@ import styles from "../styles/ListView.module.css";
 
 const ListView = ({ data }) => {
   const serializedData = encodeURIComponent(JSON.stringify(data));
-  const destinationURL = "search"; 
+  const destinationURL = "search";
   const urlWithPath = `${destinationURL}/${serializedData}`;
 
   return (
@@ -26,10 +26,7 @@ const ListView = ({ data }) => {
                   </svg>
                 </td>
                 <td>
-                  <a
-                    href={`${urlWithPath}`}
-                    className={styles["link-style"]}
-                  >
+                  <a href={`${urlWithPath}`} className={styles["link-style"]}>
                     <div className={styles["header"]}>
                       {entry.name ? entry.name : entry.title}
                     </div>

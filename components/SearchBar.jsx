@@ -66,7 +66,7 @@ const SearchBar = () => {
         <input
           className={`${styles.searchInput}`}
           placeholder="Search"
-          type="search"
+          type="text"
           name="searchQuery"
           value={searchQuery}
           onChange={onChange}
@@ -78,7 +78,7 @@ const SearchBar = () => {
           fixedWidth
         />
       </div>
-      {searchQuery.length > 0 && filteredData.length !== 0 && (
+      {filteredData.length !== 0 && (
         <ListView data={filteredData} />
       )}
     </form>
