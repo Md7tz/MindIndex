@@ -2,19 +2,6 @@
   background-color: rgb(15, 18, 22);
 }
 
-.search-box {
-  background-color: inherit;
-  border: 1px solid rgb(42, 47, 35);
-  border-radius: 3px;
-  color: white;
-}
-
-.search-box:focus {
-  background-color: inherit;
-  border-color: rgb(29, 110, 234);
-  color: inherit;
-}
-
 .logo {
   border-radius: 50%;
 }

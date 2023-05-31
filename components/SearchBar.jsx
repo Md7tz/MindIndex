@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Fuse from "fuse.js";
 import ListView from "./ListView";
-import styles from "../styles/Navbar.module.css";
+import styles from "../styles/SearchBar.module.css";
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
