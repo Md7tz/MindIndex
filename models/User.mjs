@@ -23,6 +23,10 @@ export default class User extends Model {
   // Table name for User objects
   static tableName = "users";
 
+  static get hidden() {
+    return ["password"];
+  }
+
   // Relations
   static get relationMappings() {
     return {
