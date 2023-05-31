@@ -2,6 +2,10 @@ import React from "react";
 import styles from "../styles/ListView.module.css";
 
 const ListView = ({ data }) => {
+  const serializedData = encodeURIComponent(JSON.stringify(data));
+  const destinationURL = "search"; 
+  const urlWithPath = `${destinationURL}/${serializedData}`;
+
   return (
     <div className={`m-2 ${styles["list-view-container"]}`}>
       <div className={styles["list-view"]}>
@@ -23,7 +27,7 @@ const ListView = ({ data }) => {
                 </td>
                 <td>
                   <a
-                    href={`${entry.type}/${entry.id}`}
+                    href={`${urlWithPath}`}
                     className={styles["link-style"]}
                   >
                     <div className={styles["header"]}>
