@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightToBracket,
   faCircleUser,
-  faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -38,21 +37,7 @@ export default function NavBar() {
           </a>
           <div className="border-end"></div>
         </div>
-        <form className="col d-flex justify-content-center input-group ms-lg-3 my-3 my-lg-0">
-          <div className={`${styles.searchWrapper}`}>
-            <input
-              className={`${styles.searchInput}`}
-              type="text"
-              placeholder="Search"
-            />
-            <FontAwesomeIcon
-              icon={faMagnifyingGlass}
-              style={{ color: "dark" }}
-              size="1x"
-              fixedWidth
-            />
-          </div>
-        </form>
+        <SearchBar/>
         <div className="col" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-end">
             <li className="nav-item">
@@ -94,7 +79,6 @@ export default function NavBar() {
           </ul>
 
 
-          <SearchBar/>
 
         </div>
       </div>
