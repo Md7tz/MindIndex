@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Fuse from "fuse.js";
 import ListView from "./ListView";
 import styles from "../styles/SearchBar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
