@@ -1,11 +1,7 @@
 import React from "react";
 import styles from "../styles/ListView.module.css";
 
-const ListView = ({ data }) => {
-  const serializedData = encodeURIComponent(JSON.stringify(data));
-  const destinationURL = "search";
-  const urlWithPath = `${destinationURL}/${serializedData}`;
-
+const ListView = ({ data, urlWithPath }) => {
   return (
     <div className={`m-2 ${styles["list-view-container"]}`}>
       <div className={styles["list-view"]}>

@@ -4,54 +4,26 @@ import Fuse from "fuse.js";
 import ListView from "./ListView";
 import styles from "../styles/SearchBar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faMagnifyingGlass,
-} from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { fetchData, filteredData } from "/utils/search";
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [collectionsResponse, notesResponse] = await Promise.all([
-          axios.get("/api/collections"),
-          axios.get("/api/notes"),
-        ]);
-
-        const collections = collectionsResponse.data.collections.map(
-          (collection) => ({
-            ...collection,
-            merged_id: `collection_${collection.id}`,
-            type: "collection",
-          })
-        );
-
-        const notes = notesResponse.data.notes.map((note) => ({
-          ...note,
-          merged_id: `note_${note.id}`,
-          type: "note",
-        }));
-
-        setData([...collections, ...notes]);
-      } catch (error) {
-        console.log(error);
-      }
+    const fetchDataAsync = async () => {
+      setData(await fetchData());
     };
 
-    fetchData();
+    fetchDataAsync();
   }, []);
 
-  const filteredData = searchQuery
-    ? new Fuse(data, {
-        keys: ["title", "body", "description", "name"],
-        includeScore: true,
-        threshold: 0.4,
-      })
-        .search(searchQuery)
-        .map((result) => result.item)
-    : [];
+  const filteredResults = filteredData(searchQuery, data);
+
+
+  const destinationURL = "/search";
+  const urlWithPath = `${destinationURL}?searchQuery=${searchQuery}`;
 
   const onChange = (event) => {
     const query = event.target.value;
@@ -59,9 +31,7 @@ const SearchBar = () => {
   };
 
   return (
-    <form
-      className="col d-flex justify-content-center input-group ms-lg-3 my-3 my-lg-0"
-    >
+    <form className="col d-flex justify-content-center input-group ms-lg-3 my-3 my-lg-0">
       <div className={`${styles.searchWrapper}`}>
         <input
           className={`${styles.searchInput}`}
@@ -78,8 +48,8 @@ const SearchBar = () => {
           fixedWidth
         />
       </div>
-      {filteredData.length !== 0 && (
-        <ListView data={filteredData} />
+      {filteredResults.length !== 0 && (
+        <ListView data={filteredResults} urlWithPath={urlWithPath} />
       )}
     </form>
   );
