@@ -18,8 +18,18 @@ const SearchPage = () => {
   const filteredResults = filteredData(searchQuery, data);
   return (
     <div>
-      <h1>Search Page</h1>
-      <p>Search Query: {}</p>
+      <div className="row">
+        {filteredResults.map((result) => (
+          <div className="col-md-4 mb-4" key={result.merged_id}>
+            <div className="card">
+              <div className="card-body">
+                <h5 className="card-title">{result.title || result.name}</h5>
+                <p className="card-text">{result.description || result.body}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
