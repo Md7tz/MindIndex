@@ -14,7 +14,7 @@ const swaggerDefinition = {
     },
     servers: [
         {
-            url: process.env.APP_URL,
+            url: process.env.NEXT_PUBLIC_BASEPATH,
             description: 'Development server',
         }
     ],

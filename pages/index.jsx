@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "../styles/Landing.module.css";
 import Image from "next/image";
 import { faStar, faRocket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Event from "../components/Event";
 
 export default function Landing() {
+  useEffect(() => {
+    Event.off("welcome", ()=>{});
+  }, []);
+
   return (
     <>
       <div className="container">

@@ -6,41 +6,46 @@ import Profile from "../controllers/Profile.mjs";
 import Collection from "../controllers/Collection.mjs";
 import Flashcard from "../controllers/Flashcard.mjs";
 import Note from "../controllers/Note.mjs";
+import Auth from "../controllers/Auth.mjs";
 
 // Middleware
 import ErrorHandler from "../middlewares/ErrorHandler.mjs";
+import Passport from "../middlewares/Passport.mjs";
 
 const router = express.Router();
 
+// Auth routes
+router.post("/auth/login", Auth.login);
+router.post("/auth/register", Auth.register);
+router.post("/auth/refresh", Passport.bearerAuthenticate(), Auth.refreshToken);
 // User Routes
-router.get("/users", User.getAllUsers);
-router.get("/users/:id", User.getUserById);
-router.post("/users", User.createUser);
-router.put("/users/:id", User.updateUser);
-router.delete("/users/:id", User.deleteUser);
+// router.get("/users", User.getAllUsers);
+// router.get("/users/:id", User.getUserById);
+// router.post("/users", User.createUser);
+// router.put("/users/:id", User.updateUser);
+// router.delete("/users/:id", User.deleteUser);
 
 // Profile Routes
-router.get("users/:id/profiles", Profile.getProfileByUserId);
-router.post("users/:id/profiles", Profile.createProfile);
-router.put("users/:id/profiles", Profile.updateProfile);
+router.get("users/:id/profiles", Passport.bearerAuthenticate(), Profile.getProfileByUserId);
+router.put("users/:id/profiles", Passport.bearerAuthenticate(), Profile.updateProfile);
 
 // Notes Routes
-router.get("/notes", Note.getAllNotes);
-router.get("/notes/:id", Note.getNoteById);
-router.post("/notes", Note.createNote);
-router.put("/notes/:id", Note.updateNote);
-router.delete("/notes/:id", Note.deleteNote);
+router.get("/notes", Passport.bearerAuthenticate(), Note.getAllNotes);
+router.get("/notes/:id", Passport.bearerAuthenticate(), Note.getNoteById);
+router.post("/notes", Passport.bearerAuthenticate(), Note.createNote);
+router.put("/notes/:id", Passport.bearerAuthenticate(), Note.updateNote);
+router.delete("/notes/:id", Passport.bearerAuthenticate(), Note.deleteNote);
 
 // Collection Routes
-router.get("/collections", Collection.getAllCollections);
-router.get("/collections/:id", Collection.getCollectionById);
-router.post("/collections", Collection.createCollection);
-router.put("/collections/:id", Collection.updateCollection);
-router.delete("/collections/:id", Collection.deleteCollection);
+router.get("/collections", Passport.bearerAuthenticate(), Collection.getAllCollections);
+router.get("/collections/:id", Passport.bearerAuthenticate(), Collection.getCollectionById);
+router.post("/collections", Passport.bearerAuthenticate(), Collection.createCollection);
+router.put("/collections/:id", Passport.bearerAuthenticate(), Collection.updateCollection);
+router.delete("/collections/:id", Passport.bearerAuthenticate(), Collection.deleteCollection);
 
 // Flashcards routes
-router.put("/flashcards/:id", Flashcard.updateFlashcard);
-router.delete("/flashcards/:id", Flashcard.deleteFlashcard);
+router.put("/flashcards/:id", Passport.bearerAuthenticate(), Flashcard.updateFlashcard);
+router.delete("/flashcards/:id", Passport.bearerAuthenticate(), Flashcard.deleteFlashcard);
 
 router.use(ErrorHandler);
 

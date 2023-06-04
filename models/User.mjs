@@ -1,5 +1,6 @@
 import Model from "./index.mjs";
 import Profile from "./Profile.mjs";
+import bcrypt from "bcrypt";
 import { MAX_STRING_LENGTH } from "../config/constants.mjs";
 
 /**
@@ -21,6 +22,10 @@ import { MAX_STRING_LENGTH } from "../config/constants.mjs";
 export default class User extends Model {
   // Table name for User objects
   static tableName = "users";
+
+  static get hidden() {
+    return ["password"];
+  }
 
   // Relations
   static get relationMappings() {
@@ -51,4 +56,14 @@ export default class User extends Model {
       deleted_at: { type: ["string", "null"] },
     },
   };
+
+  // verifyPassword
+  async verifyPassword(password) {
+    return await bcrypt.compare(password, this.password);
+  }
+
+  // hashPassword
+  static async hashPassword(password) {
+    return await bcrypt.hash(password, 10);
+  }
 }
