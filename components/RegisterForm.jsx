@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFacebook,
@@ -6,8 +6,49 @@ import {
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import styles from "../styles/Auth.module.css";
+import { toast } from "react-toastify";
+import { Navigate } from "./Basepath";
 
 export default function RegisterForm() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [fullname, setFullname] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH + "/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+          password_confirmation: confirmPassword,
+          email,
+          fullname,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast.success(data.message);
+        Navigate.push("/#loginForm");
+      } else {
+        const error = await response.json();
+        toast.error("Error: " + error.message);
+      }
+    } catch (error) {
+      // console.error("Error:", error);
+      toast.error("Error: " + error);
+    }
+  };
+
+
   return (
     <>
       <div
@@ -41,8 +82,8 @@ export default function RegisterForm() {
                 id="pills-register"
                 aria-labelledby="tab-register"
               >
-                <form>
-                  <div className="text-center mb-2">
+                <form onSubmit={handleSubmit}>
+                  {/* <div className="text-center mb-2">
                     <p>Continue with:</p>
                     <button
                       type="button"
@@ -66,7 +107,7 @@ export default function RegisterForm() {
                     </button>
                   </div>
 
-                  <p className="text-center">or:</p>
+                  <p className="text-center">or:</p> */}
 
                   <div className="form-outline mb-4">
                     <input
@@ -74,6 +115,8 @@ export default function RegisterForm() {
                       id="registerName"
                       className="form-control"
                       placeholder="Name"
+                      value={fullname}
+                      onChange={(e) => setFullname(e.target.value)}
                     />
                   </div>
 
@@ -83,6 +126,8 @@ export default function RegisterForm() {
                       id="registerUsername"
                       className="form-control"
                       placeholder="Username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
                     />
                   </div>
 
@@ -92,6 +137,8 @@ export default function RegisterForm() {
                       id="registerEmail"
                       className="form-control"
                       placeholder="Email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
 
@@ -101,6 +148,8 @@ export default function RegisterForm() {
                       id="registerPassword"
                       className="form-control"
                       placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
 
@@ -110,6 +159,8 @@ export default function RegisterForm() {
                       id="registerRepeatPassword"
                       className="form-control"
                       placeholder="Repeat password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                   </div>
 
@@ -125,13 +176,14 @@ export default function RegisterForm() {
                       I have read and agree to the terms
                     </label>
                   </div>
+
+                  <div className="text-center">
+                    <button type="submit" className="btn btn-success">
+                      Sign Up
+                    </button>
+                  </div>
                 </form>
               </div>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-success">
-                Sign Up
-              </button>
             </div>
           </div>
         </div>
