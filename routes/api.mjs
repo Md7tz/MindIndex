@@ -7,6 +7,7 @@ import Collection from "../controllers/Collection.mjs";
 import Flashcard from "../controllers/Flashcard.mjs";
 import Note from "../controllers/Note.mjs";
 import Auth from "../controllers/Auth.mjs";
+import Search from "../controllers/Search.mjs";
 
 // Middleware
 import ErrorHandler from "../middlewares/ErrorHandler.mjs";
@@ -46,6 +47,9 @@ router.delete("/collections/:id", Passport.bearerAuthenticate(), Collection.dele
 // Flashcards routes
 router.put("/flashcards/:id", Passport.bearerAuthenticate(), Flashcard.updateFlashcard);
 router.delete("/flashcards/:id", Passport.bearerAuthenticate(), Flashcard.deleteFlashcard);
+
+// Search routes
+router.get("/search/:query", Passport.bearerAuthenticate(), Search.searchCollections);
 
 router.use(ErrorHandler);
 
