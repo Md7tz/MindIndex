@@ -22,9 +22,14 @@ export default function NavBar() {
   
 
   const [user, setUser] = useState(null);
+  const [authenticationToken, setAuthenticationToken] = useState(null);
+
 
   useEffect(async () => {
     setUser(await ClientApi.getUser());
+    ClientApi.getToken().then((token) =>{
+      setAuthenticationToken(token);
+    })
   }, []);
 
   const onClickLogout = async () => {
@@ -56,7 +61,11 @@ export default function NavBar() {
           </a>
           <div className="border-end"></div>
         </div>
-        <SearchBar/>
+          {
+            user?.id ?
+            <SearchBar authenticationToken={authenticationToken}/>:
+            <div></div>
+          }
         <div className="col" id="navbarSupportedContent">
 
           {

@@ -5,13 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { fetchData, filteredData } from "/utils/search";
 
-const SearchBar = () => {
+const SearchBar = ({ authenticationToken }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchDataAsync = async () => {
-      setData(await fetchData());
+      setData(await fetchData(authenticationToken));
     };
 
     fetchDataAsync();
