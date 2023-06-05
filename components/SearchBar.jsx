@@ -1,24 +1,19 @@
 import React, { useEffect, useState } from "react";
 import ListView from "./ListView";
+import ClientApi from "./ClientApi";
 import styles from "../styles/SearchBar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { fetchData, filteredData } from "/utils/search";
-
-const SearchBar = ({ authenticationToken }) => {
+const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState([]);
 
-  useEffect(() => {
-    const fetchDataAsync = async () => {
-      setData(await fetchData(authenticationToken));
-    };
-
-    fetchDataAsync();
+  useEffect(async () => {
+    setData(await fetchData(await ClientApi.getToken()));
   }, []);
 
   const filteredResults = filteredData(searchQuery, data);
-
 
   const destinationURL = "/search";
   const urlWithPath = `${destinationURL}?searchQuery=${searchQuery}`;

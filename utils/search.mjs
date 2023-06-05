@@ -2,6 +2,7 @@ import axios from "axios";
 import Fuse from "fuse.js";
 
 export const fetchData = async (authenticationToken) => {
+  console.log(authenticationToken)
   try {
     const [collectionsResponse, notesResponse] = await Promise.all([
       axios.get("/api/collections", {
