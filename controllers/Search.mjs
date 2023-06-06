@@ -1,16 +1,18 @@
 import { HTTP } from "../config/constants.mjs";
 import Validator from "validatorjs";
 import Collection from "../models/Collection.mjs";
+import Note from "../models/Note.mjs";
+import Fuse from "fuse.js";
 
 export default class SearchController {
   /**
    * @openapi
-   * /api/search/{query}:
+   * /api/search:
    *   get:
-   *     summary: Search collections
-   *     description: Search collections by name and description
+   *     summary: Search collections and notes
+   *     description: Search collections and notes by name, description, title, and body
    *     parameters:
-   *       - in: path
+   *       - in: query
    *         name: query
    *         schema:
    *           type: string
@@ -24,14 +26,17 @@ export default class SearchController {
    *       500:
    *         description: An error occurred while searching
    */
-  static async searchCollections(req, res, next) {
-      const { query } = req.params;
-      console.log(`query: ${query}`);
+  static async search(req, res, next) {
+    const { query } = req.query;
+    console.log(`query: ${query}`);
 
     // Validate the search query
-    const validation = new Validator({ query }, {
-      query: "required|string|max:255",
-    });
+    const validation = new Validator(
+      { query },
+      {
+        query: "required|string|max:255",
+      }
+    );
 
     if (validation.fails()) {
       return res.status(HTTP.BAD_REQUEST).json({
@@ -41,11 +46,28 @@ export default class SearchController {
     }
 
     try {
-      const searchResults = await Collection.search(query);
-      res.status(HTTP.OK).json(searchResults);
+      const collections = await Collection.search(query);
+      const notes = await Note.search(query);
+
+      const options = {
+        keys: ["name", "description", "title", "body"],
+        includeScore: true,
+        threshold: 0.4,
+      };
+
+      const fusedData = [...collections, ...notes];
+      const dataFuse = new Fuse(fusedData, options);
+
+      const fusedResults = dataFuse.search(query);
+
+      res.status(HTTP.OK).json(fusedResults);
     } catch (error) {
-      console.error('Error searching collections:', error);
-      res.status(HTTP.INTERNAL_SERVER_ERROR).json({ error: 'An error occurred while searching collections' });
+      console.error("Error searching collections and notes:", error);
+      res
+        .status(HTTP.INTERNAL_SERVER_ERROR)
+        .json({
+          error: "An error occurred while searching collections and notes",
+        });
     }
   }
 }
