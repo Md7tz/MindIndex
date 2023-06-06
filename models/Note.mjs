@@ -1,5 +1,5 @@
-import Model from './index.mjs';
-import { MAX_STRING_LENGTH, MAX_TEXT_LENGTH } from '../config/constants.mjs';
+import Model from "./index.mjs";
+import { MAX_STRING_LENGTH, MAX_TEXT_LENGTH } from "../config/constants.mjs";
 
 /**
  * @class Note
@@ -13,22 +13,28 @@ import { MAX_STRING_LENGTH, MAX_TEXT_LENGTH } from '../config/constants.mjs';
  * @property {Date} created_at         - The timestamp of when the note was created.
  * @property {Date|null} updated_at    - The timestamp of when the note was last updated, or null if it has not been updated.
  * @property {Date|null} deleted_at    - The timestamp of when the note was deleted, or null if it has not been deleted.
+ * @property {String|null} full_text    - The ts_vector column for full-text search.
  */
 export default class Note extends Model {
   // Set the database table name for Note objects
-  static tableName = 'notes';
+  static tableName = "notes";
 
   // Define the JSON schema for Note objects
   static jsonSchema = {
-    type: 'object',
-    required: ['title', 'body'],
+    type: "object",
+    required: ["title", "body"],
     properties: {
-      id: { type: 'integer' },
-      title: { type: 'string', maxLength: MAX_STRING_LENGTH },
-      body: { type: 'string', maxLength: MAX_TEXT_LENGTH },
-      created_at: { type: 'string' },
-      updated_at: { type: ['string', 'null'] },
-      deleted_at: { type: ['string', 'null'] },
+      id: { type: "integer" },
+      title: { type: "string", maxLength: MAX_STRING_LENGTH },
+      body: { type: "string", maxLength: MAX_TEXT_LENGTH },
+      created_at: { type: "string" },
+      updated_at: { type: ["string", "null"] },
+      deleted_at: { type: ["string", "null"] },
     },
   };
+  // Custom query method for full-text search
+  static async search(query) {
+    const fuzzyQuery = query ? `${query}:*` : "";
+    return this.query().whereRaw(`full_text @@ to_tsquery(?)`, [fuzzyQuery]);
+  }
 }
