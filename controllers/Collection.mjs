@@ -125,12 +125,14 @@ export default class CollectionController {
             }
 
             const { name, description, cards } = req.body;
-
+            const user_id = req.user.id;
             await transaction(Collection.knex(), async (trx) => {
                 const collection = await Collection.query(trx).insertGraph({
                     name,
                     description,
                     flashcards: cards,
+                    user_id
+                    
                 });
 
                 return res.status(HTTP.CREATED).json({

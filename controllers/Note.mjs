@@ -46,9 +46,9 @@ export default class NoteController {
       }
       // Extract the note data from the request body
       const { title, body } = req.body;
-
+      const user_id = req.user.id;
       await Note.transaction(async (trx) => {
-        const newNote = await Note.query(trx).insert({ title, body });
+        const newNote = await Note.query(trx).insert({ title, body, user_id });
 
         res.status(HTTP.CREATED).json({
           message: "Note created successfully",

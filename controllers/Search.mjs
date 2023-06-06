@@ -25,7 +25,8 @@ export default class SearchController {
    *         description: An error occurred while searching
    */
   static async searchCollections(req, res, next) {
-    const { query } = req.params;
+      const { query } = req.params;
+      console.log(`query: ${query}`);
 
     // Validate the search query
     const validation = new Validator({ query }, {
