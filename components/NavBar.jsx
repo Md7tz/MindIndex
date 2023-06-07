@@ -19,10 +19,15 @@ import ClientApi from "./ClientApi";
 export default function NavBar() {
   const [user, setUser] = useState(null);
 
-  useEffect(async () => {
-    setUser(await ClientApi.getUser());
-    if (await ClientApi.getToken()) {
-    }
+  useEffect(() => {
+    const fetchData = async () => {
+      setUser(await ClientApi.getUser());
+      if (await ClientApi.getToken()) {
+        // Your code here
+      }
+    };
+
+    fetchData();
   }, []);
 
   const onClickLogout = async () => {
