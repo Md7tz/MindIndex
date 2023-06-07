@@ -49,10 +49,14 @@ export default class Collection extends Model {
       full_text: { type: ["string", "null"] },
     },
   };
-  
+
   // Custom query method for full-text search
-  static async search(query) {
+  static async search(query, page = 1, pageSize = 10) {
     const fuzzyQuery = query ? `${query}:*` : "";
-    return this.query().whereRaw(`full_text @@ to_tsquery(?)`, [fuzzyQuery]);
+    const resultsQuery = await this.query()
+      .whereRaw(`full_text @@ to_tsquery(?)`, [fuzzyQuery])
+      .page(page - 1, pageSize);
+
+    return resultsQuery.results;
   }
 }
