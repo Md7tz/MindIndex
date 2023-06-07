@@ -4,19 +4,31 @@ import ClientApi from "./ClientApi";
 import styles from "../styles/SearchBar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { fetchData, filteredData } from "/utils/search";
+import axios from "axios";
+
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState([]);
 
-  useEffect(async () => {
-    setData(await fetchData(await ClientApi.getToken()));
-  }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!searchQuery.trim()) return;
 
-  const filteredResults = filteredData(searchQuery, data);
-
-  const destinationURL = "/search";
-  const urlWithPath = `${destinationURL}?searchQuery=${searchQuery}`;
+      try {
+        const authenticationToken = await ClientApi.getToken();
+        const response = await axios.get(`/api/search?query=${searchQuery}`, {
+          headers: {
+            Authorization: `Bearer ${authenticationToken}`,
+          },
+        });
+        console.log(data);
+        setData(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, [searchQuery]);
 
   const onChange = (event) => {
     const query = event.target.value;
@@ -41,9 +53,7 @@ const SearchBar = () => {
           fixedWidth
         />
       </div>
-      {filteredResults.length !== 0 && (
-        <ListView data={filteredResults} urlWithPath={urlWithPath} />
-      )}
+      {searchQuery.trim() !== "" && <ListView data={data} query={searchQuery} />}
     </form>
   );
 };

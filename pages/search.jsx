@@ -1,53 +1,88 @@
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { fetchData, filteredData } from "/utils/search";
+import { useEffect, useState } from "react";
 import ClientApi from "/components/ClientApi";
-const SearchPage = () => {
+import axios from "axios";
+
+const SearchPage = ({ query, type }) => {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const router = useRouter();
-  const { searchQuery } = router.query;
-  useEffect(async () => {
-    setData(await fetchData(await ClientApi.getToken()));
-  }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const authenticationToken = await ClientApi.getToken();
+        const url = `/api/${type}?query=${query}`;
+        console.log(url);
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${authenticationToken}`,
+          },
+        });
 
-  const filteredResults = filteredData(searchQuery, data);
+        setData(
+          type === "collections"
+            ? response.data.collections
+            : response.data.notes
+        );
+        setLoading(false);
+      } catch (error) {
+        // Handle the error here
+        console.error(error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [query, type]);
+
   return (
     <div>
       <header className="py-3 text-black ">
         <div className="container-fluid">
-          <h1 className="">Results for "{searchQuery}"</h1>
+          <h1 className="">Results for "{query}"</h1>
         </div>
       </header>
 
       <div className="container-fluid">
-        <div className="row row-cols-1 row-cols-md-3 g-4 ">
-          {filteredResults.map((result) => (
-            <div className="col" key={result.merged_id}>
-              <div
-                className={`card ${
-                  result.type === "collection" ? "bg-info" : "bg-dark"
-                } text-white h-100`}
-              >
-                <div className="card-body d-flex flex-column">
-                  <h5 className="card-title">{result.title || result.name}</h5>
-                  <p className="card-text">
-                    {result.description || result.body}
-                  </p>
-                  <div className="mt-auto d-flex justify-content-end">
-                    <a href="#" className="btn btn-primary ">
-                      Preview
-                    </a>
-                    {/* link-to-either-collection-or-note use, result.type/result.id */}
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <div className="row row-cols-1 row-cols-md-3 g-4 ">
+            {data.map((result, index) => (
+              <div className="col" key={index}>
+                <div className={`card bg-dark text-white h-100`}>
+                  <div className="card-body d-flex flex-column">
+                    <h5 className="card-title">
+                      {result.title || result.name}
+                    </h5>
+                    <p className="card-text">
+                      {result.description || result.body}
+                    </p>
+                    <div className="mt-auto d-flex justify-content-end">
+                      <a href="#" className="btn btn-primary ">
+                        Preview
+                      </a>
+                      {/* link-to-either-collection-or-note use, result.type/result.id */}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 };
+
+export async function getServerSideProps(context) {
+  const { query, type } = context.query;
+
+  return {
+    props: {
+      query,
+      type,
+    },
+  };
+}
 
 export default SearchPage;

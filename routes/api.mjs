@@ -31,14 +31,14 @@ router.get("users/:id/profiles", Passport.bearerAuthenticate(), Profile.getProfi
 router.put("users/:id/profiles", Passport.bearerAuthenticate(), Profile.updateProfile);
 
 // Notes Routes
-router.get("/notes", Passport.bearerAuthenticate(), Note.getAllNotes);
+router.get("/notes", Passport.bearerAuthenticate(), Note.getNotes);
 router.get("/notes/:id", Passport.bearerAuthenticate(), Note.getNoteById);
 router.post("/notes", Passport.bearerAuthenticate(), Note.createNote);
 router.put("/notes/:id", Passport.bearerAuthenticate(), Note.updateNote);
 router.delete("/notes/:id", Passport.bearerAuthenticate(), Note.deleteNote);
 
 // Collection Routes
-router.get("/collections", Passport.bearerAuthenticate(), Collection.getAllCollections);
+router.get("/collections", Passport.bearerAuthenticate(), Collection.getCollections);
 router.get("/collections/:id", Passport.bearerAuthenticate(), Collection.getCollectionById);
 router.post("/collections", Passport.bearerAuthenticate(), Collection.createCollection);
 router.put("/collections/:id", Passport.bearerAuthenticate(), Collection.updateCollection);
@@ -49,7 +49,7 @@ router.put("/flashcards/:id", Passport.bearerAuthenticate(), Flashcard.updateFla
 router.delete("/flashcards/:id", Passport.bearerAuthenticate(), Flashcard.deleteFlashcard);
 
 // Search routes
-router.get("/search/:query", Passport.bearerAuthenticate(), Search.searchCollections);
+router.get("/search", Passport.bearerAuthenticate(), Search.search);
 
 router.use(ErrorHandler);
 

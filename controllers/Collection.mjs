@@ -11,14 +11,15 @@ export default class CollectionController {
      * @openapi
      * /api/collections:
      *   get:
-     *     summary: Get all collections.
+     *     summary: Get search collections by query.
      *     responses:
      *       '200':
      *         description: Collections retrieved successfully.
      */
-    static async getAllCollections(req, res, next) {
+    static async getCollections(req, res, next) {
         try {
-            const collections = await Collection.query().withGraphFetched('flashcards');
+            const { query } = req.query ? req.query : "";
+            const collections = await Collection.search(query);
 
             return res.status(HTTP.OK).json({
                 message: "Collections retrieved successfully.",
