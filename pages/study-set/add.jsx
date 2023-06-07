@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faGripLines, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import FlashcardForm from "../../components/FlashcardForm";
 import styles from "../../styles/AddSet.module.css";
 
 export default function AddSet() {
@@ -114,6 +116,30 @@ export default function AddSet() {
           >
             DESCRIPTION
           </label>
+        </div>
+        <div className="mb-3">
+          <h4>Flashcards</h4>
+          <DndProvider backend={HTML5Backend}>
+            <div className="card-container">
+              {collection.flashcards.map((flashcard, index) => (
+                <FlashcardForm
+                  key={flashcard.id}
+                  flashcard={flashcard}
+                  index={index}
+                  moveFlashcard={moveFlashcard}
+                  removeFlashcard={removeFlashcard}
+                  handleQuestionChange={handleQuestionChange}
+                  handleAnswerChange={handleAnswerChange}
+                />
+              ))}
+            </div>
+          </DndProvider>
+          <div className="card my-4" onClick={addFlashcard}>
+            <div className="card-body d-flex justify-content-center align-items-center fw-bolder">
+              <FontAwesomeIcon icon={faPlus} />
+              <span className={styles.highlight}></span>
+            </div>
+          </div>
         </div>
 
         <button type="submit" className="btn btn-success">
