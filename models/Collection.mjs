@@ -53,6 +53,11 @@ export default class Collection extends Model {
   // Custom query method for full-text search
   static async search(query, page = 1, pageSize = 10) {
     const fuzzyQuery = query ? `${query}:*` : "";
+    if (fuzzyQuery.trim() === "") {
+      // Query is empty, retrieve data without filtering
+      const allResultsQuery = await this.query().page(page - 1, pageSize);
+      return allResultsQuery.results;
+    }
     const resultsQuery = await this.query()
       .whereRaw(`full_text @@ to_tsquery(?)`, [fuzzyQuery])
       .page(page - 1, pageSize);
