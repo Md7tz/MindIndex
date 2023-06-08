@@ -1,4 +1,4 @@
-import styles from "../styles/Flashcard.module.css";
+import styles from "../components/styles/Flashcard.module.css";
 
 export default function Flashcard() {
   return (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "../styles/Profile.module.css";
+import styles from "../components/styles/Profile.module.css";
 import Image from "next/image";
 
 export default function Profile() {

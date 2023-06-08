@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import styles from "../styles/Landing.module.css";
+import styles from "../components/styles/Landing.module.css";
 import Image from "next/image";
 import { faStar, faRocket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -59,7 +59,7 @@ export default function Landing() {
               </div>
               <div className="card-footer">
                 <img
-                  class="card-img-bottom"
+                  className="card-img-bottom"
                   // src="https://images.prismic.io/quizlet-prod/31c85d7d-9e36-40a4-9fae-5027c355ddee_Flashcards-1.gif?auto=compress,format"
                   src="https://global-uploads.webflow.com/611b774c624f22e8063bb429/6357f11b6cc0d06f175d4bb1_Flip%2520flashcards.gif"
                   alt="Card image cap"
@@ -86,7 +86,7 @@ export default function Landing() {
               </div>
               <div className="card-footer">
                 <img
-                  class="card-img-bottom"
+                  className="card-img-bottom"
                   src="https://gifdb.com/images/high/writing-notes-and-copying-npndvx442t7q6kt9.gif"
                   alt="Card image cap"
                 ></img>

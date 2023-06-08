@@ -5,7 +5,7 @@ import {
   faGoogle,
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import styles from "../styles/Auth.module.css";
+import styles from "./styles/Auth.module.css";
 import { toast } from "react-toastify";
 import { Navigate } from "./Basepath";
 

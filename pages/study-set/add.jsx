@@ -4,7 +4,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import FlashcardForm from "../../components/FlashcardForm";
-import styles from "../../styles/AddSet.module.css";
+import styles from "../../components/styles/AddSet.module.css";
 
 export default function AddSet() {
   const [collection, setCollection] = useState({
@@ -13,9 +13,6 @@ export default function AddSet() {
     flashcards: [
       { id: 1, question: "", answer: "" },
       { id: 2, question: "", answer: "" },
-      { id: 3, question: "", answer: "" },
-      { id: 4, question: "", answer: "" },
-      { id: 5, question: "", answer: "" },
     ],
   });
 
@@ -57,6 +54,9 @@ export default function AddSet() {
   };
 
   const removeFlashcard = (id) => {
+    if (collection.flashcards.length === 2)
+      return;
+
     const updatedFlashcards = collection.flashcards.filter(
       (flashcard) => flashcard.id !== id
     );
@@ -79,8 +79,13 @@ export default function AddSet() {
 
   return (
     <div className="container my-3 py-3">
-      <h2>Create a new study set</h2>
       <form onSubmit={handleSubmit}>
+        <div className="d-flex justify-content-between align-items-center">
+          <h2>Create a new study set</h2>
+          <button type="submit" className="btn btn-dark">
+            Create
+          </button>
+        </div>
         <div className={`row ${styles.group} px-3`}>
           <input
             type="text"
@@ -94,7 +99,7 @@ export default function AddSet() {
           <span className={styles.bar}></span>
           <label
             htmlFor="collectionName"
-            className="form-label font-monospace px-0 text-muted"
+            className="form-label px-0 text-muted"
           >
             TITLE
           </label>
@@ -112,7 +117,7 @@ export default function AddSet() {
           <span className={styles.bar}></span>
           <label
             htmlFor="collectionDescription"
-            className="form-label font-monospace px-0 text-muted"
+            className="form-label px-0 text-muted"
           >
             DESCRIPTION
           </label>
@@ -130,6 +135,7 @@ export default function AddSet() {
                   removeFlashcard={removeFlashcard}
                   handleQuestionChange={handleQuestionChange}
                   handleAnswerChange={handleAnswerChange}
+                  count={collection.flashcards.length}
                 />
               ))}
             </div>
@@ -141,10 +147,6 @@ export default function AddSet() {
             </div>
           </div>
         </div>
-
-        <button type="submit" className="btn btn-success">
-          Save Study Set
-        </button>
       </form>
     </div>
   );
