@@ -6,38 +6,73 @@ const SearchPage = ({ query, type }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchData = async () => {
+    try {
+      const authenticationToken = await ClientApi.getToken();
+      const url = `/api/${type}?query=${query}`;
+      console.log(url);
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${authenticationToken}`,
+        },
+      });
+
+      setData(
+        type === "collections" ? response.data.collections : response.data.notes
+      );
+      setLoading(false);
+    } catch (error) {
+      // Handle the error here
+      console.error(error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const authenticationToken = await ClientApi.getToken();
-        const url = `/api/${type}?query=${query}`;
-        console.log(url);
-        const response = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${authenticationToken}`,
-          },
-        });
-
-        setData(
-          type === "collections"
-            ? response.data.collections
-            : response.data.notes
-        );
-        setLoading(false);
-      } catch (error) {
-        // Handle the error here
-        console.error(error);
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, [query, type]);
+
+  const handleCollectionClick = (event) => {
+    event.preventDefault();
+    type = "collections";
+    fetchData();
+  };
+  
+  const handleNotesClick = (event) => {
+    event.preventDefault();
+    type = "notes";
+    fetchData();
+  };
 
   return (
     <div>
       <header className="py-3 text-black ">
         <div className="container-fluid">
+          <div className="container-fluid tab-bar mb-3">
+            <ul className="nav nav-pills">
+              <li className="nav-item">
+                <a
+                  className={`nav-link ${
+                    type === "collections" ? "active" : ""
+                  }`}
+                  aria-current="page"
+                  href={`/api/collections?query=${query}`}
+                  onClick={handleCollectionClick}
+                >
+                  collections
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className={`nav-link ${type === "notes" ? "active" : ""}`}
+                  href={`/api/notes?query=${query}`}
+                  onClick={handleNotesClick}
+                >
+                  notes
+                </a>
+              </li>
+            </ul>
+          </div>
           <h1 className="">Results for "{query}"</h1>
         </div>
       </header>
