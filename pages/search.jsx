@@ -32,17 +32,6 @@ const SearchPage = ({ query, type }) => {
     fetchData();
   }, [query, type]);
 
-  const handleCollectionClick = (event) => {
-    event.preventDefault();
-    type = "collections";
-    fetchData();
-  };
-  
-  const handleNotesClick = (event) => {
-    event.preventDefault();
-    type = "notes";
-    fetchData();
-  };
 
   return (
     <div>
@@ -56,8 +45,8 @@ const SearchPage = ({ query, type }) => {
                     type === "collections" ? "active" : ""
                   }`}
                   aria-current="page"
-                  href={`/api/collections?query=${query}`}
-                  onClick={handleCollectionClick}
+                  href={`/search?query=${query}&type=collections`}
+                  onClick={() => fetchData()}
                 >
                   collections
                 </a>
@@ -65,8 +54,8 @@ const SearchPage = ({ query, type }) => {
               <li className="nav-item">
                 <a
                   className={`nav-link ${type === "notes" ? "active" : ""}`}
-                  href={`/api/notes?query=${query}`}
-                  onClick={handleNotesClick}
+                  href={`/search?query=${query}&type=notes`}
+                  onClick={() => fetchData()}
                 >
                   notes
                 </a>
