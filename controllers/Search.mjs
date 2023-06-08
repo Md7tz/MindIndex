@@ -10,7 +10,7 @@ export default class SearchController {
    * /api/search:
    *   get:
    *     summary: Search collections and notes
-   *     description: Search collections and notes by name, description, title, and body
+   *     description: Search collections and notes by name, description, title, and body to be used as suggestions
    *     parameters:
    *       - in: query
    *         name: query
@@ -46,8 +46,14 @@ export default class SearchController {
     }
 
     try {
-      const collections = await Collection.search(query, 1, 5);
-      const notes = await Note.search(query, 1, 5);
+      const collectionResults = await Collection.search(query, 1, 5);
+      const noteResults = await Note.search(query, 1, 5);
+
+      console.log("Collection Results:", collectionResults);
+      console.log("Note Results:", noteResults);
+
+      const collections = collectionResults.results;
+      const notes = noteResults.results;
 
       const options = {
         keys: ["name", "description", "title", "body"],
@@ -63,11 +69,9 @@ export default class SearchController {
       res.status(HTTP.OK).json(fusedResults);
     } catch (error) {
       console.error("Error searching collections and notes:", error);
-      res
-        .status(HTTP.INTERNAL_SERVER_ERROR)
-        .json({
-          error: "An error occurred while searching collections and notes",
-        });
+      res.status(HTTP.INTERNAL_SERVER_ERROR).json({
+        error: "An error occurred while searching collections and notes",
+      });
     }
   }
 }

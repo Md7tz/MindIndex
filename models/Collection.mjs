@@ -35,34 +35,46 @@ export default class Collection extends Model {
     };
   }
 
-  // JSON schema for Collection objects
-  static jsonSchema = {
-    type: "object",
-    required: ["name", "description"],
-    properties: {
-      id: { type: "integer" },
-      name: { type: "string", maxLength: MAX_STRING_LENGTH },
-      description: { type: "string", maxLength: MAX_TEXT_LENGTH },
-      user_id: { type: "integer" },
-      created_at: { type: "string" },
-      updated_at: { type: ["string", "null"] },
-      deleted_at: { type: ["string", "null"] },
-      full_text: { type: ["string", "null"] },
-    },
-  };
+
 
   // Custom query method for full-text search
-  static async search(query, page = 1, pageSize = 10) {
-    const fuzzyQuery = query ? `${query}:*` : "";
-    if (fuzzyQuery.trim() === "") {
-      // Query is empty, retrieve data without filtering
-      const allResultsQuery = await this.query().page(page - 1, pageSize);
-      return allResultsQuery.results;
-    }
-    const resultsQuery = await this.query()
-      .whereRaw(`full_text @@ to_tsquery(?)`, [fuzzyQuery])
+static async search(query, page = 1, pageSize = 10) {
+  const fuzzyQuery = query ? `${query}:*` : "";
+  if (fuzzyQuery.trim() === "") {
+    // Query is empty, retrieve data without filtering
+    const allResultsQuery = await this.query()
+      .whereNull("deleted_at")
       .page(page - 1, pageSize);
 
-    return resultsQuery.results;
+    const countQuery = await this.query()
+      .whereNull("deleted_at")
+      .count();
+
+    const totalNonDeletedItems = countQuery[0].count;
+
+    return {
+      results: allResultsQuery.results,
+      totalNonDeletedItems: totalNonDeletedItems,
+    };
   }
+
+  const resultsQuery = await this.query()
+    .whereNull("deleted_at")
+    .whereRaw(`full_text @@ to_tsquery(?)`, [fuzzyQuery])
+    .page(page - 1, pageSize);
+
+  const countQuery = await this.query()
+    .whereNull("deleted_at")
+    .whereRaw(`full_text @@ to_tsquery(?)`, [fuzzyQuery])
+    .count();
+
+  const totalNonDeletedItems = countQuery[0].count;
+
+  return {
+    results: resultsQuery.results,
+    totalNonDeletedItems: totalNonDeletedItems,
+  };
+}
+
+
 }

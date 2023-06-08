@@ -30,11 +30,12 @@ const SearchPage = ({ query, type, page }) => {
           ? response.data.collections
           : response.data.notes;
 
-      setData(newData);
+      setData(newData.results);
+
       setLoading(false);
 
       // Check if there is more data available
-      if (newData.length < 9) {
+      if (page == Math.ceil(newData.totalNonDeletedItems / 9) || newData.totalNonDeletedItems == 0) {
         setHasMoreData(false);
       } else {
         setHasMoreData(true);
@@ -100,17 +101,27 @@ const SearchPage = ({ query, type, page }) => {
       <div className="container-fluid">
         {loading ? (
           <p>Loading...</p>
-        ) : (
-          <div className="row row-cols-1 row-cols-md-3 g-4 ">
+        ) : data.length > 0 ? (
+          <div className="row row-cols-1 row-cols-md-3 g-4">
             {data.map((result, index) => (
               <div className="col" key={index}>
-                <div className={`card bg-dark text-white h-100`}>
+                <div className="card bg-dark text-white h-100">
+                  {/* Add thumbnail image if available */}
+                  {result.image && (
+                    <img src={result.image} alt={result.title || result.name} className="card-img-top" />
+                  )}
                   <div className="card-body d-flex flex-column">
                     <h5 className="card-title">
-                      {result.title || result.name}
+                      {/* Limit title length and add ellipsis */}
+                      {result.title && result.title.length > 30
+                        ? result.title.substring(0, 30) + "..."
+                        : result.title || result.name}
                     </h5>
                     <p className="card-text">
-                      {result.description || result.body}
+                      {/* Limit description length and add ellipsis */}
+                      {result.description && result.description.length > 100
+                        ? result.description.substring(0, 100) + "..."
+                        : result.description || result.body}
                     </p>
                     <div className="mt-auto d-flex justify-content-end">
                       <a href="#" className="btn btn-primary">
@@ -123,6 +134,9 @@ const SearchPage = ({ query, type, page }) => {
               </div>
             ))}
           </div>
+        ) : (
+          <p className="text-center mt-5 text-xl">No content found. Please try a different search query.</p>
+
         )}
 
         <nav className="m-4">

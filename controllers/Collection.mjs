@@ -23,7 +23,7 @@ export default class CollectionController {
 
       const collections = await Collection.search(query, page, limit);
 
-      console.log(`collections: ${collections}`);
+
 
       return res.status(HTTP.OK).json({
         message: "Collections retrieved successfully.",

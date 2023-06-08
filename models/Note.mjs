@@ -33,19 +33,40 @@ export default class Note extends Model {
       deleted_at: { type: ["string", "null"] },
     },
   };
+  // Custom query method for full-text search
   static async search(query, page = 1, pageSize = 10) {
     const fuzzyQuery = query ? `${query}:*` : "";
     if (fuzzyQuery.trim() === "") {
       // Query is empty, retrieve data without filtering
-      const allResultsQuery = await this.query().page(page - 1, pageSize);
-      return allResultsQuery.results;
+      const allResultsQuery = await this.query()
+        .whereNull("deleted_at")
+        .page(page - 1, pageSize);
+
+      const countQuery = await this.query().whereNull("deleted_at").count();
+
+      const totalNonDeletedItems = countQuery[0].count;
+
+      return {
+        results: allResultsQuery.results,
+        totalNonDeletedItems: totalNonDeletedItems,
+      };
     }
-  
+
     const resultsQuery = await this.query()
-      .whereRaw('full_text @@ to_tsquery(?)', [fuzzyQuery])
+      .whereNull("deleted_at")
+      .whereRaw(`full_text @@ to_tsquery(?)`, [fuzzyQuery])
       .page(page - 1, pageSize);
-  
-    return resultsQuery.results;
+
+    const countQuery = await this.query()
+      .whereNull("deleted_at")
+      .whereRaw(`full_text @@ to_tsquery(?)`, [fuzzyQuery])
+      .count();
+
+    const totalNonDeletedItems = countQuery[0].count;
+
+    return {
+      results: resultsQuery.results,
+      totalNonDeletedItems: totalNonDeletedItems,
+    };
   }
-  
 }
