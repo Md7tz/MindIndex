@@ -22,9 +22,6 @@ export default function NavBar() {
   useEffect(() => {
     const fetchData = async () => {
       setUser(await ClientApi.getUser());
-      if (await ClientApi.getToken()) {
-        // Your code here
-      }
     };
 
     fetchData();
@@ -63,7 +60,10 @@ export default function NavBar() {
           <div className="border-end"></div>
         </div>
 
-        <SearchBar />
+        {user?.id && <SearchBar />}
+
+
+
 
         <div className="col" id="navbarSupportedContent">
           {user?.id ? (
