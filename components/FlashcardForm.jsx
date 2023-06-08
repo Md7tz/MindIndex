@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGripLines, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useDrag, useDrop } from 'react-dnd';
-import styles from "../styles/AddSet.module.css";
+import styles from "./styles/AddSet.module.css";
+import { useEffect, useState } from "react";
 
 export default function FlashcardForm({
     flashcard,
@@ -9,7 +10,8 @@ export default function FlashcardForm({
     moveFlashcard,
     removeFlashcard,
     handleQuestionChange,
-    handleAnswerChange
+    handleAnswerChange,
+    count
 }) {
     const [{ isDragging }, drag] = useDrag({
         item: { type: 'flashcard', id: flashcard.id, index },
@@ -33,6 +35,16 @@ export default function FlashcardForm({
         },
     });
 
+    const [removable, setRemovable] = useState(true);
+
+    useEffect(() => {
+        if (count === 2) {
+            setRemovable(false);
+        } else {
+            setRemovable(true);
+        }
+    }, [count]);
+
     const handleRemoveFlashcard = (id) => {
         removeFlashcard(id);
     };
@@ -55,6 +67,7 @@ export default function FlashcardForm({
                         type="button"
                         className="mx-1 delete-button bg-transparent border-0"
                         onClick={() => handleRemoveFlashcard(flashcard.id)}
+                        disabled={!removable}
                     >
                         <FontAwesomeIcon icon={faTrashAlt} />
                     </button>
