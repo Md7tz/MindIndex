@@ -2,16 +2,23 @@ import { useEffect, useState } from "react";
 import ClientApi from "/components/ClientApi";
 import axios from "axios";
 
-const SearchPage = ({ query, type }) => {
+const SearchPage = ({ query, type, page }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(Number(page) || 1);
 
   const fetchData = async () => {
     try {
       const authenticationToken = await ClientApi.getToken();
-      const url = `/api/${type}?query=${query}`;
-      console.log(url);
+
+      const params = {
+        query: query,
+        page: currentPage,
+      };
+      const url = `/api/${type}`;
+
       const response = await axios.get(url, {
+        params,
         headers: {
           Authorization: `Bearer ${authenticationToken}`,
         },
@@ -30,12 +37,16 @@ const SearchPage = ({ query, type }) => {
 
   useEffect(() => {
     fetchData();
-  }, [query, type]);
+  }, [query, type, currentPage]);
 
+  const handleTabClick = () => {
+    setCurrentPage(1);
+    fetchData();
+  };
 
   return (
     <div>
-      <header className="py-3 text-black ">
+      <header className="py-3 text-black">
         <div className="container-fluid">
           <div className="container-fluid tab-bar mb-3">
             <ul className="nav nav-pills">
@@ -46,7 +57,7 @@ const SearchPage = ({ query, type }) => {
                   }`}
                   aria-current="page"
                   href={`/search?query=${query}&type=collections`}
-                  onClick={() => fetchData()}
+                  onClick={handleTabClick}
                 >
                   collections
                 </a>
@@ -55,7 +66,7 @@ const SearchPage = ({ query, type }) => {
                 <a
                   className={`nav-link ${type === "notes" ? "active" : ""}`}
                   href={`/search?query=${query}&type=notes`}
-                  onClick={() => fetchData()}
+                  onClick={handleTabClick}
                 >
                   notes
                 </a>
@@ -93,18 +104,47 @@ const SearchPage = ({ query, type }) => {
             ))}
           </div>
         )}
+
+        <nav className="m-4">
+          <ul className="pagination justify-content-center">
+            <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+              <a
+                className="page-link"
+                href={`/search?query=${query}&type=${type}&page=${currentPage}`}
+                onClick={() => setCurrentPage(currentPage - 1)}
+              >
+                Previous
+              </a>
+            </li>
+            <li className="page-item">
+              <a className="page-link" href="#">
+                {currentPage}
+              </a>
+            </li>
+            <li className="page-item">
+              <a
+                className="page-link"
+                href={`/search?query=${query}&type=${type}&page=${currentPage}`}
+                onClick={() => setCurrentPage(currentPage + 1)}
+              >
+                Next
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   );
 };
 
 export async function getServerSideProps(context) {
-  const { query, type } = context.query;
+  const { query, type, page } = context.query;
 
   return {
     props: {
       query,
       type,
+      page,
     },
   };
 }

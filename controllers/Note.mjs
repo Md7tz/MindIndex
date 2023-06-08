@@ -79,10 +79,12 @@ export default class NoteController {
    */
   static async getNotes(req, res, next) {
     try {
-      const { query } = req.query ? req.query : "";
+      const query = req.query.query || "";
+      const page = req.query.page || 1;
+      const limit = req.query.limit || 9;
 
       // Search notes by query
-      const notes = await Note.search(query);
+      const notes = await Note.search(query, page, limit);
       res
         .status(HTTP.OK)
         .json({ message: "Notes retrieved successfully.", notes });
