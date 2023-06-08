@@ -10,7 +10,7 @@ const ListView = ({ data, query}) => {
             {data.map((entry, index) => (
               <tr key={index}>
                 <td>
-                  <a href={`/search?query=${query}&type=${entry.item.name ? "collections" : "notes"}`} className={styles["link-style"]}>
+                  <a href={`/search?query=${query}&type=${entry.item.name ? "collections" : "notes"}&page=1`} className={styles["link-style"]}>
                     <div className={styles["header"]}>
                       {entry.item.name ? entry.item.name : entry.item.title}
                     </div>

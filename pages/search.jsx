@@ -6,6 +6,7 @@ const SearchPage = ({ query, type, page }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(Number(page) || 1);
+  const [hasMoreData, setHasMoreData] = useState(true);
 
   const fetchData = async () => {
     try {
@@ -24,10 +25,20 @@ const SearchPage = ({ query, type, page }) => {
         },
       });
 
-      setData(
-        type === "collections" ? response.data.collections : response.data.notes
-      );
+      const newData =
+        type === "collections"
+          ? response.data.collections
+          : response.data.notes;
+
+      setData(newData);
       setLoading(false);
+
+      // Check if there is more data available
+      if (newData.length < 9) {
+        setHasMoreData(false);
+      } else {
+        setHasMoreData(true);
+      }
     } catch (error) {
       // Handle the error here
       console.error(error);
@@ -41,7 +52,16 @@ const SearchPage = ({ query, type, page }) => {
 
   const handleTabClick = () => {
     setCurrentPage(1);
+    setHasMoreData(true);
     fetchData();
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage(currentPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage(currentPage - 1);
   };
 
   return (
@@ -56,7 +76,7 @@ const SearchPage = ({ query, type, page }) => {
                     type === "collections" ? "active" : ""
                   }`}
                   aria-current="page"
-                  href={`/search?query=${query}&type=collections`}
+                  href={`/search?query=${query}&type=collections&page=1`}
                   onClick={handleTabClick}
                 >
                   collections
@@ -65,7 +85,7 @@ const SearchPage = ({ query, type, page }) => {
               <li className="nav-item">
                 <a
                   className={`nav-link ${type === "notes" ? "active" : ""}`}
-                  href={`/search?query=${query}&type=notes`}
+                  href={`/search?query=${query}&type=notes&page=1`}
                   onClick={handleTabClick}
                 >
                   notes
@@ -93,7 +113,7 @@ const SearchPage = ({ query, type, page }) => {
                       {result.description || result.body}
                     </p>
                     <div className="mt-auto d-flex justify-content-end">
-                      <a href="#" className="btn btn-primary ">
+                      <a href="#" className="btn btn-primary">
                         Preview
                       </a>
                       {/* link-to-either-collection-or-note use, result.type/result.id */}
@@ -111,7 +131,7 @@ const SearchPage = ({ query, type, page }) => {
               <a
                 className="page-link"
                 href={`/search?query=${query}&type=${type}&page=${currentPage}`}
-                onClick={() => setCurrentPage(currentPage - 1)}
+                onClick={handlePreviousPage}
               >
                 Previous
               </a>
@@ -121,11 +141,12 @@ const SearchPage = ({ query, type, page }) => {
                 {currentPage}
               </a>
             </li>
-            <li className="page-item">
+            <li className={`page-item ${!hasMoreData ? "disabled" : ""}`}>
+              {/* Disable the "Next" button if no more data */}
               <a
                 className="page-link"
                 href={`/search?query=${query}&type=${type}&page=${currentPage}`}
-                onClick={() => setCurrentPage(currentPage + 1)}
+                onClick={hasMoreData ? handleNextPage : null}
               >
                 Next
               </a>
