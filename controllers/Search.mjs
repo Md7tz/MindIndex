@@ -46,8 +46,8 @@ export default class SearchController {
     }
 
     try {
-      const collections = await Collection.search(query);
-      const notes = await Note.search(query);
+      const collections = await Collection.search(query, 1, 5);
+      const notes = await Note.search(query, 1, 5);
 
       const options = {
         keys: ["name", "description", "title", "body"],

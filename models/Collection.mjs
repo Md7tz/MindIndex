@@ -43,6 +43,7 @@ export default class Collection extends Model {
       id: { type: "integer" },
       name: { type: "string", maxLength: MAX_STRING_LENGTH },
       description: { type: "string", maxLength: MAX_TEXT_LENGTH },
+      user_id: { type: "integer" },
       created_at: { type: "string" },
       updated_at: { type: ["string", "null"] },
       deleted_at: { type: ["string", "null"] },
