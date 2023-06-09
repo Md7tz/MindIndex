@@ -15,11 +15,7 @@ const SearchPage = () => {
   const fetchData = async () => {
     try {
       const authenticationToken = await ClientApi.getToken();
-      if (!authenticationToken) {
-        // Redirect user to a different page if authentication token is not available
-        router.push("/");
-        return;
-      }
+      
       const params = {
         query: query,
         page: currentPage,

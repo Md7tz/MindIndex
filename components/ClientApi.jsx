@@ -4,12 +4,14 @@ import Storage from "./Storage";
 import jwt_decode from "jwt-decode";
 import moment from "moment";
 
+
 class ClientApi {
     constructor() {
         this.baseUrl = process.env.NEXT_PUBLIC_BASEPATH;
         this.prefix = "mindindex";
         this.token = null;
         this.user = null;
+
 
         this.getToken().then(token => {
             this.token = token;
@@ -96,6 +98,10 @@ class ClientApi {
         }).catch((error) => {
             console.error("Error:", error);
             Event.emit("token:expired");
+            console.log(window.location.pathname)
+            if(window.location.pathname !== "/")
+                Navigate.replace("/");
+
         });
     }
 
