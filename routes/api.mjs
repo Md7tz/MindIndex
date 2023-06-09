@@ -31,6 +31,7 @@ router.put("/user/:id/profile", Passport.bearerAuthenticate(), Profile.updatePro
 
 // Notes Routes
 router.get("/notes", Passport.bearerAuthenticate(), Note.getAllNotes);
+router.get("/user/:id/notes/:pageSize/:pageNumber", Passport.bearerAuthenticate(), Note.getNotesByUserId);
 router.get("/notes/:id", Passport.bearerAuthenticate(), Note.getNoteById);
 router.post("/notes", Passport.bearerAuthenticate(), Note.createNote);
 router.put("/notes/:id", Passport.bearerAuthenticate(), Note.updateNote);
