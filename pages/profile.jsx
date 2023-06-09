@@ -846,16 +846,26 @@ export default function Profile() {
                     <div className={`${styles.cardBody}`}>
                       <h4 className="d-flex align-items-center mb-3">Notes</h4>
                       <ul className="list-group">
-                        {notes.map((note, index) => (
-                          <a
-                            href={`/notes/${index}`}
-                            key={index}
-                            className="list-group-item"
-                          >
-                            {note}
-                          </a>
-                        ))}
-                        <li className="list-group-item"></li>
+                        {notes != []
+                          ? notes.map((note, index) => (
+                              <a
+                                href={`/notes/${index}`}
+                                key={index}
+                                className="list-group-item"
+                              >
+                                {note.name}
+                              </a>
+                            ))
+                          : "No notes left"}
+
+                        {notes.length < pageSize &&
+                          Array(pageSize - notes.length)
+                            .fill()
+                            .map((_, index) => (
+                              <li key={index} className="list-group-item">
+                                &nbsp;
+                              </li>
+                            ))}
                       </ul>
                       <ul className="pagination d-flex justify-content-center m-1">
                         <li
