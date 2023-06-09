@@ -3,7 +3,6 @@ import Validator from "validatorjs";
 import { HTTP } from "../config/constants.mjs";
 
 export default class NoteController {
-
   /**
    * @openapi
    * /api/notes:
@@ -52,7 +51,7 @@ export default class NoteController {
 
         res.status(HTTP.CREATED).json({
           message: "Note created successfully",
-          note: newNote
+          note: newNote,
         });
       });
     } catch (error) {
@@ -110,7 +109,7 @@ export default class NoteController {
       const { id } = req.params;
 
       // Fetch note bu id
-      const note = await Note.query().findById(id).whereNotDeleted();;
+      const note = await Note.query().findById(id).whereNotDeleted();
 
       // If no note was found, return a 404 response
       if (!note) {
@@ -124,6 +123,35 @@ export default class NoteController {
     } catch (error) {
       console.error(error);
       // If an error occurs, pass it to the next middleware
+      next(error);
+    }
+  }
+
+  static async getNotesByUserId(req, res, next) {
+    try {
+      const { id, pageSize, pageNumber } = req.params;
+      const offset = (pageNumber - 1) * pageSize;
+
+      const notes = await Note.query()
+        .where("user_id", id)
+        .orderBy("created_at", "desc")
+        .offset(offset)
+        .limit(pageSize);
+
+      if (!notes) {
+        notes = [];
+        return res.status(HTTP.OK).json({
+          message: "You have no notes. Start by creating one!",
+          notes,
+        });
+      }
+
+      return res.status(HTTP.OK).json({
+        message: "User notes retrieved successfully.",
+        notes,
+      });
+    } catch (error) {
+      console.error(error);
       next(error);
     }
   }
@@ -184,8 +212,10 @@ export default class NoteController {
 
       await Note.transaction(async (trx) => {
         // Update the note with the new data
-        const updatedNote = await Note.query(trx)
-          .patchAndFetchById(id, { title, body })
+        const updatedNote = await Note.query(trx).patchAndFetchById(id, {
+          title,
+          body,
+        });
 
         // If no note was found, return a 404 response
         if (!updatedNote) {
@@ -240,7 +270,7 @@ export default class NoteController {
         }
 
         if (note.deleted_at !== null) {
-          note = await Note.query(trx).findById(id).undelete().returning('*');
+          note = await Note.query(trx).findById(id).undelete().returning("*");
           return res.status(HTTP.OK).json({
             message: "Note undeleted successfully.",
             note,
