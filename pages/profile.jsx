@@ -853,7 +853,7 @@ export default function Profile() {
                                 key={index}
                                 className="list-group-item"
                               >
-                                {note.name}
+                                {note.title}
                               </a>
                             ))
                           : "No notes left"}
