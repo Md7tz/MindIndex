@@ -88,6 +88,32 @@ export default function Profile() {
     getProfile();
   }, [user]);
 
+  useEffect(() => {
+    async function fetchUserCollections() {
+      if (user.id) {
+        try {
+          const res = await fetch(
+            `/api/user/${user.id}/collections/${pageSize}/${pageNumber}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${await ClientApi.getToken()}`,
+              },
+            }
+          );
+
+          const data = await res.json();
+          setCollections(data.collections);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+
+    fetchUserCollections();
+  }, [user, pageNumber]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
