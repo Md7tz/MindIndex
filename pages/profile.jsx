@@ -94,7 +94,7 @@ export default function Profile() {
       if (user.id) {
         try {
           const res = await fetch(
-            `/api/user/${user.id}/collections/${pageSize}/${pageNumber}`,
+            `/api/user/${user.id}/collections/${pageSize}/${collectionsPageNumber}`,
             {
               method: "GET",
               headers: {
@@ -796,14 +796,16 @@ export default function Profile() {
                       <ul className="pagination d-flex justify-content-center m-1">
                         <li
                           className={`page-item ${
-                            pageNumber === 1 ? "disabled" : ""
+                            collectionsPageNumber === 1 ? "disabled" : ""
                           }`}
                         >
                           <button
-                            disabled={pageNumber === 1}
+                            disabled={collectionsPageNumber === 1}
                             className="page-link"
                             onClick={() => {
-                              setPageNumber(pageNumber - 1);
+                              setCollectionsPageNumber(
+                                collectionsPageNumber - 1
+                              );
                             }}
                             aria-label="Previous"
                           >
@@ -812,7 +814,7 @@ export default function Profile() {
                         </li>
                         <li className="page-item disabled">
                           <button disabled className="page-link text-dark">
-                            Page {pageNumber}
+                            Page {collectionsPageNumber}
                             {/* of {} */}
                           </button>
                         </li>
@@ -827,7 +829,9 @@ export default function Profile() {
                             className="page-link"
                             aria-label="Next"
                             onClick={() => {
-                              setPageNumber(pageNumber + 1);
+                              setCollectionsPageNumber(
+                                collectionsPageNumber + 1
+                              );
                             }}
                           >
                             <span aria-hidden="true">&raquo;</span>
@@ -852,6 +856,47 @@ export default function Profile() {
                           </a>
                         ))}
                         <li className="list-group-item"></li>
+                      </ul>
+                      <ul className="pagination d-flex justify-content-center m-1">
+                        <li
+                          className={`page-item ${
+                            notesPageNumber === 1 ? "disabled" : ""
+                          }`}
+                        >
+                          <button
+                            disabled={notesPageNumber === 1}
+                            className="page-link"
+                            onClick={() => {
+                              setNotesPageNumber(notesPageNumber - 1);
+                            }}
+                            aria-label="Previous"
+                          >
+                            <span aria-hidden="true">&laquo;</span>
+                          </button>
+                        </li>
+                        <li className="page-item disabled">
+                          <button disabled className="page-link text-dark">
+                            Page {notesPageNumber}
+                            {/* of {} */}
+                          </button>
+                        </li>
+
+                        <li
+                          className={`page-item ${
+                            notes.length < pageSize ? "disabled" : ""
+                          }`}
+                        >
+                          <button
+                            disabled={notes.length < pageSize}
+                            className="page-link"
+                            aria-label="Next"
+                            onClick={() => {
+                              setNotesPageNumber(notesPageNumber + 1);
+                            }}
+                          >
+                            <span aria-hidden="true">&raquo;</span>
+                          </button>
+                        </li>
                       </ul>
                     </div>
                   </div>
