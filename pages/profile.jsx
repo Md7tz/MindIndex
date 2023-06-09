@@ -22,7 +22,8 @@ export default function Profile() {
   const [profileEditMode, setProfileEditMode] = useState(false);
   const [collections, setCollections] = useState([{}]);
   const [notes, setNotes] = useState([]);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [collectionsPageNumber, setCollectionsPageNumber] = useState(1);
+  const [notesPageNumber, setNotesPageNumber] = useState(1);
   const pageSize = 10;
 
   useEffect(() => {
@@ -112,7 +113,33 @@ export default function Profile() {
     }
 
     fetchUserCollections();
-  }, [user, pageNumber]);
+  }, [user, collectionsPageNumber]);
+
+  useEffect(() => {
+    async function fetchUserNotes() {
+      if (user.id) {
+        try {
+          const res = await fetch(
+            `/api/user/${user.id}/notes/${pageSize}/${notesPageNumber}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${await ClientApi.getToken()}`,
+              },
+            }
+          );
+
+          const data = await res.json();
+          setNotes(data.notes);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+
+    fetchUserNotes();
+  }, [user, notesPageNumber]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
