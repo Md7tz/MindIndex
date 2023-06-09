@@ -30,7 +30,6 @@ export default function NavBar() {
   const onClickLogout = async () => {
     await ClientApi.logout();
     setUser(null);
-    Navigate.push("/");
   };
 
   return (

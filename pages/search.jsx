@@ -1,17 +1,21 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import ClientApi from "/components/ClientApi";
 import axios from "axios";
+import Basepath from "/components/Basepath";
 
-const SearchPage = ({ query, type, page }) => {
+const SearchPage = () => {
+  const router = useRouter();
+  const { query, type, page } = router.query;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(Number(page) || 1);
   const [hasMoreData, setHasMoreData] = useState(true);
 
+
   const fetchData = async () => {
     try {
       const authenticationToken = await ClientApi.getToken();
-
       const params = {
         query: query,
         page: currentPage,
@@ -35,7 +39,10 @@ const SearchPage = ({ query, type, page }) => {
       setLoading(false);
 
       // Check if there is more data available
-      if (page == Math.ceil(newData.totalNonDeletedItems / 9) || newData.totalNonDeletedItems == 0) {
+      if (
+        page == Math.ceil(newData.totalNonDeletedItems / 9) ||
+        newData.totalNonDeletedItems == 0
+      ) {
         setHasMoreData(false);
       } else {
         setHasMoreData(true);
@@ -48,8 +55,10 @@ const SearchPage = ({ query, type, page }) => {
   };
 
   useEffect(() => {
+  
+    if (!router.isReady) return;
     fetchData();
-  }, [query, type, currentPage]);
+  }, [router.isReady, page, type]);
 
   const handleTabClick = () => {
     setCurrentPage(1);
@@ -58,11 +67,17 @@ const SearchPage = ({ query, type, page }) => {
   };
 
   const handleNextPage = () => {
-    setCurrentPage(currentPage + 1);
+    const nextPage = currentPage + 1;
+    router.push(`/search?query=${query}&type=${type}&page=${nextPage}`);
+    setCurrentPage(nextPage);
   };
 
   const handlePreviousPage = () => {
-    setCurrentPage(currentPage - 1);
+    if (currentPage > 1) {
+      const previousPage = currentPage - 1;
+      router.push(`/search?query=${query}&type=${type}&page=${previousPage}`);
+      setCurrentPage(previousPage);
+    }
   };
 
   return (
@@ -77,7 +92,9 @@ const SearchPage = ({ query, type, page }) => {
                     type === "collections" ? "active" : ""
                   }`}
                   aria-current="page"
-                  href={`/search?query=${query}&type=collections&page=1`}
+                  href={Basepath.get(
+                    `/search?query=${query}&type=collections&page=1`
+                  )}
                   onClick={handleTabClick}
                 >
                   collections
@@ -86,7 +103,9 @@ const SearchPage = ({ query, type, page }) => {
               <li className="nav-item">
                 <a
                   className={`nav-link ${type === "notes" ? "active" : ""}`}
-                  href={`/search?query=${query}&type=notes&page=1`}
+                  href={Basepath.get(
+                    `/search?query=${query}&type=notes&page=1`
+                  )}
                   onClick={handleTabClick}
                 >
                   notes
@@ -106,10 +125,7 @@ const SearchPage = ({ query, type, page }) => {
             {data.map((result, index) => (
               <div className="col" key={index}>
                 <div className="card bg-dark text-white h-100">
-                  {/* Add thumbnail image if available */}
-                  {result.image && (
-                    <img src={result.image} alt={result.title || result.name} className="card-img-top" />
-                  )}
+
                   <div className="card-body d-flex flex-column">
                     <h5 className="card-title">
                       {/* Limit title length and add ellipsis */}
@@ -125,7 +141,7 @@ const SearchPage = ({ query, type, page }) => {
                     </p>
                     <div className="mt-auto d-flex justify-content-end">
                       <a href="#" className="btn btn-primary">
-                        Preview
+                        View
                       </a>
                       {/* link-to-either-collection-or-note use, result.type/result.id */}
                     </div>
@@ -135,20 +151,17 @@ const SearchPage = ({ query, type, page }) => {
             ))}
           </div>
         ) : (
-          <p className="text-center mt-5 text-xl">No content found. Please try a different search query.</p>
-
+          <p className="text-center mt-5 text-xl">
+            No content found. Please try a different search query.
+          </p>
         )}
 
         <nav className="m-4">
           <ul className="pagination justify-content-center">
             <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-              <a
-                className="page-link"
-                href={`/search?query=${query}&type=${type}&page=${currentPage}`}
-                onClick={handlePreviousPage}
-              >
+              <button className="page-link" onClick={handlePreviousPage}>
                 Previous
-              </a>
+              </button>
             </li>
             <li className="page-item">
               <a className="page-link" href="#">
@@ -157,13 +170,12 @@ const SearchPage = ({ query, type, page }) => {
             </li>
             <li className={`page-item ${!hasMoreData ? "disabled" : ""}`}>
               {/* Disable the "Next" button if no more data */}
-              <a
+              <button
                 className="page-link"
-                href={`/search?query=${query}&type=${type}&page=${currentPage}`}
                 onClick={hasMoreData ? handleNextPage : null}
               >
                 Next
-              </a>
+              </button>
             </li>
           </ul>
         </nav>
@@ -171,17 +183,5 @@ const SearchPage = ({ query, type, page }) => {
     </div>
   );
 };
-
-export async function getServerSideProps(context) {
-  const { query, type, page } = context.query;
-
-  return {
-    props: {
-      query,
-      type,
-      page,
-    },
-  };
-}
 
 export default SearchPage;
