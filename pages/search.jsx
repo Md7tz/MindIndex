@@ -12,10 +12,14 @@ const SearchPage = () => {
   const [currentPage, setCurrentPage] = useState(Number(page) || 1);
   const [hasMoreData, setHasMoreData] = useState(true);
 
-
   const fetchData = async () => {
     try {
       const authenticationToken = await ClientApi.getToken();
+      if (!authenticationToken) {
+        // Redirect user to a different page if authentication token is not available
+        router.push("/");
+        return;
+      }
       const params = {
         query: query,
         page: currentPage,
@@ -55,15 +59,13 @@ const SearchPage = () => {
   };
 
   useEffect(() => {
-  
     if (!router.isReady) return;
     fetchData();
-  }, [router.isReady, page, type]);
+  }, [router.isReady, page, type, query]);
 
   const handleTabClick = () => {
     setCurrentPage(1);
     setHasMoreData(true);
-    fetchData();
   };
 
   const handleNextPage = () => {
@@ -125,7 +127,6 @@ const SearchPage = () => {
             {data.map((result, index) => (
               <div className="col" key={index}>
                 <div className="card bg-dark text-white h-100">
-
                   <div className="card-body d-flex flex-column">
                     <h5 className="card-title">
                       {/* Limit title length and add ellipsis */}
