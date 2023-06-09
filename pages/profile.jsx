@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "../styles/profile.module.css";
-import Image from "next/image";
+import styles from "../styles/Profile.module.css";
 import { toast } from "react-toastify";
 import { Navigate } from "../components/Basepath";
 import ClientApi from "../components/ClientApi";
