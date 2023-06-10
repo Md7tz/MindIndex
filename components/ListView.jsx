@@ -1,6 +1,7 @@
 import React from "react";
-import styles from "../styles/ListView.module.css";
+import styles from "./styles/ListView.module.css";
 import Basepath from "./Basepath"
+
 const ListView = ({ data, query}) => {
   return (
     <div className={`m-2 border-0 rounded-0 ${styles["list-view-container"]}`}>
