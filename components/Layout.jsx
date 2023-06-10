@@ -7,16 +7,19 @@ import ClientApi from "./ClientApi";
 
 export default function Layout({ children }) {
 
-  useEffect(async () => {
-    await ClientApi.checkToken();
-    Event.on("token:expired", () => {
-      toast.error("Your session has expired. Please login again.");
-    });
+  useEffect(() => {
+    const initialize = async () => {
+      await ClientApi.checkToken();
+      Event.on("token:expired", () => {
+        toast.error("Your session has expired. Please login again.");
+      });
 
-    Event.once("welcome", (user) => {
-      toast.success("Welcome back, " + user.fullname.split(" ")[0] + "!");
-    });
+      Event.once("welcome", (user) => {
+        toast.success("Welcome back, " + user.fullname.split(" ")[0] + "!");
+      });
+    };
 
+    initialize();
   }, []);
 
   return (

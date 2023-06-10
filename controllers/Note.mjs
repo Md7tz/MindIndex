@@ -3,7 +3,6 @@ import Validator from "validatorjs";
 import { HTTP } from "../config/constants.mjs";
 
 export default class NoteController {
-
   /**
    * @openapi
    * /api/notes:
@@ -46,13 +45,13 @@ export default class NoteController {
       }
       // Extract the note data from the request body
       const { title, body } = req.body;
-
+      const user_id = req.user.id;
       await Note.transaction(async (trx) => {
-        const newNote = await Note.query(trx).insert({ title, body });
+        const newNote = await Note.query(trx).insert({ title, body, user_id });
 
         res.status(HTTP.CREATED).json({
           message: "Note created successfully",
-          note: newNote
+          note: newNote,
         });
       });
     } catch (error) {
@@ -66,16 +65,26 @@ export default class NoteController {
    * @openapi
    * /api/notes:
    *   get:
-   *     summary: Get all notes.
+   *     summary: get search notes by query.
+   *     parameters:
+   *       - in: query
+   *         name: query
+   *         schema:
+   *           type: string
+   *         required: false
+   *         description: The search query
    *     responses:
    *       '200':
    *         description: Notes retrieved successfully.
    */
-  static async getAllNotes(req, res, next) {
+  static async getNotes(req, res, next) {
     try {
-      // Fetch all the notes
-      const notes = await Note.query().whereNotDeleted();
+      const query = req.query.query || "";
+      const page = req.query.page || 1;
+      const limit = req.query.limit || 9;
 
+      // Search notes by query
+      const notes = await Note.search(query, page, limit);
       res
         .status(HTTP.OK)
         .json({ message: "Notes retrieved successfully.", notes });
@@ -110,7 +119,7 @@ export default class NoteController {
       const { id } = req.params;
 
       // Fetch note bu id
-      const note = await Note.query().findById(id).whereNotDeleted();;
+      const note = await Note.query().findById(id).whereNotDeleted();
 
       // If no note was found, return a 404 response
       if (!note) {
@@ -184,8 +193,10 @@ export default class NoteController {
 
       await Note.transaction(async (trx) => {
         // Update the note with the new data
-        const updatedNote = await Note.query(trx)
-          .patchAndFetchById(id, { title, body })
+        const updatedNote = await Note.query(trx).patchAndFetchById(id, {
+          title,
+          body,
+        });
 
         // If no note was found, return a 404 response
         if (!updatedNote) {
@@ -240,7 +251,7 @@ export default class NoteController {
         }
 
         if (note.deleted_at !== null) {
-          note = await Note.query(trx).findById(id).undelete().returning('*');
+          note = await Note.query(trx).findById(id).undelete().returning("*");
           return res.status(HTTP.OK).json({
             message: "Note undeleted successfully.",
             note,
