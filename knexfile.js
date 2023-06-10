@@ -21,7 +21,8 @@ module.exports = {
     },
     migrations: {
       tableName: 'knex_migrations'
-    }
+    },
+    seeds: { directory: './seeds' },
   },
 
   docker: {
@@ -40,6 +41,7 @@ module.exports = {
     },
     migrations: {
       tableName: 'knex_migrations'
-    }
+    },
+    seeds: { directory: './seeds' },
   },
 };
