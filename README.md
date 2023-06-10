@@ -1,2 +1,2 @@
 # MindIndex
-Flashcard webapp using spaced repetition, using a technique from cognitive science for memorization.
+Flashcard webapp using spaced repetition, a technique from cognitive science for memorization.
