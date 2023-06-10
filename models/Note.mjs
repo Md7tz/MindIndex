@@ -1,5 +1,6 @@
 import Model from "./index.mjs";
 import { MAX_STRING_LENGTH, MAX_TEXT_LENGTH } from "../config/constants.mjs";
+import User from "./User.mjs";
 
 /**
  * @class Note
@@ -50,11 +51,11 @@ export default class Note extends Model {
   }
 
   // Custom query method for full-text search
-  static async search(query, page = 1, pagesize = 9) {
+  static async search(_query, page = 1, pagesize = 9) {
     let query;
     let count;
     let totalNonDeletedItems;
-    const fuzzyQuery = query ? `${query}:*` : "";
+    const fuzzyQuery = _query ? `${_query}:*` : "";
 
     if (fuzzyQuery.trim() === "") {
       // Query is empty, retrieve data without filtering

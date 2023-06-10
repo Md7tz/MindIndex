@@ -21,7 +21,6 @@ const SearchBar = () => {
             Authorization: `Bearer ${authenticationToken}`,
           },
         });
-        console.log(data);
         setData(response.data);
       } catch (error) {
         console.log(error);

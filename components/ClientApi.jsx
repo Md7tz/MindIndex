@@ -98,7 +98,6 @@ class ClientApi {
         }).catch((error) => {
             console.error("Error:", error);
             Event.emit("token:expired");
-            console.log(window.location.pathname)
             if(window.location.pathname !== "/")
                 Navigate.replace("/");
 

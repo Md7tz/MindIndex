@@ -61,19 +61,23 @@ export default class Collection extends Model {
   }
 
   // Custom query method for full-text search
-  static async search(query, page = 1, pagesize = 9) {
-    const fuzzyQuery = query ? `${query}:*` : "";
+  static async search(_query, page = 1, pagesize = 9) {
+    let query;
+    let count;
+    let totalNonDeletedItems;
+
+    const fuzzyQuery = _query ? `${_query}:*` : "";
     if (fuzzyQuery.trim() === "") {
       // Query is empty, retrieve data without filtering
-      const query = await this.query()
+      query = await this.query()
         .whereNotDeleted()
         .page(page - 1, pagesize);
 
-      const count = await this.query()
+      count = await this.query()
         .whereNotDeleted()
         .count();
 
-      const totalNonDeletedItems = count[0].count;
+      totalNonDeletedItems = count[0].count;
 
       return {
         results: query.results,
@@ -81,20 +85,20 @@ export default class Collection extends Model {
       };
     }
 
-    const resultsQuery = await this.query()
+    query = await this.query()
       .whereNotDeleted()
       .whereRaw(`full_text @@ to_tsquery(?)`, [fuzzyQuery])
       .page(page - 1, pagesize);
 
-    const countQuery = await this.query()
+    count = await this.query()
       .whereNotDeleted()
       .whereRaw(`full_text @@ to_tsquery(?)`, [fuzzyQuery])
       .count();
 
-    const totalNonDeletedItems = countQuery[0].count;
+    totalNonDeletedItems = count[0].count;
 
     return {
-      results: resultsQuery.results,
+      results: query.results,
       total: totalNonDeletedItems,
     };
   }

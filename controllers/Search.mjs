@@ -1,8 +1,8 @@
-import { HTTP } from "../config/constants.mjs";
 import Validator from "validatorjs";
+import Fuse from "fuse.js";
+import { HTTP } from "../config/constants.mjs";
 import Collection from "../models/Collection.mjs";
 import Note from "../models/Note.mjs";
-import Fuse from "fuse.js";
 
 export default class SearchController {
   /**
@@ -28,14 +28,11 @@ export default class SearchController {
    */
   static async search(req, res, next) {
     const { query } = req.query;
-    console.log(`query: ${query}`);
 
     // Validate the search query
     const validation = new Validator(
       { query },
-      {
-        query: "required|string|max:255",
-      }
+      { query: "required|string|max:255" }
     );
 
     if (validation.fails()) {
@@ -46,14 +43,8 @@ export default class SearchController {
     }
 
     try {
-      const collectionResults = await Collection.search(query, 1, 5);
-      const noteResults = await Note.search(query, 1, 5);
-
-      console.log("Collection Results:", collectionResults);
-      console.log("Note Results:", noteResults);
-
-      const collections = collectionResults.results;
-      const notes = noteResults.results;
+      const collections = await Collection.search(query, 1, 5);
+      const notes = await Note.search(query, 1, 5);
 
       const options = {
         keys: ["name", "description", "title", "body"],
@@ -61,7 +52,7 @@ export default class SearchController {
         threshold: 0.4,
       };
 
-      const fusedData = [...collections, ...notes];
+      const fusedData = [...collections.results, ...notes.results];
       const dataFuse = new Fuse(fusedData, options);
 
       const fusedResults = dataFuse.search(query);
