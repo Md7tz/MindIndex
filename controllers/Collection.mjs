@@ -23,8 +23,6 @@ export default class CollectionController {
 
       const collections = await Collection.search(query, page, limit);
 
-
-
       return res.status(HTTP.OK).json({
         message: "Collections retrieved successfully.",
         collections,
@@ -70,6 +68,33 @@ export default class CollectionController {
       return res.status(HTTP.OK).json({
         message: "Collection retrieved successfully.",
         collection,
+      });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
+
+  static async getCollectionsByUserId(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { page, pagesize } = req.query;
+
+      const collections = await Collection.query()
+        .where("user_id", id)
+        .orderBy("created_at", "desc")
+        .page(page -1, pagesize);
+      if (!collections) {
+        collections = [];
+        return res.status(HTTP.OK).json({
+          message: "You have no collections. Start by creating one!",
+          collections,
+        });
+      }
+
+      return res.status(HTTP.OK).json({
+        message: "User Collections retrieved successfully.",
+        collections,
       });
     } catch (error) {
       console.error(error);

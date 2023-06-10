@@ -137,6 +137,34 @@ export default class NoteController {
     }
   }
 
+  static async getNotesByUserId(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { page = 1, pagesize = 10 } = req.query;
+
+      const notes = await Note.query()
+        .where("user_id", id)
+        .orderBy("created_at", "desc")
+        .page(page - 1, pagesize);
+
+      if (!notes) {
+        notes = [];
+        return res.status(HTTP.OK).json({
+          message: "You have no notes. Start by creating one!",
+          notes,
+        });
+      }
+
+      return res.status(HTTP.OK).json({
+        message: "User notes retrieved successfully.",
+        notes,
+      });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
+
   /**
    * @openapi
    * /api/notes/{id}:
