@@ -1,6 +1,8 @@
+import bcrypt from "bcrypt";
 import Model from "./index.mjs";
 import Profile from "./Profile.mjs";
-import bcrypt from "bcrypt";
+import Collection from "./Collection.mjs";
+import Note from "./Note.mjs";
 import { MAX_STRING_LENGTH } from "../config/constants.mjs";
 
 /**
@@ -36,6 +38,22 @@ export default class User extends Model {
         join: {
           from: "users.id",
           to: "profiles.user_id",
+        },
+      },
+      collections: {
+        relation: Model.HasManyRelation,
+        modelClass: Collection,
+        join: {
+          from: "users.id",
+          to: "collections.user_id",
+        },
+      },
+      notes: {
+        relation: Model.HasManyRelation,
+        modelClass: Note,
+        join: {
+          from: "users.id",
+          to: "notes.user_id",
         },
       },
     };
