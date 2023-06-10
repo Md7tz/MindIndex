@@ -19,11 +19,11 @@ export default function Profile() {
   const [interests, setInterests] = useState("");
 
   const [profileEditMode, setProfileEditMode] = useState(false);
-  const [collections, setCollections] = useState([{}]);
-  const [notes, setNotes] = useState([]);
+  const [collections, setCollections] = useState({});
+  const [notes, setNotes] = useState({});
   const [collectionsPageNumber, setCollectionsPageNumber] = useState(1);
   const [notesPageNumber, setNotesPageNumber] = useState(1);
-  const pageSize = 10;
+  const pagesize = 10;
 
   useEffect(() => {
     async function getUser() {
@@ -93,7 +93,7 @@ export default function Profile() {
       if (user.id) {
         try {
           const res = await fetch(
-            `/api/user/${user.id}/collections/${pageSize}/${collectionsPageNumber}`,
+            `/api/user/${user.id}/collections?page=${collectionsPageNumber}&pagesize=${pagesize}`,
             {
               method: "GET",
               headers: {
@@ -104,6 +104,7 @@ export default function Profile() {
           );
 
           const data = await res.json();
+          console.log(data);
           setCollections(data.collections);
         } catch (error) {
           console.log(error);
@@ -119,7 +120,7 @@ export default function Profile() {
       if (user.id) {
         try {
           const res = await fetch(
-            `/api/user/${user.id}/notes/${pageSize}/${notesPageNumber}`,
+            `/api/user/${user.id}/notes?page=${notesPageNumber}&pagesize=${pagesize}`,
             {
               method: "GET",
               headers: {
@@ -506,7 +507,7 @@ export default function Profile() {
                     <div className={`${styles.cardBody}`}>
                       <h4 className="d-flex align-items-center mb-3">Notes</h4>
                       <ul className="list-group">
-                        {notes.map((note, index) => (
+                        {notes?.results.map((note, index) => (
                           <a
                             href={`/notes/${index}`}
                             key={index}
@@ -771,8 +772,8 @@ export default function Profile() {
                         Flashcard Collections
                       </h4>
                       <ul className="list-group">
-                        {collections != []
-                          ? collections.map((collection, index) => (
+                        {collections?.results?.length > 0
+                          ? collections?.results.map((collection, index) => (
                               <a
                                 href={`/collections/${index}`}
                                 key={index}
@@ -783,8 +784,8 @@ export default function Profile() {
                             ))
                           : "No collections left"}
 
-                        {collections.length < pageSize &&
-                          Array(pageSize - collections.length)
+                        {collections?.results?.length < pagesize &&
+                          Array(pagesize - collections?.results?.length)
                             .fill()
                             .map((_, index) => (
                               <li key={index} className="list-group-item">
@@ -813,18 +814,18 @@ export default function Profile() {
                         </li>
                         <li className="page-item disabled">
                           <button disabled className="page-link text-dark">
-                            Page {collectionsPageNumber}
+                            {collectionsPageNumber}
                             {/* of {} */}
                           </button>
                         </li>
 
                         <li
                           className={`page-item ${
-                            collections.length < pageSize ? "disabled" : ""
+                            collections.total > collectionsPageNumber * pagesize ? "" : "disabled"
                           }`}
                         >
                           <button
-                            disabled={collections.length < pageSize}
+                            disabled={collections?.results?.length < pagesize}
                             className="page-link"
                             aria-label="Next"
                             onClick={() => {
@@ -845,8 +846,8 @@ export default function Profile() {
                     <div className={`${styles.cardBody}`}>
                       <h4 className="d-flex align-items-center mb-3">Notes</h4>
                       <ul className="list-group">
-                        {notes != []
-                          ? notes.map((note, index) => (
+                        {notes?.results?.length > 0
+                          ? notes?.results.map((note, index) => (
                               <a
                                 href={`/notes/${index}`}
                                 key={index}
@@ -857,8 +858,8 @@ export default function Profile() {
                             ))
                           : "No notes left"}
 
-                        {notes.length < pageSize &&
-                          Array(pageSize - notes.length)
+                        {notes?.length < pagesize &&
+                          Array(pagesize - notes?.length)
                             .fill()
                             .map((_, index) => (
                               <li key={index} className="list-group-item">
@@ -885,18 +886,18 @@ export default function Profile() {
                         </li>
                         <li className="page-item disabled">
                           <button disabled className="page-link text-dark">
-                            Page {notesPageNumber}
+                            {notesPageNumber}
                             {/* of {} */}
                           </button>
                         </li>
 
                         <li
                           className={`page-item ${
-                            notes.length < pageSize ? "disabled" : ""
+                            notes.total > notesPageNumber * pagesize ? "" : "disabled"
                           }`}
                         >
                           <button
-                            disabled={notes.length < pageSize}
+                            disabled={notes?.length < pagesize}
                             className="page-link"
                             aria-label="Next"
                             onClick={() => {
