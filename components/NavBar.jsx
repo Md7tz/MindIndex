@@ -1,22 +1,30 @@
 import React, { useEffect, useState } from "react";
+
 import styles from "../styles/Navbar.module.css";
 import Image from "next/image";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
+
+import SearchBar from "./SearchBar";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightToBracket,
   faCircleUser,
-  faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import Basepath from "./Basepath";
+import Navigate from "./Basepath";
 import ClientApi from "./ClientApi";
 
 export default function NavBar() {
   const [user, setUser] = useState(null);
 
-  useEffect(async () => {
-    setUser(await ClientApi.getUser());
+  useEffect(() => {
+    const fetchData = async () => {
+      setUser(await ClientApi.getUser());
+    };
+
+    fetchData();
   }, []);
 
   const onClickLogout = async () => {
@@ -30,7 +38,10 @@ export default function NavBar() {
     >
       <div className="row container-fluid text-dark">
         <div className={`col d-flex ${styles.brand}`}>
-          <a className={`navbar-brand me-1 ${styles.logolink}`} href={Basepath.get('/')}>
+          <a
+            className={`navbar-brand me-1 ${styles.logolink}`}
+            href={Basepath.get("/")}
+          >
             <Image
               src={"/img/Logo.jpg"}
               alt="MindIndex"
@@ -41,35 +52,61 @@ export default function NavBar() {
           </a>
           <a
             className={`navbar-brand text-dark ${styles.milink} fs-7 pe-3 m-1`}
-            href={Basepath.get('/')}
+            href={Basepath.get("/")}
           >
             MindIndex
           </a>
           <div className="border-end"></div>
         </div>
-        <form className="col d-flex justify-content-center input-group ms-lg-3 my-3 my-lg-0">
-          <div className={`${styles.searchWrapper}`}>
-            <input
-              className={`${styles.searchInput}`}
-              type="text"
-              placeholder="Search"
-            />
-            <FontAwesomeIcon
-              icon={faMagnifyingGlass}
-              style={{ color: "dark" }}
-              size="1x"
-              fixedWidth
-            />
-          </div>
-        </form>
+
+        {user?.id && <SearchBar />}
+
+
+
+
         <div className="col" id="navbarSupportedContent">
-          {
-            user?.id ?
-              <div className="d-flex justify-content-end">
+          {user?.id ? (
+            <div className="d-flex justify-content-end">
+              <a
+                className="nav-link active text-dark"
+                aria-current="page"
+                href={Basepath.get("/profile")}
+                data-bs-toggle="modal"
+              >
+                <div className="d-flex align-items-center ps-2">
+                  <FontAwesomeIcon
+                    icon={faCircleUser}
+                    style={{ color: "dark" }}
+                    size="1x"
+                    fixedWidth
+                  />
+                  <span className="px-2">Profile</span>
+                </div>
+              </a>
+              <button
+                className="nav-link active text-dark border-0 bg-transparent"
+                aria-current="page"
+                onClick={onClickLogout}
+                data-bs-toggle="modal"
+              >
+                <div className="d-flex align-items-center ps-2">
+                  <FontAwesomeIcon
+                    icon={faArrowRightToBracket}
+                    style={{ color: "dark" }}
+                    size="1x"
+                    fixedWidth
+                  />
+                  <span className="px-2">Logout</span>
+                </div>
+              </button>
+            </div>
+          ) : (
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-end">
+              <li className="nav-item">
                 <a
                   className="nav-link active text-dark"
                   aria-current="page"
-                  href={Basepath.get('/profile')}
+                  href="#loginForm"
                   data-bs-toggle="modal"
                 >
                   <div className="d-flex align-items-center ps-2">
@@ -79,66 +116,30 @@ export default function NavBar() {
                       size="1x"
                       fixedWidth
                     />
-                    <span className="px-2">Profile</span>
+                    <span className="px-2">Login</span>
                   </div>
                 </a>
-                <button
-                  className="nav-link active text-dark border-0 bg-transparent"
+              </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link active text-dark d-flex align-items-center"
                   aria-current="page"
-                  onClick={onClickLogout}
+                  href="#registerForm"
                   data-bs-toggle="modal"
                 >
+                  <FontAwesomeIcon
+                    icon={faArrowRightToBracket}
+                    style={{ color: "dark" }}
+                    size="1x"
+                    fixedWidth
+                  />
                   <div className="d-flex align-items-center ps-2">
-                    <FontAwesomeIcon
-                      icon={faArrowRightToBracket}
-                      style={{ color: "dark" }}
-                      size="1x"
-                      fixedWidth
-                    />
-                    <span className="px-2">Logout</span>
+                    <span className="">Register</span>
                   </div>
-                </button>
-              </div>
-
-              : <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-end">
-                <li className="nav-item">
-                  <a
-                    className="nav-link active text-dark"
-                    aria-current="page"
-                    href="#loginForm"
-                    data-bs-toggle="modal"
-                  >
-                    <div className="d-flex align-items-center ps-2">
-                      <FontAwesomeIcon
-                        icon={faCircleUser}
-                        style={{ color: "dark" }}
-                        size="1x"
-                        fixedWidth
-                      />
-                      <span className="px-2">Login</span>
-                    </div>
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link active text-dark d-flex align-items-center"
-                    aria-current="page"
-                    href="#registerForm"
-                    data-bs-toggle="modal"
-                  >
-                    <FontAwesomeIcon
-                      icon={faArrowRightToBracket}
-                      style={{ color: "dark" }}
-                      size="1x"
-                      fixedWidth
-                    />
-                    <div className="d-flex align-items-center ps-2">
-                      <span className="">Register</span>
-                    </div>
-                  </a>
-                </li>
-              </ul>
-          }
+                </a>
+              </li>
+            </ul>
+          )}
         </div>
       </div>
       <LoginForm />

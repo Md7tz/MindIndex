@@ -45,9 +45,9 @@ export default class NoteController {
       }
       // Extract the note data from the request body
       const { title, body } = req.body;
-
+      const user_id = req.user.id;
       await Note.transaction(async (trx) => {
-        const newNote = await Note.query(trx).insert({ title, body });
+        const newNote = await Note.query(trx).insert({ title, body, user_id });
 
         res.status(HTTP.CREATED).json({
           message: "Note created successfully",
@@ -65,16 +65,26 @@ export default class NoteController {
    * @openapi
    * /api/notes:
    *   get:
-   *     summary: Get all notes.
+   *     summary: get search notes by query.
+   *     parameters:
+   *       - in: query
+   *         name: query
+   *         schema:
+   *           type: string
+   *         required: false
+   *         description: The search query
    *     responses:
    *       '200':
    *         description: Notes retrieved successfully.
    */
-  static async getAllNotes(req, res, next) {
+  static async getNotes(req, res, next) {
     try {
-      // Fetch all the notes
-      const notes = await Note.query().whereNotDeleted();
+      const query = req.query.query || "";
+      const page = req.query.page || 1;
+      const limit = req.query.limit || 9;
 
+      // Search notes by query
+      const notes = await Note.search(query, page, limit);
       res
         .status(HTTP.OK)
         .json({ message: "Notes retrieved successfully.", notes });

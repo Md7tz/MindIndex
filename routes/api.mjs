@@ -7,6 +7,7 @@ import Collection from "../controllers/Collection.mjs";
 import Flashcard from "../controllers/Flashcard.mjs";
 import Note from "../controllers/Note.mjs";
 import Auth from "../controllers/Auth.mjs";
+import Search from "../controllers/Search.mjs";
 
 // Middleware
 import ErrorHandler from "../middlewares/ErrorHandler.mjs";
@@ -30,16 +31,16 @@ router.get("/user/:id/profile", Passport.bearerAuthenticate(), Profile.getProfil
 router.put("/user/:id/profile", Passport.bearerAuthenticate(), Profile.updateProfile);
 
 // Notes Routes
-router.get("/notes", Passport.bearerAuthenticate(), Note.getAllNotes);
 router.get("/user/:id/notes/:pageSize/:pageNumber", Passport.bearerAuthenticate(), Note.getNotesByUserId);
+router.get("/notes", Passport.bearerAuthenticate(), Note.getNotes);
 router.get("/notes/:id", Passport.bearerAuthenticate(), Note.getNoteById);
 router.post("/notes", Passport.bearerAuthenticate(), Note.createNote);
 router.put("/notes/:id", Passport.bearerAuthenticate(), Note.updateNote);
 router.delete("/notes/:id", Passport.bearerAuthenticate(), Note.deleteNote);
 
 // Collection Routes
-router.get("/collections", Passport.bearerAuthenticate(), Collection.getAllCollections);
 router.get("/user/:id/collections/:pageSize/:pageNumber", Passport.bearerAuthenticate(), Collection.getCollectionsByUserId);
+router.get("/collections", Passport.bearerAuthenticate(), Collection.getCollections);
 router.get("/collections/:id", Passport.bearerAuthenticate(), Collection.getCollectionById);
 router.post("/collections", Passport.bearerAuthenticate(), Collection.createCollection);
 router.put("/collections/:id", Passport.bearerAuthenticate(), Collection.updateCollection);
@@ -48,6 +49,9 @@ router.delete("/collections/:id", Passport.bearerAuthenticate(), Collection.dele
 // Flashcards routes
 router.put("/flashcards/:id", Passport.bearerAuthenticate(), Flashcard.updateFlashcard);
 router.delete("/flashcards/:id", Passport.bearerAuthenticate(), Flashcard.deleteFlashcard);
+
+// Search routes
+router.get("/search", Passport.bearerAuthenticate(), Search.search);
 
 router.use(ErrorHandler);
 

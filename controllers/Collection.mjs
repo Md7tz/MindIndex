@@ -10,16 +10,18 @@ export default class CollectionController {
    * @openapi
    * /api/collections:
    *   get:
-   *     summary: Get all collections.
+   *     summary: Get search collections by query.
    *     responses:
    *       '200':
    *         description: Collections retrieved successfully.
    */
-  static async getAllCollections(req, res, next) {
+  static async getCollections(req, res, next) {
     try {
-      const collections = await Collection.query().withGraphFetched(
-        "flashcards"
-      );
+      const query = req.query.query || "";
+      const page = req.query.page || 1;
+      const limit = req.query.limit || 9;
+
+      const collections = await Collection.search(query, page, limit);
 
       return res.status(HTTP.OK).json({
         message: "Collections retrieved successfully.",
@@ -157,12 +159,13 @@ export default class CollectionController {
       }
 
       const { name, description, cards } = req.body;
-
+      const user_id = req.user.id;
       await transaction(Collection.knex(), async (trx) => {
         const collection = await Collection.query(trx).insertGraph({
           name,
           description,
           flashcards: cards,
+          user_id,
         });
 
         return res.status(HTTP.CREATED).json({

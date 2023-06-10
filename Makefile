@@ -23,3 +23,6 @@ migrate : # Run knex migrations
 
 rollback: # Rollback knex migrations
 	docker exec -it app npx knex migrate:rollback --env=docker
+
+seed: # Run knex seeds
+	docker exec -it app npx knex seed:run --env=docker
