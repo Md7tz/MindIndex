@@ -8,6 +8,7 @@ import { MAX_STRING_LENGTH, MAX_TEXT_LENGTH } from "../config/constants.mjs";
  * @description Represents a note in the database.
  *
  * @property {Number} id               - The incremental ID of the note.
+ * @property {Number} user_id          - The ID of the user who created the note.
  * @property {String} title            - The title of the note.
  * @property {String|Text} body        - The body of the note.
  * @property {Date} created_at         - The timestamp of when the note was created.
@@ -33,40 +34,59 @@ export default class Note extends Model {
       deleted_at: { type: ["string", "null"] },
     },
   };
+
+  // Relations
+  static get relationMappings() {
+    return {
+      user: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
+        join: {
+          from: "notes.user_id",
+          to: "users.id",
+        },
+      },
+    };
+  }
+
   // Custom query method for full-text search
-  static async search(query, page = 1, pageSize = 10) {
+  static async search(query, page = 1, pagesize = 9) {
+    let query;
+    let count;
+    let totalNonDeletedItems;
     const fuzzyQuery = query ? `${query}:*` : "";
+
     if (fuzzyQuery.trim() === "") {
       // Query is empty, retrieve data without filtering
-      const allResultsQuery = await this.query()
-        .whereNull("deleted_at")
-        .page(page - 1, pageSize);
+      query = await this.query()
+        .whereNotDeleted()
+        .page(page - 1, pagesize);
 
-      const countQuery = await this.query().whereNull("deleted_at").count();
+      count = await this.query().whereNotDeleted().count();
 
-      const totalNonDeletedItems = countQuery[0].count;
+      totalNonDeletedItems = count[0].count;
 
       return {
-        results: allResultsQuery.results,
-        totalNonDeletedItems: totalNonDeletedItems,
+        results: query.results,
+        total: totalNonDeletedItems,
       };
     }
 
-    const resultsQuery = await this.query()
-      .whereNull("deleted_at")
+    query = await this.query()
+      .whereNotDeleted()
       .whereRaw(`full_text @@ to_tsquery(?)`, [fuzzyQuery])
-      .page(page - 1, pageSize);
+      .page(page - 1, pagesize);
 
-    const countQuery = await this.query()
-      .whereNull("deleted_at")
+    count = await this.query()
+      .whereNotDeleted()
       .whereRaw(`full_text @@ to_tsquery(?)`, [fuzzyQuery])
       .count();
 
-    const totalNonDeletedItems = countQuery[0].count;
+    totalNonDeletedItems = count[0].count;
 
     return {
-      results: resultsQuery.results,
-      totalNonDeletedItems: totalNonDeletedItems,
+      results: query.results,
+      total: totalNonDeletedItems,
     };
   }
 }
