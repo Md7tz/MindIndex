@@ -139,14 +139,13 @@ export default class NoteController {
 
   static async getNotesByUserId(req, res, next) {
     try {
-      const { id, pageSize, pageNumber } = req.params;
-      const offset = (pageNumber - 1) * pageSize;
+      const { id } = req.params;
+      const { page = 1, pagesize = 10 } = req.query;
 
       const notes = await Note.query()
         .where("user_id", id)
         .orderBy("created_at", "desc")
-        .offset(offset)
-        .limit(pageSize);
+        .page(page - 1, pagesize);
 
       if (!notes) {
         notes = [];

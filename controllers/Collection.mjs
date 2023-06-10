@@ -77,15 +77,13 @@ export default class CollectionController {
 
   static async getCollectionsByUserId(req, res, next) {
     try {
-      const { id, pageSize, pageNumber } = req.params;
-      const offset = (pageNumber - 1) * pageSize;
+      const { id } = req.params;
+      const { page, pagesize } = req.query;
 
       const collections = await Collection.query()
         .where("user_id", id)
         .orderBy("created_at", "desc")
-        .offset(offset)
-        .limit(pageSize);
-
+        .page(page -1, pagesize);
       if (!collections) {
         collections = [];
         return res.status(HTTP.OK).json({
