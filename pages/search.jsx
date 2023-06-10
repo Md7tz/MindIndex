@@ -40,8 +40,8 @@ const SearchPage = () => {
 
       // Check if there is more data available
       if (
-        page == Math.ceil(newData.totalNonDeletedItems / 9) ||
-        newData.totalNonDeletedItems == 0
+        page == Math.ceil(newData.total / 9) ||
+        newData.total == 0
       ) {
         setHasMoreData(false);
       } else {
