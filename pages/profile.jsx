@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
-import styles from "../styles/Profile.module.css";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import styles from "../components/styles/Profile.module.css";
 import { Navigate } from "../components/Basepath";
 import ClientApi from "../components/ClientApi";
 

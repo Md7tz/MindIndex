@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-
-import styles from "../styles/Navbar.module.css";
+import styles from "./styles/Navbar.module.css";
 import Image from "next/image";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
@@ -11,6 +10,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightToBracket,
   faCircleUser,
+  faFolderPlus,
+  faBook, faStickyNote
 } from "@fortawesome/free-solid-svg-icons";
 import Basepath from "./Basepath";
 import Navigate from "./Basepath";
@@ -67,22 +68,36 @@ export default function NavBar() {
         <div className="col" id="navbarSupportedContent">
           {user?.id ? (
             <div className="d-flex justify-content-end">
-              <a
-                className="nav-link active text-dark"
-                aria-current="page"
-                href={Basepath.get("/profile")}
-                data-bs-toggle="modal"
-              >
-                <div className="d-flex align-items-center ps-2">
-                  <FontAwesomeIcon
-                    icon={faCircleUser}
-                    style={{ color: "dark" }}
-                    size="1x"
-                    fixedWidth
-                  />
-                  <span className="px-2">Profile</span>
-                </div>
-              </a>
+              <div className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle active text-dark"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <FontAwesomeIcon icon={faFolderPlus} className="me-2" />
+                </a>
+                <ul className="dropdown-menu">
+                  <li>
+                    <a className="dropdown-item" href={Basepath.get('/study-set/add')}>
+                      <FontAwesomeIcon icon={faBook} className="me-2" />
+                      Study Set
+                    </a>
+                  </li>
+                  <li>
+                    <a className="dropdown-item" href="#">
+                      <FontAwesomeIcon icon={faStickyNote} className="me-2" />
+                      Note
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="d-flex align-items-center ps-2">
+                <FontAwesomeIcon icon={faCircleUser} style={{ color: "dark" }} size="1x" fixedWidth />
+                <span className="px-2">Profile</span>
+              </div>
               <button
                 className="nav-link active text-dark border-0 bg-transparent"
                 aria-current="page"
@@ -100,6 +115,7 @@ export default function NavBar() {
                 </div>
               </button>
             </div>
+
           ) : (
             <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-end">
               <li className="nav-item">

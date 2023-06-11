@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "../styles/Auth.module.css";
+import styles from "./styles/Auth.module.css";
 import { Navigate } from "./Basepath";
 import ClientApi from "./ClientApi";
 import { toast } from "react-toastify";

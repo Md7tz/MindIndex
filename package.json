@@ -4,7 +4,7 @@
   "description": "Flashcard webapp using spaced repetition, a technique from cognitive science for memorization.",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon -L --experimental-modules app.mjs",
+    "dev": "nodemon -L --experimental-modules --watch . --ext mjs,jsx,css  app.mjs",
     "build": "next build",
     "start": "next start",
     "test": "mocha tests/**/*.test.mjs"
@@ -57,6 +57,8 @@
     "passport-http-bearer": "^1.0.1",
     "pg": "^8.10.0",
     "react": "^18.2.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
     "react-toastify": "^9.1.2",
     "validatorjs": "^3.22.1"
