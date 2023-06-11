@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import FlashcardForm from "../../components/FlashcardForm";
 import styles from "../../components/styles/AddSet.module.css";
 
@@ -45,7 +45,8 @@ export default function AddSet() {
   };
 
   const addFlashcard = () => {
-    const newId = Math.max(...collection.flashcards.map((flashcard) => flashcard.id)) + 1;
+    const newId =
+      Math.max(...collection.flashcards.map((flashcard) => flashcard.id)) + 1;
     const newFlashcard = { id: newId, question: "", answer: "" };
     setCollection({
       ...collection,
@@ -54,8 +55,7 @@ export default function AddSet() {
   };
 
   const removeFlashcard = (id) => {
-    if (collection.flashcards.length === 2)
-      return;
+    if (collection.flashcards.length === 2) return;
 
     const updatedFlashcards = collection.flashcards.filter(
       (flashcard) => flashcard.id !== id
@@ -64,11 +64,20 @@ export default function AddSet() {
   };
 
   const moveFlashcard = (dragIndex, hoverIndex) => {
-    const flashcard = collection.flashcards[dragIndex];
-    const updatedFlashcards = [...collection.flashcards];
-    updatedFlashcards.splice(dragIndex, 1);
-    updatedFlashcards.splice(hoverIndex, 0, flashcard);
-    setCollection({ ...collection, flashcards: updatedFlashcards });
+    if (dragIndex === hoverIndex) {
+      // No need to reorder if the dragIndex and hoverIndex are the same
+      return;
+    }
+
+    const flashcardsCopy = [...collection.flashcards];
+
+    // Remove the dragged flashcard from its original position
+    const [draggedFlashcard] = flashcardsCopy.splice(dragIndex, 1);
+
+    // Insert the dragged flashcard at the hoverIndex
+    flashcardsCopy.splice(hoverIndex, 0, draggedFlashcard);
+
+    setCollection({ ...collection, flashcards: flashcardsCopy });
   };
 
   const handleSubmit = (event) => {
