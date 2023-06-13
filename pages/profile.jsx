@@ -5,18 +5,19 @@ import { Navigate } from "../components/Basepath";
 import ClientApi from "../components/ClientApi";
 
 export default function Profile() {
-  const [user, setUser] = useState({});
-  const [profile, setProfile] = useState({});
-
-  const [avatarURL, setAvatarURL] = useState("");
-  const [occupation, setOccupation] = useState("");
-  const [address, setAddress] = useState("");
-  const [bio, setBio] = useState("");
-  const [fullname, setFullname] = useState("");
-  const [email, setEmail] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const [selectedGender, setSelectedGender] = useState("");
-  const [interests, setInterests] = useState("");
+  const [user, setUser] = useState({
+    fullname: "",
+    email: "",
+  });
+  const [profile, setProfile] = useState({
+    avatar_url: "",
+    occupation: "",
+    address: "",
+    bio: "",
+    birth_date: "",
+    gender: "",
+    interests: "",
+  });
 
   const [profileEditMode, setProfileEditMode] = useState(false);
   const [collections, setCollections] = useState({});
@@ -52,18 +53,6 @@ export default function Profile() {
 
     getUser();
   }, []);
-
-  useEffect(() => {
-    setFullname(user?.fullname);
-    setEmail(user?.email);
-    setAvatarURL(profile?.avatar_url);
-    setOccupation(profile?.occupation);
-    setAddress(profile?.address);
-    setBio(profile?.bio);
-    setBirthDate(profile?.birth_date);
-    setSelectedGender(profile?.gender);
-    setInterests(profile?.interests);
-  }, [profile, user]);
 
   useEffect(() => {
     async function getProfile() {
@@ -152,13 +141,13 @@ export default function Profile() {
           Authorization: `Bearer ${await ClientApi.getToken()}`,
         },
         body: JSON.stringify({
-          bio,
-          avatar_url: avatarURL,
-          address,
-          birth_date: birthDate,
-          gender: selectedGender,
-          occupation,
-          interests,
+          bio: profile.bio,
+          avatar_url: profile.avatar_url,
+          address: profile.address,
+          birth_date: profile.birth_date,
+          gender: profile.gender,
+          occupation: profile.occupation,
+          interests: profile.interests,
         }),
       });
 
@@ -190,8 +179,10 @@ export default function Profile() {
                       type="text"
                       className="form-control"
                       placeholder="Paste your profile picture URL here"
-                      value={avatarURL}
-                      onChange={(e) => setAvatarURL(e.target.value)}
+                      value={profile?.avatar_url}
+                      onChange={(e) =>
+                        setProfile({ ...profile, avatar_url: e.target.value })
+                      }
                     />
                     <div className="mt-3">
                       <h4>{user.id ? user.username : ""}</h4>
@@ -199,15 +190,19 @@ export default function Profile() {
                         type="text"
                         className="form-control"
                         placeholder="Occupation/Job"
-                        value={occupation}
-                        onChange={(e) => setOccupation(e.target.value)}
+                        value={profile?.occupation}
+                        onChange={(e) =>
+                          setProfile({ ...profile, occupation: e.target.value })
+                        }
                       />
                       <input
                         type="text"
                         className="form-control"
                         placeholder="Address"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
+                        value={profile?.address}
+                        onChange={(e) =>
+                          setProfile({ ...profile, address: e.target.value })
+                        }
                       />
                       <div className="mt-3">
                         <h5>Bio</h5>
@@ -216,8 +211,10 @@ export default function Profile() {
                           type="text"
                           className="form-control"
                           placeholder="Bio"
-                          value={bio}
-                          onChange={(e) => setBio(e.target.value)}
+                          value={profile?.bio}
+                          onChange={(e) =>
+                            setProfile({ ...profile, bio: e.target.value })
+                          }
                         />
                       </div>
                     </div>
@@ -386,8 +383,10 @@ export default function Profile() {
                         type="text"
                         className="form-control"
                         placeholder="Full name"
-                        value={fullname}
-                        onChange={(e) => setFullname(e.target.value)}
+                        value={user?.fullname}
+                        onChange={(e) =>
+                          setUser({ ...user, fullname: e.target.value })
+                        }
                       />
                     </div>
                   </div>
@@ -401,8 +400,10 @@ export default function Profile() {
                         type="text"
                         className="form-control"
                         placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={user?.email}
+                        onChange={(e) =>
+                          setUser({ ...user, email: e.target.value })
+                        }
                       />
                     </div>
                   </div>
@@ -416,14 +417,17 @@ export default function Profile() {
                         type="date"
                         className="form-control"
                         placeholder="Birth Date"
-                        value={birthDate}
+                        value={profile?.birth_date}
                         onChange={(e) =>
-                          setBirthDate(
-                            new Date(e.target.value).toISOString().slice(0, 10)
-                          )
+                          setProfile({
+                            ...profile,
+                            birth_date: new Date(e.target.value)
+                              .toISOString()
+                              .slice(0, 10),
+                          })
                         }
                       />
-                      <p>Selected Date: {birthDate}</p>
+                      <p>Selected Date: {profile?.birth_date}</p>
                     </div>
                   </div>
                   <hr />
@@ -437,8 +441,13 @@ export default function Profile() {
                           type="radio"
                           className="m-1"
                           value="M"
-                          checked={selectedGender === "M"}
-                          onChange={(e) => setSelectedGender(e.target.value)}
+                          checked={profile?.gender === "M"}
+                          onChange={(e) =>
+                            setProfile({
+                              ...profile,
+                              gender: e.target.value,
+                            })
+                          }
                         />
                         Male {"(M)"}
                       </label>
@@ -448,8 +457,13 @@ export default function Profile() {
                           type="radio"
                           className="m-1"
                           value="F"
-                          checked={selectedGender === "F"}
-                          onChange={(e) => setSelectedGender(e.target.value)}
+                          checked={profile?.gender === "F"}
+                          onChange={(e) =>
+                            setProfile({
+                              ...profile,
+                              gender: e.target.value,
+                            })
+                          }
                         />
                         Female {"(F)"}
                       </label>
@@ -465,8 +479,10 @@ export default function Profile() {
                         type="text"
                         className="form-control"
                         placeholder="Your interests"
-                        value={interests}
-                        onChange={(e) => setInterests(e.target.value)}
+                        value={profile?.interests}
+                        onChange={(e) =>
+                          setProfile({ ...profile, interests: e.target.value })
+                        }
                       />
                     </div>
                   </div>
@@ -488,7 +504,7 @@ export default function Profile() {
                         Flashcard Collections
                       </h4>
                       <ul className="list-group">
-                        {collections.map((collection, index) => (
+                        {collections?.results.map((collection, index) => (
                           <a
                             href={`/collections/${index}`}
                             key={index}
@@ -513,7 +529,7 @@ export default function Profile() {
                             key={index}
                             className="list-group-item"
                           >
-                            {note}
+                            {note.title}
                           </a>
                         ))}
                         <li className="list-group-item"></li>
@@ -821,7 +837,9 @@ export default function Profile() {
 
                         <li
                           className={`page-item ${
-                            collections.total > collectionsPageNumber * pagesize ? "" : "disabled"
+                            collections.total > collectionsPageNumber * pagesize
+                              ? ""
+                              : "disabled"
                           }`}
                         >
                           <button
@@ -858,8 +876,8 @@ export default function Profile() {
                             ))
                           : "No notes left"}
 
-                        {notes?.length < pagesize &&
-                          Array(pagesize - notes?.length)
+                        {notes?.results?.length < pagesize &&
+                          Array(pagesize - notes?.results?.length)
                             .fill()
                             .map((_, index) => (
                               <li key={index} className="list-group-item">
@@ -893,7 +911,9 @@ export default function Profile() {
 
                         <li
                           className={`page-item ${
-                            notes.total > notesPageNumber * pagesize ? "" : "disabled"
+                            notes.total > notesPageNumber * pagesize
+                              ? ""
+                              : "disabled"
                           }`}
                         >
                           <button
