@@ -87,7 +87,7 @@ const SearchPage = () => {
             type={type}
             handleTabClick={handleTabClick}
           />
-          <h1 className="">Results for "{query}"</h1>
+          <h1 className="mt-3">Results for "{query}"</h1>
         </div>
       </header>
 

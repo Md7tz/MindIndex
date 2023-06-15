@@ -1,7 +1,7 @@
-// SearchPagination.js
+// Pagination.js
 import React from "react";
 
-const SearchPagination = ({ currentPage, handlePreviousPage, handleNextPage, hasMoreData }) => {
+const Pagination = ({ currentPage, handlePreviousPage, handleNextPage, hasMoreData }) => {
   return (
     <nav className="m-4">
       <ul className="pagination justify-content-center">
@@ -28,4 +28,4 @@ const SearchPagination = ({ currentPage, handlePreviousPage, handleNextPage, has
   );
 };
 
-export default SearchPagination;
+export default Pagination;
