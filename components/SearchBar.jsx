@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import ListView from "./ListView";
 import ClientApi from "./ClientApi";
 import styles from "./styles/SearchBar.module.css";
@@ -7,6 +8,7 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
 const SearchBar = () => {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState([]);
 
@@ -29,13 +31,25 @@ const SearchBar = () => {
     fetchData();
   }, [searchQuery]);
 
+  const onSubmit = (event) => {
+    event.preventDefault();
+
+    router.push({
+      pathname: "/search",
+      query: { query: searchQuery, type: "collections", page: 1 },
+    })
+  };
+
   const onChange = (event) => {
     const query = event.target.value;
     setSearchQuery(query);
   };
 
   return (
-    <form className="col d-flex justify-content-center input-group ms-lg-3 my-3 my-lg-0">
+    <form
+      className="col d-flex justify-content-center input-group ms-lg-3 my-3 my-lg-0"
+      onSubmit={onSubmit}
+    >
       <div className={`${styles.searchWrapper}`}>
         <input
           className={`${styles.searchInput}`}
@@ -52,7 +66,9 @@ const SearchBar = () => {
           fixedWidth
         />
       </div>
-      {searchQuery.trim() !== "" && <ListView data={data} query={searchQuery} />}
+      {searchQuery.trim() !== "" && (
+        <ListView data={data} query={searchQuery} />
+      )}
     </form>
   );
 };

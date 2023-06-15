@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 .PHONY: start log interact stop restart clean migrate rollback seed help
 
-DFLAGS := --verbose --detach --renew-anon-volumes --file docker-compose.yml
+DFLAGS := --detach --renew-anon-volumes
 DEXEC := docker exec -it app
 PROJECT_NAME := $(shell basename $(CURDIR))
 
@@ -15,7 +15,7 @@ help: # Show available commands/flags (DEFAULT COMMAND)
 	@egrep -h '\s#\s' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 start: # Start the application
-	docker compose up $(DFLAGS)
+	docker compose --file docker-compose.yml --verbose up $(DFLAGS) 
 
 log: # Print node logs into terminal stdout session
 	docker compose logs -f app
