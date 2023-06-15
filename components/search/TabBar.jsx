@@ -5,7 +5,6 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
 const TabBar = ({ query, type, handleTabClick }) => {
-  
 
   return (
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

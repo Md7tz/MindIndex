@@ -33,8 +33,11 @@ const SearchBar = () => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    router.push(`/search?query=${searchQuery}&type=collections&page=1`);
-    setSearchQuery("");
+
+    router.push({
+      pathname: "/search",
+      query: { query: searchQuery, type: "collections", page: 1 },
+    })
   };
 
   const onChange = (event) => {
