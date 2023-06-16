@@ -5,7 +5,7 @@ import { HTTP } from "../config/constants.mjs";
 export default class ProfileController {
   /**
    * @openapi
-   * /api/users/{id}/profiles:
+   * /api/user/{id}/profile:
    *   get:
    *     summary: Get the profile of a user by his ID.
    *     parameters:
@@ -162,6 +162,7 @@ export default class ProfileController {
           gender,
           occupation,
           interests,
+          socials,
         } = req.body;
 
         // Update the profile with the new data
@@ -175,6 +176,7 @@ export default class ProfileController {
             gender,
             occupation,
             interests,
+            socials,
           });
 
         // If no profile was found when prompted to update, return a 404 response.
