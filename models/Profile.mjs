@@ -17,6 +17,7 @@ import { MAX_STRING_LENGTH } from "../config/constants.mjs";
  * @property {string} gender        - The user's gender. Maximum length is 1 character (M or F).
  * @property {string} occupation    - The user's occupation.
  * @property {string} interests     - The user's interests.
+ * @property {object} socials       - The user's socials.
  * @property {string} created_at    - The timestamp when the profile record was created.
  * @property {string} updated_at    - The timestamp when the profile record was last updated.
  * @property {string} deleted_at    - The timestamp when the profile record was soft-deleted.
@@ -53,6 +54,7 @@ export default class Profile extends Model {
       gender: { type: "string", maxLength: 1 },
       occupation: { type: "string", maxLength: MAX_STRING_LENGTH },
       interests: { type: "string", maxLength: MAX_STRING_LENGTH },
+      socials: { type: "object" },
       created_at: { type: "string" },
       updated_at: { type: ["string", "null"] },
       deleted_at: { type: ["string", "null"] },
