@@ -54,7 +54,19 @@ export default class Profile extends Model {
       gender: { type: "string", maxLength: 1 },
       occupation: { type: "string", maxLength: MAX_STRING_LENGTH },
       interests: { type: "string", maxLength: MAX_STRING_LENGTH },
-      socials: { type: "object" },
+      socials: {
+        type: "object",
+        properties: {
+          facebook: { type: ["string", "null"], maxLength: MAX_STRING_LENGTH },
+          twitter: { type: ["string", "null"], maxLength: MAX_STRING_LENGTH },
+          instagram: { type: ["string", "null"], maxLength: MAX_STRING_LENGTH },
+          github: { type: ["string", "null"], maxLength: MAX_STRING_LENGTH },
+          website: { type: ["string", "null"], maxLength: MAX_STRING_LENGTH }
+        },
+        additionalProperties: false,
+        minProperties: 1,
+        maxProperties: 5,
+      },
       created_at: { type: "string" },
       updated_at: { type: ["string", "null"] },
       deleted_at: { type: ["string", "null"] },
