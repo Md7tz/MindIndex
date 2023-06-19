@@ -96,21 +96,26 @@ class ClientApi {
 
             return true;
         }).catch((error) => {
-            console.error("Error:", error);
+            // console.error("Error:", error);
             Event.emit("token:expired");
+            
+            if(this.user || this.token)
+                this.logout(false);
+            
             if(window.location.pathname !== "/")
                 Navigate.replace("/");
 
         });
     }
 
-    async logout() {
+    async logout(redirect = true) {
         await Storage.remove(`${this.prefix}@token`);
         await Storage.remove(`${this.prefix}@user`);
         this.token = null;
         this.user = null;
 
-        Navigate.push("/");
+        if(redirect)
+            Navigate.push("/");
     }
 }
 
