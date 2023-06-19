@@ -27,7 +27,7 @@ export default function ProfileForm({
     e.preventDefault();
 
     try {
-      const response = await fetch(`/api/user/${user.id}/profile`, {
+      const response = await fetch(`/api/users/${user.id}/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -47,13 +47,13 @@ export default function ProfileForm({
 
       if (response.ok) {
         const data = await response.json();
-        toast.success("Profile updated successfully!");
+        toast.success(data.message);
         Navigate.replace("/profile");
       } else {
         const error = await response.json();
         console.log(error);
-        toast.error("Please fill in all the fields.");
-        setProfileEditMode(false);
+        toast.error(error.message);
+        // setProfileEditMode(false);
       }
     } catch (error) {
       toast.error("Error: " + error);

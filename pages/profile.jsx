@@ -66,7 +66,7 @@ export default function Profile() {
     async function getProfile() {
       if (user.id) {
         try {
-          const res = await fetch(`/api/user/${user.id}/profile`, {
+          const res = await fetch(`/api/users/${user.id}/profile`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -90,7 +90,7 @@ export default function Profile() {
       if (user.id) {
         try {
           const res = await fetch(
-            `/api/user/${user.id}/collections?page=${collectionsPageNumber}&pagesize=${pagesize}`,
+            `/api/users/${user.id}/collections?page=${collectionsPageNumber}&pagesize=${pagesize}`,
             {
               method: "GET",
               headers: {
@@ -117,7 +117,7 @@ export default function Profile() {
       if (user.id) {
         try {
           const res = await fetch(
-            `/api/user/${user.id}/notes?page=${notesPageNumber}&pagesize=${pagesize}`,
+            `/api/users/${user.id}/notes?page=${notesPageNumber}&pagesize=${pagesize}`,
             {
               method: "GET",
               headers: {

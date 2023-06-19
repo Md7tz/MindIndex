@@ -5,7 +5,7 @@ import { HTTP } from "../config/constants.mjs";
 export default class ProfileController {
   /**
    * @openapi
-   * /api/user/{id}/profile:
+   * /api/users/{id}/profile:
    *   get:
    *     summary: Get the profile of a user by his ID.
    *     parameters:
