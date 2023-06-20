@@ -5,6 +5,7 @@ import { faStar, faRocket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Event from "../components/Event";
 import ClientApi from "../components/ClientApi";
+import { toast } from "react-toastify";
 
 export default function Landing() {
   const [user, setUser] = useState(null);
@@ -20,6 +21,42 @@ export default function Landing() {
   useEffect(() => {
     Event.off("welcome", () => {});
   }, []);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get("success");
+    const canceled = urlParams.get("canceled");
+
+    if (success === "true") {
+      // Payment was successful
+      toast.success("Payment was successful!");
+    } else if (canceled === "true") {
+      // Payment was canceled
+      toast.error("Payment was canceled!");
+    }
+  }, []);
+
+  const handleCheckout = async (e) => {
+    e.preventDefault();
+    fetch("/checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return res.json().then((json) => Promise.reject(json));
+      })
+      .then(({ url }) => {
+        window.location = url;
+      })
+      .catch((e) => {
+        console.error(e.error);
+      });
+  };
 
   return (
     <>
@@ -147,7 +184,10 @@ export default function Landing() {
                 </div>
               </div>
               <div className="card-footer d-flex justify-content-center">
-                <a className="btn btn-warning btn-block" href="#!">
+                <button
+                  className="btn btn-warning btn-block"
+                  onClick={handleCheckout}
+                >
                   <span style={{ fontWeight: "bold" }}>Go Premium</span>
                   <FontAwesomeIcon
                     icon={faRocket}
@@ -155,7 +195,7 @@ export default function Landing() {
                     size="1x"
                     fixedWidth
                   />
-                </a>
+                </button>
               </div>
             </div>
           </div>

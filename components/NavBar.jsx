@@ -15,7 +15,6 @@ import {
   faStickyNote,
 } from "@fortawesome/free-solid-svg-icons";
 import Basepath from "./Basepath";
-import Navigate from "./Basepath";
 import ClientApi from "./ClientApi";
 
 export default function NavBar() {
