@@ -1,13 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../components/styles/Landing.module.css";
 import Image from "next/image";
 import { faStar, faRocket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Event from "../components/Event";
+import ClientApi from "../components/ClientApi";
 
 export default function Landing() {
+  const [user, setUser] = useState(null);
+
   useEffect(() => {
-    Event.off("welcome", ()=>{});
+    const fetchData = async () => {
+      setUser(await ClientApi.getUser());
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    Event.off("welcome", () => {});
   }, []);
 
   return (
@@ -29,15 +40,16 @@ export default function Landing() {
               Join students using MindIndex’s science-backed flashcards,
               practice questions to improve your grades and reach your goals.
             </p>
-
-            <a
-              className="btn btn-success"
-              aria-current="page"
-              href="#registerForm"
-              data-bs-toggle="modal"
-            >
-              Sign Up for free
-            </a>
+            {!user?.id && (
+              <a
+                className="btn btn-success"
+                aria-current="page"
+                href="#registerForm"
+                data-bs-toggle="modal"
+              >
+                Sign Up for free
+              </a>
+            )}
           </div>
         </div>
         <div className="row gx-4 gx-lg-5">
