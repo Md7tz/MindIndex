@@ -118,7 +118,7 @@ export default class CollectionController {
    *                 type: string
    *               description:
    *                 type: string
-   *               cards:
+   *               flashcards:
    *                 type: array
    *                 items:
    *                   type: object
@@ -130,7 +130,7 @@ export default class CollectionController {
    *             example:
    *               name: My Collection
    *               description: A collection of flashcards.
-   *               cards:
+   *               flashcards:
    *                 - question: What is the capital of France?
    *                   answer: Paris
    *     responses:
@@ -144,9 +144,9 @@ export default class CollectionController {
       const validation = new Validator(req.body, {
         name: "required|string",
         description: "required|string",
-        cards: "array|min:1",
-        "cards.*.question": "required|string",
-        "cards.*.answer": "required|string",
+        flashcards: "array|min:1",
+        "flashcards.*.question": "required|string",
+        "flashcards.*.answer": "required|string",
       });
 
       if (validation.fails()) {
@@ -156,13 +156,13 @@ export default class CollectionController {
         });
       }
 
-      const { name, description, cards } = req.body;
+      const { name, description, flashcards } = req.body;
       const user_id = req.user.id;
       await transaction(Collection.knex(), async (trx) => {
         const collection = await Collection.query(trx).insertGraph({
           name,
           description,
-          flashcards: cards,
+          flashcards,
           user_id,
         });
 
@@ -200,7 +200,7 @@ export default class CollectionController {
    *                 type: string
    *               description:
    *                 type: string
-   *               cards:
+   *               flashcards:
    *                 type: array
    *                 items:
    *                   type: object
@@ -214,7 +214,7 @@ export default class CollectionController {
    *             example:
    *               name: Updated Collection
    *               description: Updated collection description.
-   *               cards:
+   *               flashcards:
    *                 - id: 1
    *                   question: Updated question
    *                   answer: Updated answer
@@ -235,9 +235,9 @@ export default class CollectionController {
       const validation = new Validator(req.body, {
         name: "required|string",
         description: "required|string",
-        cards: "array",
-        "cards.*.question": "required|string",
-        "cards.*.answer": "required|string",
+        flashcards: "array",
+        "flashcards.*.question": "required|string",
+        "flashcards.*.answer": "required|string",
       });
 
       if (validation.fails()) {
@@ -247,7 +247,7 @@ export default class CollectionController {
         });
       }
 
-      const { name, description, cards } = req.body;
+      const { name, description, flashcards } = req.body;
 
       await transaction(Collection.knex(), async (trx) => {
         // Update the collection
@@ -270,7 +270,7 @@ export default class CollectionController {
         // Create new associated flashcards
         const flashcards = await updatedCollection
           .$relatedQuery("flashcards", trx)
-          .insertAndFetch(cards);
+          .insertAndFetch(flashcards);
 
         // Fetch the updated collection with the flashcards
         updatedCollection = await Collection.query(trx)
