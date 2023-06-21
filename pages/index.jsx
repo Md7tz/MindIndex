@@ -36,9 +36,9 @@ export default function Landing() {
     }
   }, []);
 
-  const handleCheckout = async (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    fetch("/checkout", {
+    fetch("/subscribe", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -184,18 +184,37 @@ export default function Landing() {
                 </div>
               </div>
               <div className="card-footer d-flex justify-content-center">
-                <button
-                  className="btn btn-warning btn-block"
-                  onClick={handleCheckout}
-                >
-                  <span style={{ fontWeight: "bold" }}>Go Premium</span>
-                  <FontAwesomeIcon
-                    icon={faRocket}
-                    style={{ color: "dark" }}
-                    size="1x"
-                    fixedWidth
-                  />
-                </button>
+                {user?.id ? (
+                  <button
+                    className="btn btn-warning btn-block"
+                    onClick={handleSubscribe}
+                  >
+                    <span style={{ fontWeight: "bold" }}>Go Premium</span>
+                    <FontAwesomeIcon
+                      icon={faRocket}
+                      style={{ color: "dark" }}
+                      size="1x"
+                      fixedWidth
+                    />
+                  </button>
+                ) : (
+                  <a
+                    className="btn btn-warning btn-block"
+                    aria-current="page"
+                    href="#loginForm"
+                    data-bs-toggle="modal"
+                  >
+                    <span style={{ fontWeight: "bold" }}>
+                      Login and Go Premium
+                    </span>
+                    <FontAwesomeIcon
+                      icon={faRocket}
+                      style={{ color: "dark" }}
+                      size="1x"
+                      fixedWidth
+                    />
+                  </a>
+                )}
               </div>
             </div>
           </div>
