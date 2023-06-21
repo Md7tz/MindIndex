@@ -27,7 +27,7 @@ export default function ProfileForm({
     e.preventDefault();
 
     try {
-      const response = await fetch(`/api/users/${user.id}/profile`, {
+      const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH + `/api/users/${user.id}/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
