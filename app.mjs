@@ -62,7 +62,9 @@ server.use(express.static("public"));
 server.use(`/api`, api);
 server.post("/subscribe", async (req, res) => {
   try {
+    const { email } = req.body;
     const session = await stripeInstance.checkout.sessions.create({
+      customer_email: email,
       line_items: [
         {
           price: "price_1NKw9nEYJpcZy5dC7dAqMFBL",

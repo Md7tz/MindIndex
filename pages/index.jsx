@@ -38,11 +38,17 @@ export default function Landing() {
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
+    if (!user.id) {
+      return;
+    }
     fetch("/subscribe", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        email: user.email,
+      }),
     })
       .then((res) => {
         if (res.ok) {
