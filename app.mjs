@@ -60,7 +60,7 @@ server.use(express.static("public"));
 
 // Routers
 server.use(`/api`, api);
-server.post("/checkout", async (req, res) => {
+server.post("/subscribe", async (req, res) => {
   try {
     const session = await stripeInstance.checkout.sessions.create({
       line_items: [
