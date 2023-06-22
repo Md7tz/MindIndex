@@ -14,8 +14,7 @@ import {
   faBook,
   faStickyNote,
 } from "@fortawesome/free-solid-svg-icons";
-import Basepath from "./Basepath";
-import Navigate from "./Basepath";
+import Basepath, { Navigate } from "./Basepath";
 import ClientApi from "./ClientApi";
 
 export default function NavBar() {
@@ -42,7 +41,7 @@ export default function NavBar() {
         <div className={`col d-flex ${styles.brand}`}>
           <a
             className={`navbar-brand me-1 ${styles.logolink}`}
-            href={Basepath.get("/")}
+            href={Basepath.get("/") || "#"}
           >
             <Image
               src={"/img/Logo.jpg"}
@@ -54,7 +53,7 @@ export default function NavBar() {
           </a>
           <a
             className={`navbar-brand text-dark ${styles.milink} fs-7 pe-3 m-1`}
-            href={Basepath.get("/")}
+            href={Basepath.get("/") || "#"}
           >
             MindIndex
           </a>
@@ -80,7 +79,7 @@ export default function NavBar() {
                   <li>
                     <a
                       className="dropdown-item"
-                      href={Basepath.get("/study-set/add")}
+                      href={Basepath.get("/study-set/add") || "#"}
                     >
                       <FontAwesomeIcon icon={faBook} className="me-2" />
                       Study Set
@@ -98,10 +97,10 @@ export default function NavBar() {
               <a
                 className="nav-link active text-dark"
                 aria-current="page"
-                href={Basepath.get("/profile")}
-                data-bs-toggle="modal"
+                href={Basepath.get("/profile")||"#"}
               >
-                <div className="d-flex align-items-center ps-2">
+                <div
+                  className="d-flex align-items-center ps-2 cursor">
                   <FontAwesomeIcon
                     icon={faCircleUser}
                     style={{ color: "dark" }}
