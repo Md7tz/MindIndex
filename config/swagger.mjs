@@ -14,7 +14,7 @@ const swaggerDefinition = {
     },
     servers: [
         {
-            url: 'http://localhost:3000',
+            url: process.env.NEXT_PUBLIC_BASEPATH,
             description: 'Development server',
         }
     ],
@@ -22,7 +22,7 @@ const swaggerDefinition = {
 
 const options = {
     swaggerDefinition,
-    apis: ['./routes/*.mjs', './controllers/*.mjs'],
+    apis: ['./routes/*.mjs', './controllers/*.mjs', './middlewares/*.mjs'],
 };
 
 const swaggerSpec = swaggerJsdoc(options);

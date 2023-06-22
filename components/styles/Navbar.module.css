@@ -1,0 +1,26 @@
+.custom-navbar {
+  background-color: rgb(255, 255, 255);
+  height: 55px;
+}
+
+.logo {
+  border-radius: 50%;
+}
+
+.brand > .logolink {
+  transition: 0.5s ease-in-out;
+}
+
+.brand:hover > .logolink {
+  transform: translate(130%) scale(1.1);
+}
+
+.brand > .milink {
+  opacity: 1;
+  transition: 0.5s ease-in-out;
+}
+
+.brand:hover > .milink {
+  transform: translate(-50%);
+  opacity: 0;
+}

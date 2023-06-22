@@ -106,3 +106,4 @@ dist
 
 # Firebase files
 firebase-debug.log
+.firebase

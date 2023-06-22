@@ -1,0 +1,84 @@
+.group {
+    position: relative;
+    margin-bottom: 45px;
+}
+
+.inputField {
+    font-size: 18px;
+    padding: 10px 10px 10px 5px;
+    display: block;
+    border: none;
+    border-bottom: 1px solid #757575;
+    width: 100%;
+}
+
+.inputField:focus {
+    outline: none;
+}
+
+/* Active state */
+.inputField:focus~.label,
+.inputField:valid~.label {
+    top: -20px;
+    font-size: 14px;
+    color: #5264AE;
+}
+
+/* Bottom bars */
+.bar {
+    position: relative;
+    display: block;
+}
+
+.bar:before,
+.bar:after {
+    content: "";
+    height: 2px;
+    width: 0;
+    bottom: 1px;
+    position: absolute;
+    background: #5264AE;
+    transition: 0.2s ease all;
+}
+
+.bar:before {
+    left: 50%;
+}
+
+.bar:after {
+    right: 50%;
+}
+
+/* Active state */
+.inputField:focus~.bar:before,
+.inputField:focus~.bar:after {
+    width: 50%;
+}
+
+/* Highlighter */
+.highlight {
+    position: absolute;
+    height: 60%;
+    width: 100px;
+    top: 25%;
+    left: 0;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* Active state */
+.inputField:focus~.highlight {
+    animation: inputHighlighter 0.3s ease;
+}
+
+/* Animations */
+@keyframes inputHighlighter {
+    from {
+        background: #5264AE;
+    }
+
+    to {
+        width: 0;
+        background: transparent;
+    }
+}
