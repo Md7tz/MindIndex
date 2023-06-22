@@ -3,6 +3,7 @@ import next from "next";
 import cors from "cors";
 import compression from "compression";
 import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 import multer from "multer";
 import knex from "knex";
 import morgan from "morgan";
@@ -60,6 +61,7 @@ server.use(express.static("public"));
 
 // Routers
 server.use(`/api`, api);
+// -----------------------------------------------
 server.post("/subscribe", async (req, res) => {
   try {
     const { email } = req.body;
@@ -82,6 +84,60 @@ server.post("/subscribe", async (req, res) => {
     res.status(err.statusCode || 500).json(err.message);
   }
 });
+
+server.post(
+  "/webhook",
+  bodyParser.raw({ type: "application/json" }),
+  async (request, response) => {
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    const payload = request.body;
+    const sig = request.headers["stripe-signature"];
+
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+    } catch (err) {
+      return response.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    switch (event.type) {
+      case "payment_intent.succeeded":
+        const paymentIntent = event.data.object;
+        console.log(
+          `PaymentIntent for ${paymentIntent.amount} was successful!`
+        );
+        // Then define and call a method to handle the successful payment intent.
+        // handlePaymentIntentSucceeded(paymentIntent);
+        break;
+      case "payment_method.attached":
+        const paymentMethod = event.data.object;
+        // Then define and call a method to handle the successful attachment of a PaymentMethod.
+        // handlePaymentMethodAttached(paymentMethod);
+        break;
+      case "checkout.session.completed":
+        const sessionWithLineItems = await stripe.checkout.sessions.retrieve(
+          event.data.object.id,
+          {
+            expand: ["line_items"],
+          }
+        );
+        const lineItems = sessionWithLineItems.line_items;
+
+        fulfillOrder(lineItems);
+      default:
+        // Unexpected event type
+        console.log(`Unhandled event type ${event.type}.`);
+    }
+
+    response.status(200).end();
+  }
+);
+
+const fulfillOrder = (lineItems) => {
+  console.log("Fulfilling order", lineItems);
+};
+// -----------------------------------------------
 
 // Serve Swagger UI at /docs
 server.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
