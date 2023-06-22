@@ -49,7 +49,6 @@ const server = express();
 
 // Middleware
 server.use(cors());
-server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 server.use(cookieParser());
 server.use(compression());
@@ -61,8 +60,9 @@ server.use(express.static("public"));
 
 // Routers
 server.use(`/api`, api);
-// -----------------------------------------------
-server.post("/subscribe", async (req, res) => {
+
+// Stripe endpoints
+server.post("/subscribe", bodyParser.json(), async (req, res) => {
   try {
     const { email } = req.body;
     const session = await stripeInstance.checkout.sessions.create({
@@ -89,15 +89,19 @@ server.post(
   "/webhook",
   bodyParser.raw({ type: "application/json" }),
   async (request, response) => {
-    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
     const payload = request.body;
     const sig = request.headers["stripe-signature"];
 
     let event;
 
     try {
-      event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+      event = stripeInstance.webhooks.constructEvent(
+        payload,
+        sig,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
     } catch (err) {
+      console.log("error with webhook: ", err);
       return response.status(400).send(`Webhook Error: ${err.message}`);
     }
 
@@ -116,12 +120,13 @@ server.post(
         // handlePaymentMethodAttached(paymentMethod);
         break;
       case "checkout.session.completed":
-        const sessionWithLineItems = await stripe.checkout.sessions.retrieve(
-          event.data.object.id,
-          {
-            expand: ["line_items"],
-          }
-        );
+        const sessionWithLineItems =
+          await stripeInstance.checkout.sessions.retrieve(
+            event.data.object.id,
+            {
+              expand: ["line_items"],
+            }
+          );
         const lineItems = sessionWithLineItems.line_items;
 
         fulfillOrder(lineItems);
@@ -137,7 +142,9 @@ server.post(
 const fulfillOrder = (lineItems) => {
   console.log("Fulfilling order", lineItems);
 };
-// -----------------------------------------------
+
+// use express.json() instead of body-parser for the rest of the api routes
+server.use(express.json());
 
 // Serve Swagger UI at /docs
 server.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));

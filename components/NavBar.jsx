@@ -115,7 +115,6 @@ export default function NavBar() {
                 className="nav-link active text-dark border-0 bg-transparent"
                 aria-current="page"
                 onClick={onClickLogout}
-                data-bs-toggle="modal"
               >
                 <div className="d-flex align-items-center ps-2">
                   <FontAwesomeIcon
