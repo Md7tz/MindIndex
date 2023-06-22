@@ -27,12 +27,19 @@ export default function Landing() {
     const success = urlParams.get("success");
     const canceled = urlParams.get("canceled");
 
+    const handlePaymentStatus = (message) => {
+      toast[message.type](message.text);
+      setTimeout(() => {
+        window.location.replace(
+          window.location.href.replace(window.location.search, "")
+        );
+      }, 2000);
+    };
+
     if (success === "true") {
-      // Payment was successful
-      toast.success("Payment was successful!");
+      handlePaymentStatus({ type: "success", text: "Payment was successful!" });
     } else if (canceled === "true") {
-      // Payment was canceled
-      toast.error("Payment was canceled!");
+      handlePaymentStatus({ type: "error", text: "Payment was canceled!" });
     }
   }, []);
 
