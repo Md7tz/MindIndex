@@ -5,7 +5,7 @@ dotenv.config();
  * @type { Object.<string, import("knex").Knex.Config> }
  */
 module.exports = {
-   production: {
+  production: {
     client: process.env.DB_CONNECTION || 'pg',
     useNullAsDefault: true,
     connection: {

@@ -27,11 +27,12 @@ const upload = multer();
 let dbConfig = null;
 
 switch (process.env.NODE_ENV) {
+    case 'production':
+        dbConfig = _dbConfig.production;
+        break;
     case 'development':
         dbConfig = _dbConfig.development;
         break;
-    case 'production':
-	dbConfig = _dbConfig.production;
     case 'test':
         dbConfig = _dbConfig.docker;
         break;
