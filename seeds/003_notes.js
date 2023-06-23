@@ -1,10 +1,12 @@
+require("dotenv").config();
+
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> } 
  */
 exports.seed = async function (knex) {
   // Get First user id
-  const user = await knex('users').first()
+  const user = await knex('users').where({ username: process.env.DEFAULT_USER }).first()
   const user_id = user.id
 
   // Deletes ALL existing entries
