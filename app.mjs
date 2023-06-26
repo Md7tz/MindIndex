@@ -9,6 +9,7 @@ import knex from "knex";
 import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import { Model } from "objection";
+import PaymentController from "./controllers/Payment.mjs";
 
 import _dbConfig from "./knexfile.js";
 import swaggerDocs from "./config/swagger.mjs";
@@ -58,15 +59,12 @@ server.use(morgan("dev"));
 // Serve static files from the 'public' directory
 server.use(express.static("public"));
 
-// Routers
-server.use(`/api`, api);
-
 // Stripe endpoints
 server.post("/subscribe", bodyParser.json(), async (req, res) => {
   try {
-    const { email } = req.body;
+    const { user } = req.body;
     const session = await stripeInstance.checkout.sessions.create({
-      customer_email: email,
+      customer_email: user.email,
       line_items: [
         {
           price: "price_1NKw9nEYJpcZy5dC7dAqMFBL",
@@ -77,6 +75,9 @@ server.post("/subscribe", bodyParser.json(), async (req, res) => {
       payment_method_types: ["card"],
       success_url: `${req.headers.origin}/?success=true`,
       cancel_url: `${req.headers.origin}/?canceled=true`,
+      metadata: {
+        userId: user.id,
+      },
     });
     res.json({ url: session.url });
     // res.redirect(303, session.url);
@@ -106,45 +107,58 @@ server.post(
     }
 
     switch (event.type) {
-      case "payment_intent.succeeded":
-        const paymentIntent = event.data.object;
-        console.log(
-          `PaymentIntent for ${paymentIntent.amount} was successful!`
-        );
-        // Then define and call a method to handle the successful payment intent.
-        // handlePaymentIntentSucceeded(paymentIntent);
-        break;
-      case "payment_method.attached":
-        const paymentMethod = event.data.object;
-        // Then define and call a method to handle the successful attachment of a PaymentMethod.
-        // handlePaymentMethodAttached(paymentMethod);
-        break;
-      case "checkout.session.completed":
-        const sessionWithLineItems =
-          await stripeInstance.checkout.sessions.retrieve(
-            event.data.object.id,
-            {
-              expand: ["line_items"],
-            }
-          );
-        const lineItems = sessionWithLineItems.line_items;
+      case "checkout.session.completed": {
+        const session = event.data.object;
+        // Save this payment in the database, payment_status can still be 'awaiting payment'
+        await PaymentController.createPayment(session);
 
-        fulfillOrder(lineItems);
-      default:
-        // Unexpected event type
-        console.log(`Unhandled event type ${event.type}.`);
+        // Check if the order is paid
+        // A delayed notification payment will have an `unpaid` status, as
+        // the server is still waiting for funds to be transferred from the customer's
+        // account.
+        if (session.payment_status === "paid") {
+          PaymentController.fulfillPayment(session);
+          console.log("Payment fulfilled from completed checkout session");
+        }
+
+        break;
+      }
+
+      case "checkout.session.async_payment_succeeded": {
+        const session = event.data.object;
+
+        // Fulfill the purchase as the payment is successful
+        PaymentController.fulfillPayment(session);
+        console.log("Payment fulfilled from successful async payment");
+
+        break;
+      }
+
+      case "checkout.session.async_payment_failed": {
+        const session = event.data.object;
+
+        // Send an email to the customer asking them to retry their order
+        emailCustomerAboutFailedPayment(session);
+        console.log("Payment failed from async payment");
+
+        break;
+      }
     }
 
     response.status(200).end();
   }
 );
 
-const fulfillOrder = (lineItems) => {
-  console.log("Fulfilling order", lineItems);
+const emailCustomerAboutFailedPayment = (session) => {
+  // send email to customer using session object after payment failure
+  console.log("Emailing customer", session);
 };
 
 // use express.json() instead of body-parser for the rest of the api routes
 server.use(express.json());
+
+// Routers
+server.use(`/api`, api);
 
 // Serve Swagger UI at /docs
 server.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
