@@ -54,7 +54,7 @@ export default function Landing() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email: user.email,
+        user: user,
       }),
     })
       .then((res) => {
