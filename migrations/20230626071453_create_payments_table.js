@@ -12,10 +12,7 @@ exports.up = function (knex) {
       table.string("status", 20);
       table.string("transaction_id", 255);
       table.timestamp("created_at").defaultTo(knex.fn.now()).notNullable();
-      table
-        .timestamp("updated_at")
-        .defaultTo(knex.fn.now())
-        .onUpdate(knex.fn.now());
+      table.timestamp("updated_at");
       table.timestamp("deleted_at").nullable();
       table.foreign("user_id").references("users.id");
     })
