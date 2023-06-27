@@ -1,9 +1,9 @@
 import React from "react";
-import styles from "../components/styles/Profile.module.css";
+import styles from "../styles/Profile.module.css";
 
-import UserCollections from "../components/UserCollections";
-import UserNotes from "../components/UserNotes";
-import Socials from "../components/Socials";
+import UserCollections from "./UserCollections";
+import UserNotes from "./UserNotes";
+import Socials from "./Socials";
 
 export default function UserProfile({
   user,

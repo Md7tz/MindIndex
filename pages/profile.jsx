@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import styles from "../components/styles/Profile.module.css";
-import ClientApi from "../components/ClientApi";
 
-import ProfileForm from "../components/ProfileForm";
-import UserProfile from "../components/UserProfile";
+import ProfileForm from "../components/profile/ProfileForm";
+import UserProfile from "../components/profile/UserProfile";
+import ClientApi from "../components/ClientApi";
+import styles from "../components/styles/Profile.module.css";
 
 export default function Profile() {
   const [user, setUser] = useState({

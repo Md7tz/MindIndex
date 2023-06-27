@@ -1,13 +1,7 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFacebook,
-  faGoogle,
-  faTwitter,
-} from "@fortawesome/free-brands-svg-icons";
-import styles from "./styles/Auth.module.css";
+import styles from "../styles/Auth.module.css";
 import { toast } from "react-toastify";
-import { Navigate } from "./Basepath";
+import { Navigate } from "../Basepath";
 
 export default function RegisterForm() {
   const [username, setUsername] = useState("");
@@ -16,8 +10,8 @@ export default function RegisterForm() {
   const [email, setEmail] = useState("");
   const [fullname, setFullname] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     try {
       const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH + "/api/auth/register", {
@@ -83,32 +77,6 @@ export default function RegisterForm() {
                 aria-labelledby="tab-register"
               >
                 <form onSubmit={handleSubmit}>
-                  {/* <div className="text-center mb-2">
-                    <p>Continue with:</p>
-                    <button
-                      type="button"
-                      className="btn btn-link btn-floating mx-1"
-                    >
-                      <FontAwesomeIcon icon={faGoogle} size="2x" />
-                    </button>
-
-                    <button
-                      type="button"
-                      className="btn btn-link btn-floating mx-1"
-                    >
-                      <FontAwesomeIcon icon={faFacebook} size="2x" />
-                    </button>
-
-                    <button
-                      type="button"
-                      className="btn btn-link btn-floating mx-1"
-                    >
-                      <FontAwesomeIcon icon={faTwitter} size="2x" />
-                    </button>
-                  </div>
-
-                  <p className="text-center">or:</p> */}
-
                   <div className="form-outline mb-4">
                     <input
                       type="text"
@@ -164,7 +132,7 @@ export default function RegisterForm() {
                     />
                   </div>
 
-                  <div className="form-check d-flex justify-content-center mb-2">
+                  {/* <div className="form-check d-flex justify-content-center mb-2">
                     <input
                       className="form-check-input me-2"
                       type="checkbox"
@@ -175,7 +143,7 @@ export default function RegisterForm() {
                     <label className="form-check-label" htmlFor="registerCheck">
                       I have read and agree to the terms
                     </label>
-                  </div>
+                  </div> */}
 
                   <div className="text-center">
                     <button type="submit" className="btn btn-success">

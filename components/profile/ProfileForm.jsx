@@ -1,12 +1,12 @@
 import React from "react";
-import styles from "../components/styles/Profile.module.css";
+import styles from "../styles/Profile.module.css";
 import { toast } from "react-toastify";
-import { Navigate } from "../components/Basepath";
+import { Navigate } from "../Basepath";
 
-import ClientApi from "../components/ClientApi";
+import ClientApi from "../ClientApi";
 
-import UserCollections from "../components/UserCollections";
-import UserNotes from "../components/UserNotes";
+import UserCollections from "./UserCollections";
+import UserNotes from "./UserNotes";
 
 export default function ProfileForm({
   user,

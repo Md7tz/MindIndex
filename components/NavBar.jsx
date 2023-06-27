@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styles from "./styles/Navbar.module.css";
 import Image from "next/image";
-import LoginForm from "./LoginForm";
-import RegisterForm from "./RegisterForm";
+import LoginForm from "./auth/LoginForm";
+import RegisterForm from "./auth/RegisterForm";
 
-import SearchBar from "./SearchBar";
+import SearchBar from "./search/SearchBar";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

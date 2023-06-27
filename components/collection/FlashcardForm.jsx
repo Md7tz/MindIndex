@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGripLines, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useDrag, useDrop } from "react-dnd";
-import styles from "./styles/AddSet.module.css";
+import styles from "../styles/AddSet.module.css";
 import { useEffect, useState } from "react";
 /**
  * FlashcardForm Component
