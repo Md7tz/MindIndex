@@ -73,9 +73,9 @@ export default function LoginForm() {
             <div className="modal-body">
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label className="mb-2">Email address</label>
+                  <label className="mb-2">Username or Email address</label>
                   <input
-                    type="email"
+                    type="text"
                     className="form-control"
                     placeholder="Enter email"
                     value={username}

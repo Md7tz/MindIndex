@@ -16,7 +16,11 @@ const swaggerDefinition = {
         {
             url: process.env.NEXT_PUBLIC_BASEPATH,
             description: 'Development server',
-        }
+        },
+        {
+            url: `localhost:${process.env.PORT}`,
+            description: 'Local server',
+        },
     ],
 };
 
