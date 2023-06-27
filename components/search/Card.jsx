@@ -1,5 +1,5 @@
 import React from "react";
-
+import NoteForm from "../NoteForm";
 const Card = ({ result }) => {
   return (
     <div className="card bg-dark text-white h-100">
@@ -15,11 +15,12 @@ const Card = ({ result }) => {
             : result.description || result.body}
         </p>
         <div className="mt-auto d-flex justify-content-end">
-          <a href="#" className="btn btn-primary">
+          <a href={`#view${result.id}`} className="btn btn-primary" data-bs-toggle="modal">
             View
           </a>
         </div>
       </div>
+      <NoteForm mode={"view"} index={result.id}/>
     </div>
   );
 };

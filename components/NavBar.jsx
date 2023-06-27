@@ -90,7 +90,7 @@ export default function NavBar() {
                   <li>
                     <a
                       className="dropdown-item"
-                      href="#noteForm"
+                      href="#create"
                       data-bs-toggle="modal"
                     >
                       <FontAwesomeIcon icon={faStickyNote} className="me-2" />
@@ -178,7 +178,7 @@ export default function NavBar() {
       </div>
       <LoginForm />
       <RegisterForm />
-      <NoteForm />
+      <NoteForm mode={"create"}/>
     </nav>
   );
 }
