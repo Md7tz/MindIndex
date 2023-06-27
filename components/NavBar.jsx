@@ -32,7 +32,7 @@ export default function NavBar() {
 
   useEffect(() => {
     async function getSubscriptionStatus() {
-      if (user.id) {
+      if (user?.id) {
         try {
           const res = await fetch(`api/users/${user.id}/subscription`, {
             method: "GET",
