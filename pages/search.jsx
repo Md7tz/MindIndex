@@ -82,11 +82,10 @@ const SearchPage = () => {
     <div>
       <header className="py-3 text-black">
         <div className="container-fluid">
-          <TabBar
-            query={query}
-            type={type}
-            handleTabClick={handleTabClick}
-          />
+          {router.isReady && (
+            <TabBar query={query} type={type} handleTabClick={handleTabClick} />
+          )}
+
           <h1 className="mt-3">Results for "{query}"</h1>
         </div>
       </header>
