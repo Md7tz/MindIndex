@@ -8,6 +8,7 @@ import Flashcard from "../controllers/Flashcard.mjs";
 import Note from "../controllers/Note.mjs";
 import Auth from "../controllers/Auth.mjs";
 import Search from "../controllers/Search.mjs";
+import Payment from "../controllers/Payment.mjs";
 
 // Middleware
 import ErrorHandler from "../middlewares/ErrorHandler.mjs";
@@ -31,6 +32,7 @@ router.get("/users/:id/profile", Passport.bearerAuthenticate(), Profile.getProfi
 router.put("/users/:id/profile", Passport.bearerAuthenticate(), Profile.updateProfile);
 router.get("/users/:id/notes", Passport.bearerAuthenticate(), Note.getNotesByUserId);
 router.get("/users/:id/collections", Passport.bearerAuthenticate(), Collection.getCollectionsByUserId);
+router.get("/users/:id/subscription", Passport.bearerAuthenticate(), Payment.getSubscriptionByUserId);
 
 // Notes Routes
 router.get("/notes", Passport.bearerAuthenticate(), Note.getNotes);
