@@ -39,8 +39,8 @@ const NoteForm = ({ mode, index }) => {
           <div className={`modal-body ${styles["note-modal-body"]}`}>
             {mode === "view" ? (
               <div className={styles["view-mode-container"]}>
-                <h6 className={styles["view-mode-title"]}>note.title</h6>
-                <p className={styles["view-mode-body"]}>note.body</p>
+                <h6 className={styles["view-mode-title"]}>Wanderlust Chronicles</h6>
+                <p className={styles["view-mode-text"]}>Venturing into the realm of travel, discovering new destinations and experiences.</p>
                 <a
                   type="submit"
                   className={`btn btn-primary ml-4 ${styles["note-form-button"]} text-center`}
