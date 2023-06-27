@@ -3,6 +3,7 @@ import styles from "./styles/Navbar.module.css";
 import Image from "next/image";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
+import NoteForm from "./NoteForm";
 
 import SearchBar from "./SearchBar";
 
@@ -87,7 +88,11 @@ export default function NavBar() {
                     </a>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <a
+                      className="dropdown-item"
+                      href="#noteForm"
+                      data-bs-toggle="modal"
+                    >
                       <FontAwesomeIcon icon={faStickyNote} className="me-2" />
                       Note
                     </a>
@@ -173,6 +178,7 @@ export default function NavBar() {
       </div>
       <LoginForm />
       <RegisterForm />
+      <NoteForm />
     </nav>
   );
 }
