@@ -46,4 +46,51 @@ export default class PaymentController {
       console.error(error);
     }
   }
+
+  // Get subscription by user ID.
+  static async getSubscriptionByUserId(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const subscription = await Payment.query()
+        .where("user_id", id)
+        .orderBy("created_at", "desc")
+        .first();
+
+      if (!subscription) {
+        return res
+          .status(HTTP.NOT_FOUND)
+          .json({ message: "This user is not subscribed" });
+      }
+
+      const subscriptionDate = subscription.updated_at
+        ? subscription.updated_at
+        : subscription.created_at;
+
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const isWithinThirtyDays = subscriptionDate > thirtyDaysAgo;
+
+      if (subscription.status !== "paid" || !isWithinThirtyDays) {
+        return res
+          .status(HTTP.NOT_FOUND)
+          .json({ message: "This user is not subscribed" });
+      }
+
+      return res.status(HTTP.OK).json({
+        message: "User is subscribed.",
+        metadata: {
+          subscribed: true,
+          subscriptionDate,
+          payment_status: subscription.status,
+          amount: subscription.amount,
+          currency: subscription.currency,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
 }
