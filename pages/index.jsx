@@ -8,7 +8,8 @@ import ClientApi from "../components/ClientApi";
 import { toast } from "react-toastify";
 
 export default function Landing() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
+  const [subscription, setSubscription] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,6 +18,29 @@ export default function Landing() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    async function getSubscriptionStatus() {
+      if (user?.id) {
+        try {
+          const res = await fetch(`api/users/${user.id}/subscription`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${await ClientApi.getToken()}`,
+            },
+          });
+
+          const data = await res.json();
+          setSubscription(data.metadata);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
+
+    getSubscriptionStatus();
+  }, [user]);
 
   useEffect(() => {
     Event.off("welcome", () => {});
@@ -200,9 +224,13 @@ export default function Landing() {
                 {user?.id ? (
                   <button
                     className="btn btn-warning btn-block"
-                    onClick={handleSubscribe}
+                    onClick={subscription?.subscribed ? null : handleSubscribe}
                   >
-                    <span style={{ fontWeight: "bold" }}>Go Premium</span>
+                    <span style={{ fontWeight: "bold" }}>
+                      {subscription?.subscribed
+                        ? "You are subscribed! Enjoy Premium perks"
+                        : "Go Premium"}
+                    </span>
                     <FontAwesomeIcon
                       icon={faRocket}
                       style={{ color: "dark" }}

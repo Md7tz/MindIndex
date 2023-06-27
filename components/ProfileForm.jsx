@@ -52,7 +52,9 @@ export default function ProfileForm({
       } else {
         const error = await response.json();
         console.log(error);
-        toast.error(error.message);
+        // User will not understand raw error message
+        // toast.error(error.message);
+        toast.error("Please fill in all the fields.");
         // setProfileEditMode(false);
       }
     } catch (error) {
