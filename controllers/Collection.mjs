@@ -83,7 +83,7 @@ export default class CollectionController {
       const collections = await Collection.query()
         .where("user_id", id)
         .orderBy("created_at", "desc")
-        .page(page -1, pagesize);
+        .page(page - 1, pagesize);
       if (!collections) {
         collections = [];
         return res.status(HTTP.OK).json({
@@ -144,7 +144,7 @@ export default class CollectionController {
       const validation = new Validator(req.body, {
         name: "required|string",
         description: "required|string",
-        flashcards: "array|min:1",
+        flashcards: "required|array",
         "flashcards.*.question": "required|string",
         "flashcards.*.answer": "required|string",
       });
@@ -235,7 +235,7 @@ export default class CollectionController {
       const validation = new Validator(req.body, {
         name: "required|string",
         description: "required|string",
-        flashcards: "array",
+        flashcards: "required|array",
         "flashcards.*.question": "required|string",
         "flashcards.*.answer": "required|string",
       });
@@ -251,10 +251,8 @@ export default class CollectionController {
 
       await transaction(Collection.knex(), async (trx) => {
         // Update the collection
-        let updatedCollection = await Collection.query(trx).patchAndFetchById(
-          id,
-          { name, description }
-        );
+        let updatedCollection = await Collection.query(trx)
+          .patchAndFetchById(id, { name, description });
 
         if (!updatedCollection) {
           return res.status(HTTP.NOT_FOUND).json({
@@ -264,11 +262,11 @@ export default class CollectionController {
 
         // Remove any flashcards that were previously associated with the collection
         await updatedCollection.$relatedQuery("flashcards", trx).unrelate();
-        // delete flashcards that has no relation to any collection
-        await Flashcard.query(trx).whereNull("collection_id").hardDelete();
+        // Delete flashcards that have no relation to any collection
+        await Flashcard.query(trx).whereNull("collection_id").delete();
 
         // Create new associated flashcards
-        const flashcards = await updatedCollection
+        await updatedCollection
           .$relatedQuery("flashcards", trx)
           .insertAndFetch(flashcards);
 
@@ -280,7 +278,6 @@ export default class CollectionController {
         return res.status(HTTP.OK).json({
           message: "Collection updated successfully.",
           collection: updatedCollection,
-          flashcards: flashcards,
         });
       });
     } catch (error) {
