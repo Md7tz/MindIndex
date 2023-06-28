@@ -1,5 +1,6 @@
 import styles from "./styles/NoteForm.module.css";
 import React, { useEffect } from "react";
+import ClientApi from "./ClientApi";
 
 const NoteForm = ({ mode, index }) => {
   const [formMode, setFormMode] = React.useState(mode);
@@ -9,6 +10,34 @@ const NoteForm = ({ mode, index }) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    const title = e.target.title.value;
+    const body = e.target.body.value;
+    const authenticationToken = await ClientApi.getToken();
+
+    // Make an API call to create or update a note
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BASEPATH + "/api/notes",
+      {
+        method: formMode === "create" ? "POST" : "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authenticationToken}`,
+        },
+        body: JSON.stringify({ title, body }),
+      }
+    );
+
+    if (response.ok) {
+      // Handle successful create or update operation
+      console.log(
+        `Note ${formMode}d successfully!`
+      );
+    } else {
+      // Handle create operation failure
+      console.error(
+        `Failed to ${formMode}d note.`
+      );
+    }
   };
 
   const renderViewMode = () => {
@@ -16,7 +45,8 @@ const NoteForm = ({ mode, index }) => {
       <div className={styles["view-mode-container"]}>
         <h6 className={styles["view-mode-title"]}>Wanderlust Chronicles</h6>
         <p className={styles["view-mode-text"]}>
-          Venturing into the realm of travel, discovering new destinations and experiences.
+          Venturing into the realm of travel, discovering new destinations and
+          experiences.
         </p>
         <button
           type="button"
@@ -31,17 +61,27 @@ const NoteForm = ({ mode, index }) => {
     );
   };
 
-  const renderEditMode = () => {
+  const renderCreateEditMode = () => {
     return (
       <form onSubmit={onSubmit}>
         <div className="mb-3">
-          <label htmlFor="title" className={`form-label ${styles["note-form-label"]}`}>
+          <label
+            htmlFor="title"
+            className={`form-label ${styles["note-form-label"]}`}
+          >
             Title
           </label>
-          <input type="text" className="form-control note-form-control" id="title" />
+          <input
+            type="text"
+            className="form-control note-form-control"
+            id="title"
+          />
         </div>
         <div className="mb-3">
-          <label htmlFor="body" className={`form-label ${styles["note-form-label"]}`}>
+          <label
+            htmlFor="body"
+            className={`form-label ${styles["note-form-label"]}`}
+          >
             Body
           </label>
           <textarea
@@ -75,7 +115,11 @@ const NoteForm = ({ mode, index }) => {
         <div className={`modal-content ${styles["note-modal-content"]}`}>
           <div className={`modal-header ${styles["note-modal-header"]}`}>
             <h5 className="modal-title w-100 text-center" id="noteModalLabel">
-              {formMode === "view" ? "View Note" : formMode === "create" ? "Create Note" : "Edit Note"}
+              {formMode === "view"
+                ? "View Note"
+                : formMode === "create"
+                ? "Create Note"
+                : "Edit Note"}
             </h5>
             <button
               type="button"
@@ -85,7 +129,7 @@ const NoteForm = ({ mode, index }) => {
             ></button>
           </div>
           <div className={`modal-body ${styles["note-modal-body"]}`}>
-            {formMode === "view" ? renderViewMode() : renderEditMode()}
+            {formMode === "view" ? renderViewMode() : renderCreateEditMode()}
           </div>
           <div className="modal-footer">
             <button
