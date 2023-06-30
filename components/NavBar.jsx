@@ -13,14 +13,13 @@ import {
   faFolderPlus,
   faBook,
   faStickyNote,
-  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import Basepath from "./Basepath";
+import Navigate from "./Basepath";
 import ClientApi from "./ClientApi";
 
 export default function NavBar() {
-  const [user, setUser] = useState({});
-  const [subscription, setSubscription] = useState({});
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,29 +28,6 @@ export default function NavBar() {
 
     fetchData();
   }, []);
-
-  useEffect(() => {
-    async function getSubscriptionStatus() {
-      if (user?.id) {
-        try {
-          const res = await fetch(`api/users/${user.id}/subscription`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${await ClientApi.getToken()}`,
-            },
-          });
-
-          const data = await res.json();
-          setSubscription(data.metadata);
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    }
-
-    getSubscriptionStatus();
-  }, [user]);
 
   const onClickLogout = async () => {
     await ClientApi.logout();
@@ -63,7 +39,7 @@ export default function NavBar() {
       className={`${styles["custom-navbar"]} navbar navbar-expand-lg custom-navbar border-bottom`}
     >
       <div className="row container-fluid text-dark">
-        <div className={`col d-flex align-items-center ${styles.brand}`}>
+        <div className={`col d-flex ${styles.brand}`}>
           <a
             className={`navbar-brand me-1 ${styles.logolink}`}
             href={Basepath.get("/")}
@@ -83,25 +59,6 @@ export default function NavBar() {
             MindIndex
           </a>
           <div className="border-end"></div>
-          {subscription?.subscribed && (
-            <div className="d-flex justify-content-center align-items-center">
-              <h2 className="badge text-dark bg-warning mb-0">
-                <FontAwesomeIcon
-                  icon={faStar}
-                  style={{ color: "dark" }}
-                  size="1x"
-                  fixedWidth
-                />{" "}
-                Premium{" "}
-                <FontAwesomeIcon
-                  icon={faStar}
-                  style={{ color: "dark" }}
-                  size="1x"
-                  fixedWidth
-                />
-              </h2>
-            </div>
-          )}
         </div>
 
         {user?.id && <SearchBar />}
@@ -159,6 +116,7 @@ export default function NavBar() {
                 className="nav-link active text-dark border-0 bg-transparent"
                 aria-current="page"
                 onClick={onClickLogout}
+                data-bs-toggle="modal"
               >
                 <div className="d-flex align-items-center ps-2">
                   <FontAwesomeIcon
