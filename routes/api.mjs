@@ -1,7 +1,7 @@
 import express from "express";
+import bodyParser from "body-parser";
 
 // Controllers
-import User from "../controllers/User.mjs";
 import Profile from "../controllers/Profile.mjs";
 import Collection from "../controllers/Collection.mjs";
 import Flashcard from "../controllers/Flashcard.mjs";
@@ -16,16 +16,14 @@ import Passport from "../middlewares/Passport.mjs";
 
 const router = express.Router();
 
+// Payment routes
+router.post("/stripe/subscribe", Passport.bearerAuthenticate(), Payment.subscribeStripe);
+router.post("/stripe/webhook", express.raw({ type: "application/json" }), Payment.callbackStripe);
+
 // Auth routes
 router.post("/auth/login", Auth.login);
 router.post("/auth/register", Auth.register);
 router.post("/auth/refresh", Passport.bearerAuthenticate(), Auth.refreshToken);
-// User Routes
-// router.get("/users", User.getAllUsers);
-// router.get("/users/:id", User.getUserById);
-// router.post("/users", User.createUser);
-// router.put("/users/:id", User.updateUser);
-// router.delete("/users/:id", User.deleteUser);
 
 // User Routes
 router.get("/users/:id/profile", Passport.bearerAuthenticate(), Profile.getProfileByUserId);
