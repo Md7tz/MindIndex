@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Event from "../components/Event";
 import ClientApi from "../components/ClientApi";
 import { toast } from "react-toastify";
-import { Navigate } from "../components/Basepath";
 
 export default function Landing() {
   const [user, setUser] = useState({});

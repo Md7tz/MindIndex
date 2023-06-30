@@ -30,7 +30,6 @@ export default class PaymentController {
         },
       });
 
-      console.log("session: ", session);
       res.json({ url: session.url });
     } catch (err) {
       console.log("error: ", err);

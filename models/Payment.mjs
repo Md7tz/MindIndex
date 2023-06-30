@@ -1,7 +1,6 @@
 import Model from "./index.mjs";
 import { MAX_STRING_LENGTH, MAX_TEXT_LENGTH } from "../config/constants.mjs";
 import User from "./User.mjs";
-import Stripe from "../config/stripe.mjs"
 
 export default class Payment extends Model {
   static tableName = "payments";
@@ -49,11 +48,14 @@ export default class Payment extends Model {
         case "stripe":
           const { amount_total, currency, payment_status, id } = session;
           const userId = parseInt(session.metadata.userId);
+          // if price is 12.00, stripe returns 1200 so we need to divide by 100
+          const amount = amount_total / 100;
 
           await Payment.transaction(async (trx) => {
             payment = await Payment.query(trx).insert({
               user_id: userId,
-              amount: amount_total,
+              gateway: paymentMethod,
+              amount,
               currency,
               status: payment_status,
               transaction_id: id,
@@ -81,7 +83,7 @@ export default class Payment extends Model {
           await Payment.transaction(async (trx) => {
             payment = await Payment.query(trx)
               .where("transaction_id", id)
-              .patchAndFetch({ status: payment_status });
+              .patch({ status: payment_status });
 
             if (!payment) {
               console.log("Payment not found");
