@@ -7,6 +7,8 @@ exports.up = function (knex) {
     .createTable("payments", function (table) {
       table.increments("id").primary();
       table.integer("user_id").unsigned();
+      // gateway: stripe, paypal, etc.
+      table.string("gateway", 255);
       table.decimal("amount", 10, 2);
       table.string("currency", 3);
       table.string("status", 20);
