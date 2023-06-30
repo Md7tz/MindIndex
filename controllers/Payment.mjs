@@ -1,49 +1,95 @@
 import Payment from "../models/Payment.mjs"; // Assuming you have a Payment model
-import Validator from "validatorjs";
+import Stripe from "../config/stripe.mjs"
 import { HTTP } from "../config/constants.mjs";
 
 export default class PaymentController {
-  // Create a new payment.
-  static async createPayment(session) {
+  // Payment routes
+  static async subscribeStripe(req, res) {
     try {
-      // Extract the payment data from the request body
-      const { amount_total, currency, payment_status, id } = session;
-      const userId = parseInt(session.metadata.userId);
+      const { user } = req.body;
 
-      await Payment.transaction(async (trx) => {
-        const newPayment = await Payment.query(trx).insert({
-          user_id: userId,
-          amount: amount_total,
-          currency,
-          status: payment_status,
-          transaction_id: id,
-        });
+      if (!user || !user.email) {
+        // Handle the case where the user or email is missing
+        throw new Error("Invalid user or email");
+      }
+
+      const session = await Stripe.checkout.sessions.create({
+        customer_email: user.email,
+        line_items: [
+          {
+            price: "price_1NOOKlCK0LpumkW1jZZrsbaC",
+            quantity: 1,
+          },
+        ],
+        mode: "payment",
+        payment_method_types: ["card"],
+        success_url: `${req.headers.origin}/?success=true`,
+        cancel_url: `${req.headers.origin}/?canceled=true`,
+        metadata: {
+          userId: user.id,
+        },
       });
-    } catch (error) {
-      console.error(error);
+
+      console.log("session: ", session);
+      res.json({ url: session.url });
+    } catch (err) {
+      console.log("error: ", err);
+      res.status(err.statusCode || HTTP.INTERNAL_SERVER_ERROR).json(err.message);
     }
   }
 
-  // Update a payment by transaction ID.
-  static async fulfillPayment(session) {
+  static async callbackStripe(req, res) {
+    const payload = req.body;
+    const sig = req.headers["stripe-signature"];
+
     try {
-      // Get the transaction ID from the URL parameters
-      const { id, payment_status } = session;
+      const event = Stripe.webhooks.constructEvent(
+        payload,
+        sig,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
 
-      await Payment.transaction(async (trx) => {
-        const updatedPayment = await Payment.query(trx)
-          .where("transaction_id", id)
-          .patch({ status: payment_status });
+      switch (event.type) {
+        case "checkout.session.completed": {
+          const session = event.data.object;
+          // Save this payment in the database, payment_status can still be 'awaiting payment'
+          await Payment.createPayment(session, "stripe");
 
-        // If no Payment was found, return a 404 response
-        if (!updatedPayment) {
-          console.log("Payment not found");
+          // Check if the order is paid
+          // A delayed notification payment will have an `unpaid` status, as
+          // the server is still waiting for funds to be transferred from the customer's
+          // account.
+          if (session.payment_status === "paid") {
+            Payment.fulfillPayment(session, "stripe");
+            console.log("Payment fulfilled from completed checkout session");
+          }
+
+          break;
         }
-        // Return the updated Payment as JSON
-        return updatedPayment;
-      });
-    } catch (error) {
-      console.error(error);
+
+        case "checkout.session.async_payment_succeeded": {
+          const session = event.data.object;
+
+          // Fulfill the purchase as the payment is successful
+          Payment.fulfillPayment(session, "stripe");
+          console.log("Payment fulfilled from successful async payment");
+
+          break;
+        }
+
+        case "checkout.session.async_payment_failed": {
+          const session = event.data.object;
+
+          console.log("Payment failed from async payment");
+
+          break;
+        }
+      }
+
+      res.status(HTTP.OK).end();
+    } catch (err) {
+      console.log("error with webhook: ", err);
+      res.status(HTTP.BAD_REQUEST).send(`Webhook Error: ${err.message}`);
     }
   }
 
