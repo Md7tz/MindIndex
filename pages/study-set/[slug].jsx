@@ -1,12 +1,13 @@
+import Error from "next/error";
 import moment from "moment";
 import { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import FlashcardForm from "../../components/collection/FlashcardForm";
 import styles from "../../components/styles/AddSet.module.css";
-import { toast } from "react-toastify";
 import ClientApi from "../../components/ClientApi";
 
 export default function Studyset({ slug }) {
@@ -121,7 +122,6 @@ export default function Studyset({ slug }) {
     event.preventDefault();
 
     try {
-
       const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH + "/api/collections/" + slug, {
         method: "PUT",
         headers: {
@@ -159,97 +159,99 @@ export default function Studyset({ slug }) {
   };
 
   return (
-    <div className="container my-3 py-3">
-      <form onSubmit={handleSubmit}>
-        <div className="d-flex justify-content-between align-items-center">
-          <h2>Editing study set </h2>
-          <div className="d-flex justify-content-center align-items-center gap-3">
-            <span className="text-muted">
-              Last updated on {collection?.updated_at ? moment(collection.updated_at).format("MMMM Do YYYY, h:mm a")
-                : "never"
-              }
-            </span>
-            <button type="submit" className="btn btn-dark">
-              Save
-            </button>
+    collection?.id ? (
+      <div className="container my-3 py-3">
+        <form onSubmit={handleSubmit}>
+          <div className="d-flex justify-content-between align-items-center">
+            <h2>Editing study set </h2>
+            <div className="d-flex justify-content-center align-items-center gap-3">
+              <span className="text-muted">
+                Last updated on {collection?.updated_at ? moment(collection.updated_at).format("MMMM Do YYYY, h:mm a")
+                  : "never"
+                }
+              </span>
+              <button type="submit" className="btn btn-dark">
+                Save
+              </button>
+            </div>
           </div>
-        </div>
-        <div className={`row ${styles.group} px-3 has-validation`}>
-          <input
-            type="text"
-            className={`${styles.inputField} ${errors?.name ? "is-invalid" : ""}`}
-            id="collectionName"
-            placeholder="e.g. Biology 101"
-            value={collection.name}
-            onChange={handleCollectionNameChange}
-          />
-          <span className={styles.highlight}></span>
-          <span className={styles.bar}></span>
-          {errors?.name && <div className="invalid-feedback px-0">{errors.name[0]}</div>}
-          <label
-            htmlFor="collectionName"
-            className="form-label px-0 text-muted has-validation"
-          >
-            TITLE
-          </label>
-        </div>
-        <div className={`row ${styles.group} px-3`}>
-          <textarea
-            className={`${styles.inputField} ${errors?.description ? "is-invalid" : ""}`}
-            id="collectionDescription"
-            rows={3}
-            placeholder="e.g. This is a collection of flashcards for Biology 101"
-            value={collection.description}
-            onChange={handleCollectionDescriptionChange}
-          ></textarea>
-          <span className={styles.highlight}></span>
-          <span className={styles.bar}></span>
-          {errors?.name && <div className="invalid-feedback px-0">{errors.description[0]}</div>}
-          <label
-            htmlFor="collectionDescription"
-            className="form-label px-0 text-muted"
-          >
-            DESCRIPTION
-          </label>
-        </div>
-        <div className="mb-3">
-          <h4>Flashcards</h4>
-          <DndProvider backend={HTML5Backend}>
-            <div className="card-container has-validation">
+          <div className={`row ${styles.group} px-3 has-validation`}>
+            <input
+              type="text"
+              className={`${styles.inputField} ${errors?.name ? "is-invalid" : ""}`}
+              id="collectionName"
+              placeholder="e.g. Biology 101"
+              value={collection.name}
+              onChange={handleCollectionNameChange}
+            />
+            <span className={styles.highlight}></span>
+            <span className={styles.bar}></span>
+            {errors?.name && <div className="invalid-feedback px-0">{errors.name[0]}</div>}
+            <label
+              htmlFor="collectionName"
+              className="form-label px-0 text-muted has-validation"
+            >
+              TITLE
+            </label>
+          </div>
+          <div className={`row ${styles.group} px-3`}>
+            <textarea
+              className={`${styles.inputField} ${errors?.description ? "is-invalid" : ""}`}
+              id="collectionDescription"
+              rows={3}
+              placeholder="e.g. This is a collection of flashcards for Biology 101"
+              value={collection.description}
+              onChange={handleCollectionDescriptionChange}
+            ></textarea>
+            <span className={styles.highlight}></span>
+            <span className={styles.bar}></span>
+            {errors?.name && <div className="invalid-feedback px-0">{errors.description[0]}</div>}
+            <label
+              htmlFor="collectionDescription"
+              className="form-label px-0 text-muted"
+            >
+              DESCRIPTION
+            </label>
+          </div>
+          <div className="mb-3">
+            <h4>Flashcards</h4>
+            <DndProvider backend={HTML5Backend}>
+              <div className="card-container has-validation">
 
-              {!!errors && Object?.keys(errors)?.some((key) => key.startsWith("flashcards")) && (
-                <>
-                  <div className="is-invalid"></div>
-                  <div className="invalid-feedback px-0">
-                    {collection?.flashcards?.length < 2
-                      ? "you need to add at least 2 flashcards"
-                      : "Fill in all the fields"}
-                  </div>
-                </>
-              )}
-              {collection?.flashcards?.map((flashcard, index) => (
-                <FlashcardForm
-                  key={flashcard.id}
-                  flashcard={flashcard}
-                  index={index}
-                  moveFlashcard={moveFlashcard}
-                  removeFlashcard={removeFlashcard}
-                  handleQuestionChange={handleQuestionChange}
-                  handleAnswerChange={handleAnswerChange}
-                  count={collection.flashcards.length}
-                />
-              ))}
-            </div>
-          </DndProvider>
-          <div className="card my-4" onClick={addFlashcard}>
-            <div className="card-body d-flex justify-content-center align-items-center fw-bolder">
-              <FontAwesomeIcon icon={faPlus} />
-              <span className={styles.highlight}></span>
+                {!!errors && Object?.keys(errors)?.some((key) => key.startsWith("flashcards")) && (
+                  <>
+                    <div className="is-invalid"></div>
+                    <div className="invalid-feedback px-0">
+                      {collection?.flashcards?.length < 2
+                        ? "you need to add at least 2 flashcards"
+                        : "Fill in all the fields"}
+                    </div>
+                  </>
+                )}
+                {collection?.flashcards?.map((flashcard, index) => (
+                  <FlashcardForm
+                    key={flashcard.id}
+                    flashcard={flashcard}
+                    index={index}
+                    moveFlashcard={moveFlashcard}
+                    removeFlashcard={removeFlashcard}
+                    handleQuestionChange={handleQuestionChange}
+                    handleAnswerChange={handleAnswerChange}
+                    count={collection.flashcards.length}
+                  />
+                ))}
+              </div>
+            </DndProvider>
+            <div className="card my-4" onClick={addFlashcard}>
+              <div className="card-body d-flex justify-content-center align-items-center fw-bolder">
+                <FontAwesomeIcon icon={faPlus} />
+                <span className={styles.highlight}></span>
+              </div>
             </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    ) : <Error statusCode={404}/>
   );
 }
 
