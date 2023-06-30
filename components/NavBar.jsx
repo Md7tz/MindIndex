@@ -84,22 +84,22 @@ export default function NavBar() {
           </a>
           <div className="border-end"></div>
           {subscription?.subscribed && (
-            <div className="d-flex justify-content-center align-items-center ps-5">
-              <h1 className="badge text-dark bg-warning">
+            <div className="d-flex justify-content-center align-items-center">
+              <h2 className="badge text-dark bg-warning mb-0">
                 <FontAwesomeIcon
                   icon={faStar}
                   style={{ color: "dark" }}
                   size="1x"
                   fixedWidth
                 />{" "}
-                Premium User{" "}
+                Premium{" "}
                 <FontAwesomeIcon
                   icon={faStar}
                   style={{ color: "dark" }}
                   size="1x"
                   fixedWidth
                 />
-              </h1>
+              </h2>
             </div>
           )}
         </div>
