@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Event from "../components/Event";
 import ClientApi from "../components/ClientApi";
 import { toast } from "react-toastify";
+import { Navigate } from "../components/Basepath";
 
 export default function Landing() {
   const [user, setUser] = useState({});
@@ -23,7 +24,7 @@ export default function Landing() {
     async function getSubscriptionStatus() {
       if (user?.id) {
         try {
-          const res = await fetch(`api/users/${user.id}/subscription`, {
+          const res = await fetch(process.env.NEXT_PUBLIC_BASEPATH + `/api/users/${user.id}/subscription`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -43,7 +44,7 @@ export default function Landing() {
   }, [user]);
 
   useEffect(() => {
-    Event.off("welcome", () => {});
+    Event.off("welcome", () => { });
   }, []);
 
   useEffect(() => {
@@ -66,33 +67,35 @@ export default function Landing() {
       handlePaymentStatus({ type: "error", text: "Payment was canceled!" });
     }
   }, []);
-
   const handleSubscribe = async (e) => {
     e.preventDefault();
-    if (!user.id) {
-      return;
+    if (!user || !user.id || !user.email) {
+      // Handle the case where the user or email is missing
+      ClientApi.logout();;
     }
-    fetch("/subscribe", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user: user,
-      }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return res.json().then((json) => Promise.reject(json));
-      })
-      .then(({ url }) => {
-        window.location = url;
-      })
-      .catch((e) => {
-        console.error(e.error);
+
+    try {
+      const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH + "/api/stripe/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await ClientApi.getToken()}`,
+        },
+        body: JSON.stringify({
+          user: user,
+        }),
       });
+
+      if (response.ok) {
+        const { url } = await response.json();
+        window.location.replace(url);
+      } else {
+        const error = await response.json();
+        throw new Error(error);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -223,7 +226,7 @@ export default function Landing() {
               <div className="card-footer d-flex justify-content-center">
                 {user?.id ? (
                   <button
-                    className="btn btn-warning btn-block"
+                    className={`btn btn-warning btn-block ${subscription?.subscribed && "disabled"}`}
                     onClick={subscription?.subscribed ? null : handleSubscribe}
                   >
                     <span style={{ fontWeight: "bold" }}>
