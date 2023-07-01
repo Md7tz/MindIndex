@@ -30,6 +30,7 @@ const NoteForm = ({ mode, result }) => {
     if (response.ok) {
       // Handle successful create or update operation
       console.log(`Note ${formMode}d successfully!`);
+      window.location.reload();
     } else {
       // Handle create or update operation failure
       console.error(`Failed to ${formMode}d note.`);
