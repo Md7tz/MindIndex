@@ -104,7 +104,7 @@ export default function Landing() {
           <div className="col-lg-7">
             <img
               className="img-fluid rounded mb-4 mb-lg-0"
-              src="https://unitecloud.org/wp-content/uploads/2022/08/2.jpg"
+              src="/img/landing_image.jpg"
               alt="Friends' group studying"
             />
           </div>
@@ -149,7 +149,7 @@ export default function Landing() {
                 <img
                   className="card-img-bottom"
                   // src="https://images.prismic.io/quizlet-prod/31c85d7d-9e36-40a4-9fae-5027c355ddee_Flashcards-1.gif?auto=compress,format"
-                  src="https://global-uploads.webflow.com/611b774c624f22e8063bb429/6357f11b6cc0d06f175d4bb1_Flip%2520flashcards.gif"
+                  src="/img/flashcard.gif"
                   alt="Card image cap"
                 ></img>
               </div>
@@ -175,7 +175,7 @@ export default function Landing() {
               <div className="card-footer">
                 <img
                   className="card-img-bottom"
-                  src="https://gifdb.com/images/high/writing-notes-and-copying-npndvx442t7q6kt9.gif"
+                  src="/img/taking_notes.gif"
                   alt="Card image cap"
                 ></img>
               </div>
