@@ -59,6 +59,18 @@ export default class User extends Model {
     };
   }
 
+  // Hooks
+  $afterFind() {
+    // add collections_count, notes_count, flashcards_count to the user object
+    if ('collections' in this) {
+      this.collections_count = this.collections.length;
+      this.flashcards_count = this.collections.reduce((acc, collection) => {
+        return acc + collection.flashcards.length;
+      }, 0);
+    }
+    if ('notes' in this) this.notes_count = this.notes.length;
+  }
+
   // JSON schema for User objects
   static jsonSchema = {
     type: "object",
