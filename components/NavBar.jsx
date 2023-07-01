@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styles from "./styles/Navbar.module.css";
 import Image from "next/image";
-import LoginForm from "./LoginForm";
-import RegisterForm from "./RegisterForm";
+import LoginForm from "./auth/LoginForm";
+import RegisterForm from "./auth/RegisterForm";
 
-import SearchBar from "./SearchBar";
+import SearchBar from "./search/SearchBar";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -66,7 +66,7 @@ export default function NavBar() {
         <div className={`col d-flex align-items-center ${styles.brand}`}>
           <a
             className={`navbar-brand me-1 ${styles.logolink}`}
-            href={Basepath.get("/")}
+            href={Basepath.get("/") || "#"}
           >
             <Image
               src={Basepath.get("/img/Logo.jpg")}
@@ -78,7 +78,7 @@ export default function NavBar() {
           </a>
           <a
             className={`navbar-brand text-dark ${styles.milink} fs-7 pe-3 m-1`}
-            href={Basepath.get("/")}
+            href={Basepath.get("/") || "#"}
           >
             MindIndex
           </a>
@@ -122,7 +122,7 @@ export default function NavBar() {
                   <li>
                     <a
                       className="dropdown-item"
-                      href={Basepath.get("/study-set/add")}
+                      href={Basepath.get("/study-set/add") || "#"}
                     >
                       <FontAwesomeIcon icon={faBook} className="me-2" />
                       Study Set
@@ -140,9 +140,10 @@ export default function NavBar() {
               <a
                 className="nav-link active text-dark"
                 aria-current="page"
-                href={Basepath.get("/profile")}
+                href={Basepath.get("/profile")||"#"}
               >
-                <div className="d-flex align-items-center ps-2">
+                <div
+                  className="d-flex align-items-center ps-2 cursor">
                   <FontAwesomeIcon
                     icon={faCircleUser}
                     style={{ color: "dark" }}
