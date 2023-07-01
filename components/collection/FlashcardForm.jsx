@@ -93,6 +93,7 @@ export default function FlashcardForm({
           <div className={`col ${styles.group} px-3 mb-0`}>
             <input
               type="text"
+              key={`term-${flashcard.id}`}
               className={`${styles.inputField}`}
               placeholder="Enter term"
               value={flashcard.question}
@@ -110,6 +111,7 @@ export default function FlashcardForm({
           <div className={`col ${styles.group} px-3 mb-0`}>
             <input
               type="text"
+              key={`definition-${flashcard.id}`}
               className={`${styles.inputField}`}
               placeholder="Enter definition"
               value={flashcard.answer}

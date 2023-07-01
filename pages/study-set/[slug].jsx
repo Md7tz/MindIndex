@@ -83,8 +83,10 @@ export default function Studyset({ slug }) {
   };
 
   const addFlashcard = () => {
-    const newId =
-      Math.max(...collection.flashcards.map((flashcard) => flashcard.id)) + 1;
+    const flashcards = collection.flashcards;
+    const maxId = flashcards.length > 0 ? Math.max(...flashcards.map((flashcard) => flashcard.id)) : 0;
+    const newId = maxId + 1;
+
     const newFlashcard = { id: newId, question: "", answer: "" };
     setCollection({
       ...collection,
@@ -251,7 +253,7 @@ export default function Studyset({ slug }) {
           </div>
         </form>
       </div>
-    ) : <Error statusCode={404}/>
+    ) : <Error statusCode={404} />
   );
 }
 
