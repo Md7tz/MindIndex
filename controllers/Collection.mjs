@@ -156,6 +156,13 @@ export default class CollectionController {
         });
       }
 
+      // pass collection to next middleware
+      req.payload = { collection: req.body }
+      next();
+      if (req.payload.restricted) {
+        return res.status(HTTP.FORBIDDEN).json({ message: req.payload.message });
+      }
+
       const { name, description, flashcards } = req.body;
       const user_id = req.user.id;
       await transaction(Collection.knex(), async (trx) => {
@@ -245,6 +252,15 @@ export default class CollectionController {
           message: "Validation failed.",
           errors: validation.errors.all(),
         });
+      }
+
+      // pass collection to next middleware
+      const currentFlashcards = await Flashcard.query().where("collection_id", id);
+      req.payload = { collection: req.body, collectionId: id, currentFlashcardCount: currentFlashcards.length }
+
+      await next();
+      if (req.payload.restricted) {
+        return res.status(HTTP.FORBIDDEN).json({ message: req.payload.message });
       }
 
       const { name, description, flashcards } = req.body;

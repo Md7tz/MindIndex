@@ -1,5 +1,4 @@
 import express from "express";
-import bodyParser from "body-parser";
 
 // Controllers
 import Profile from "../controllers/Profile.mjs";
@@ -13,6 +12,7 @@ import Payment from "../controllers/Payment.mjs";
 // Middleware
 import ErrorHandler from "../middlewares/ErrorHandler.mjs";
 import Passport from "../middlewares/Passport.mjs";
+import Restrict from "../middlewares/Restrict.mjs";
 
 const router = express.Router();
 
@@ -42,8 +42,8 @@ router.delete("/notes/:id", Passport.bearerAuthenticate(), Note.deleteNote);
 // Collection Routes
 router.get("/collections", Passport.bearerAuthenticate(), Collection.getCollections);
 router.get("/collections/:id", Passport.bearerAuthenticate(), Collection.getCollectionById);
-router.post("/collections", Passport.bearerAuthenticate(), Collection.createCollection);
-router.put("/collections/:id", Passport.bearerAuthenticate(), Collection.updateCollection);
+router.post("/collections", Passport.bearerAuthenticate(), Collection.createCollection, Restrict);
+router.put("/collections/:id", Passport.bearerAuthenticate(), Collection.updateCollection, Restrict);
 router.delete("/collections/:id", Passport.bearerAuthenticate(), Collection.deleteCollection);
 
 // Flashcards routes
