@@ -9,6 +9,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import FlashcardForm from "../../components/collection/FlashcardForm";
 import styles from "../../components/styles/AddSet.module.css";
 import ClientApi from "../../components/ClientApi";
+import { Navigate } from "../../components/Basepath";
 
 export default function Studyset({ slug }) {
   const [collection, setCollection] = useState(
@@ -42,6 +43,14 @@ export default function Studyset({ slug }) {
           }
         );
         const data = await response.json();
+        const authorId = data.collection.user_id;
+
+        await ClientApi.getUser().then((user) => {
+          if (authorId != user.id) {
+            toast.error("You are not authorized to edit this collection.");
+            Navigate.replace('/');
+          }
+        });
         setCollection(data.collection);
       } catch (error) {
         console.log(error);

@@ -100,7 +100,6 @@ export default function Profile() {
           );
 
           const data = await res.json();
-          console.log(data);
           setCollections(data.collections);
         } catch (error) {
           console.log(error);
