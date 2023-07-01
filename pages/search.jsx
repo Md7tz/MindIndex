@@ -7,7 +7,7 @@ import TabBar from "/components/search/TabBar";
 import Results from "/components/search/Results";
 import Pagination from "/components/search/Pagination";
 
-const SearchPage = () => {
+export default function SearchPage() {
   const router = useRouter();
   const { query, type, page } = router.query;
   const [data, setData] = useState([]);
@@ -82,11 +82,7 @@ const SearchPage = () => {
     <div>
       <header className="py-3 text-black">
         <div className="container-fluid">
-          <TabBar
-            query={query}
-            type={type}
-            handleTabClick={handleTabClick}
-          />
+          <TabBar query={query} type={type} handleTabClick={handleTabClick} />
           <h1 className="mt-3">Results for "{query}"</h1>
         </div>
       </header>
@@ -111,6 +107,4 @@ const SearchPage = () => {
       </div>
     </div>
   );
-};
-
-export default SearchPage;
+}

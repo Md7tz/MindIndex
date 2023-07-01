@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
-const SearchBar = () => {
+export default function SearchBar() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState([]);
@@ -37,7 +37,7 @@ const SearchBar = () => {
     router.push({
       pathname: "/search",
       query: { query: searchQuery, type: "collections", page: 1 },
-    })
+    });
   };
 
   const onChange = (event) => {
@@ -71,6 +71,4 @@ const SearchBar = () => {
       )}
     </form>
   );
-};
-
-export default SearchBar;
+}
