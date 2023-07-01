@@ -108,16 +108,7 @@ export default class PaymentController {
           .json({ message: "This user is not subscribed" });
       }
 
-      const subscriptionDate = subscription.updated_at
-        ? subscription.updated_at
-        : subscription.created_at;
-
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-      const isWithinThirtyDays = subscriptionDate > thirtyDaysAgo;
-
-      if (subscription.status !== "paid" || !isWithinThirtyDays) {
+      if (subscription.status !== "paid") {
         return res
           .status(HTTP.NOT_FOUND)
           .json({ message: "This user is not subscribed" });
@@ -127,7 +118,7 @@ export default class PaymentController {
         message: "User is subscribed.",
         metadata: {
           subscribed: true,
-          subscriptionDate,
+          date: subscription.created_at,
           payment_status: subscription.status,
           amount: subscription.amount,
           currency: subscription.currency,
