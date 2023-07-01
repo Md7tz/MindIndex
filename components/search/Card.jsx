@@ -20,7 +20,7 @@ const Card = ({ result }) => {
           </a>
         </div>
       </div>
-      <NoteForm mode={"view"} index={result.id}/>
+      <NoteForm mode={"view"} result={result}/>
     </div>
   );
 };

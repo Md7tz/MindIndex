@@ -1,22 +1,22 @@
 import styles from "./styles/NoteForm.module.css";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ClientApi from "./ClientApi";
 
-const NoteForm = ({ mode, index }) => {
-  const [formMode, setFormMode] = React.useState(mode);
-  useEffect(() => {
-    console.log(`mode: ${formMode}, index: ${index}`);
-  }, [formMode, index]);
+const NoteForm = ({ mode, result }) => {
+  const [formMode, setFormMode] = useState(mode);
+  const [title, setTitle] = useState(result ? result.title : "");
+  const [body, setBody] = useState(result ? result.body : "");
+
+  useEffect(() => {}, [formMode, result]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const title = e.target.title.value;
-    const body = e.target.body.value;
+
     const authenticationToken = await ClientApi.getToken();
 
     // Make an API call to create or update a note
     const response = await fetch(
-      process.env.NEXT_PUBLIC_BASEPATH + "/api/notes",
+      `/api/notes${formMode === "edit" ? `/${result.id}` : ""}`,
       {
         method: formMode === "create" ? "POST" : "PUT",
         headers: {
@@ -29,25 +29,18 @@ const NoteForm = ({ mode, index }) => {
 
     if (response.ok) {
       // Handle successful create or update operation
-      console.log(
-        `Note ${formMode}d successfully!`
-      );
+      console.log(`Note ${formMode}d successfully!`);
     } else {
-      // Handle create operation failure
-      console.error(
-        `Failed to ${formMode}d note.`
-      );
+      // Handle create or update operation failure
+      console.error(`Failed to ${formMode}d note.`);
     }
   };
 
   const renderViewMode = () => {
     return (
       <div className={styles["view-mode-container"]}>
-        <h6 className={styles["view-mode-title"]}>Wanderlust Chronicles</h6>
-        <p className={styles["view-mode-text"]}>
-          Venturing into the realm of travel, discovering new destinations and
-          experiences.
-        </p>
+        <h6 className={styles["view-mode-title"]}>{result.title}</h6>
+        <p className={styles["view-mode-text"]}>{result.body}</p>
         <button
           type="button"
           className={`btn btn-primary ml-4 ${styles["note-form-button"]} text-center`}
@@ -75,6 +68,8 @@ const NoteForm = ({ mode, index }) => {
             type="text"
             className="form-control note-form-control"
             id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </div>
         <div className="mb-3">
@@ -88,6 +83,8 @@ const NoteForm = ({ mode, index }) => {
             className={`form-control ${styles["note-form-control"]}`}
             id="body"
             rows="3"
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
           ></textarea>
         </div>
         <div className="text-center">
@@ -105,7 +102,7 @@ const NoteForm = ({ mode, index }) => {
   return (
     <div
       className="modal fade note-modal"
-      id={`${formMode}${index ? index : ""}`}
+      id={`${formMode}${result ? result.id : ""}`}
       data-bs-backdrop="static"
       data-bs-keyboard="false"
       tabIndex="-1"
