@@ -83,7 +83,7 @@ export default class CollectionController {
       const collections = await Collection.query()
         .where("user_id", id)
         .orderBy("created_at", "desc")
-        .page(page -1, pagesize);
+        .page(page - 1, pagesize);
       if (!collections) {
         collections = [];
         return res.status(HTTP.OK).json({
@@ -118,7 +118,7 @@ export default class CollectionController {
    *                 type: string
    *               description:
    *                 type: string
-   *               cards:
+   *               flashcards:
    *                 type: array
    *                 items:
    *                   type: object
@@ -130,7 +130,7 @@ export default class CollectionController {
    *             example:
    *               name: My Collection
    *               description: A collection of flashcards.
-   *               cards:
+   *               flashcards:
    *                 - question: What is the capital of France?
    *                   answer: Paris
    *     responses:
@@ -144,9 +144,9 @@ export default class CollectionController {
       const validation = new Validator(req.body, {
         name: "required|string",
         description: "required|string",
-        cards: "array|min:1",
-        "cards.*.question": "required|string",
-        "cards.*.answer": "required|string",
+        flashcards: "required|array",
+        "flashcards.*.question": "required|string",
+        "flashcards.*.answer": "required|string",
       });
 
       if (validation.fails()) {
@@ -156,13 +156,13 @@ export default class CollectionController {
         });
       }
 
-      const { name, description, cards } = req.body;
+      const { name, description, flashcards } = req.body;
       const user_id = req.user.id;
       await transaction(Collection.knex(), async (trx) => {
         const collection = await Collection.query(trx).insertGraph({
           name,
           description,
-          flashcards: cards,
+          flashcards,
           user_id,
         });
 
@@ -200,7 +200,7 @@ export default class CollectionController {
    *                 type: string
    *               description:
    *                 type: string
-   *               cards:
+   *               flashcards:
    *                 type: array
    *                 items:
    *                   type: object
@@ -214,7 +214,7 @@ export default class CollectionController {
    *             example:
    *               name: Updated Collection
    *               description: Updated collection description.
-   *               cards:
+   *               flashcards:
    *                 - id: 1
    *                   question: Updated question
    *                   answer: Updated answer
@@ -235,9 +235,9 @@ export default class CollectionController {
       const validation = new Validator(req.body, {
         name: "required|string",
         description: "required|string",
-        cards: "array",
-        "cards.*.question": "required|string",
-        "cards.*.answer": "required|string",
+        flashcards: "required|array",
+        "flashcards.*.question": "required|string",
+        "flashcards.*.answer": "required|string",
       });
 
       if (validation.fails()) {
@@ -247,14 +247,12 @@ export default class CollectionController {
         });
       }
 
-      const { name, description, cards } = req.body;
+      const { name, description, flashcards } = req.body;
 
       await transaction(Collection.knex(), async (trx) => {
         // Update the collection
-        let updatedCollection = await Collection.query(trx).patchAndFetchById(
-          id,
-          { name, description }
-        );
+        let updatedCollection = await Collection.query(trx)
+          .patchAndFetchById(id, { name, description });
 
         if (!updatedCollection) {
           return res.status(HTTP.NOT_FOUND).json({
@@ -264,13 +262,13 @@ export default class CollectionController {
 
         // Remove any flashcards that were previously associated with the collection
         await updatedCollection.$relatedQuery("flashcards", trx).unrelate();
-        // delete flashcards that has no relation to any collection
-        await Flashcard.query(trx).whereNull("collection_id").hardDelete();
+        // Delete flashcards that have no relation to any collection
+        await Flashcard.query(trx).whereNull("collection_id").delete();
 
         // Create new associated flashcards
-        const flashcards = await updatedCollection
+        await updatedCollection
           .$relatedQuery("flashcards", trx)
-          .insertAndFetch(cards);
+          .insertAndFetch(flashcards);
 
         // Fetch the updated collection with the flashcards
         updatedCollection = await Collection.query(trx)
@@ -280,7 +278,6 @@ export default class CollectionController {
         return res.status(HTTP.OK).json({
           message: "Collection updated successfully.",
           collection: updatedCollection,
-          flashcards: flashcards,
         });
       });
     } catch (error) {

@@ -1,6 +1,6 @@
 import React from "react";
-import styles from "./styles/ListView.module.css";
-import Basepath from "./Basepath"
+import styles from "../styles/ListView.module.css";
+import Basepath from "../Basepath"
 
 const ListView = ({ data, query}) => {
   return (

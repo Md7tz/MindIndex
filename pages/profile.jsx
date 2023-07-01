@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import styles from "../components/styles/Profile.module.css";
-import ClientApi from "../components/ClientApi";
 
-import ProfileForm from "../components/ProfileForm";
-import UserProfile from "../components/UserProfile";
+import ProfileForm from "../components/profile/ProfileForm";
+import UserProfile from "../components/profile/UserProfile";
+import ClientApi from "../components/ClientApi";
+import styles from "../components/styles/Profile.module.css";
 
 export default function Profile() {
   const [user, setUser] = useState({
@@ -66,7 +66,7 @@ export default function Profile() {
     async function getProfile() {
       if (user.id) {
         try {
-          const res = await fetch(`/api/users/${user.id}/profile`, {
+          const res = await fetch(process.env.NEXT_PUBLIC_BASEPATH + `/api/users/${user.id}/profile`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -89,8 +89,7 @@ export default function Profile() {
     async function fetchUserCollections() {
       if (user.id) {
         try {
-          const res = await fetch(
-            `/api/users/${user.id}/collections?page=${collectionsPageNumber}&pagesize=${pagesize}`,
+          const res = await fetch(process.env.NEXT_PUBLIC_BASEPATH + `/api/users/${user.id}/collections?page=${collectionsPageNumber}&pagesize=${pagesize}`,
             {
               method: "GET",
               headers: {
@@ -101,7 +100,6 @@ export default function Profile() {
           );
 
           const data = await res.json();
-          console.log(data);
           setCollections(data.collections);
         } catch (error) {
           console.log(error);
@@ -116,8 +114,7 @@ export default function Profile() {
     async function fetchUserNotes() {
       if (user.id) {
         try {
-          const res = await fetch(
-            `/api/users/${user.id}/notes?page=${notesPageNumber}&pagesize=${pagesize}`,
+          const res = await fetch(process.env.NEXT_PUBLIC_BASEPATH + `/api/users/${user.id}/notes?page=${notesPageNumber}&pagesize=${pagesize}`,
             {
               method: "GET",
               headers: {

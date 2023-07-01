@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import ListView from "./ListView";
-import ClientApi from "./ClientApi";
-import styles from "./styles/SearchBar.module.css";
+import ClientApi from "../ClientApi";
+import styles from "../styles/SearchBar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
