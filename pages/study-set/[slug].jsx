@@ -161,8 +161,10 @@ export default function Studyset({ slug }) {
       } else {
         // Handle error case
         const errorData = await response.json();
-        setErrors(errorData.errors);
-        toast.error(errorData.errors[Object.keys(errorData.errors)[0]][0]);
+        if (errorData.errors) {
+          setErrors(errorData.errors);
+          toast.error(errorData.errors[Object.keys(errorData.errors)[0]][0]);
+        } else toast.error(errorData.message);
       }
     } catch (error) {
       toast.error(error);
