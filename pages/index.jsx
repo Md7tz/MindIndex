@@ -5,6 +5,7 @@ import { faStar, faRocket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Event from "../components/Event";
 import ClientApi from "../components/ClientApi";
+import Basepath from "../components/Basepath";
 import { toast } from "react-toastify";
 
 export default function Landing() {
@@ -104,7 +105,7 @@ export default function Landing() {
           <div className="col-lg-7">
             <img
               className="img-fluid rounded mb-4 mb-lg-0"
-              src="/img/landing_image.jpg"
+              src={Basepath.get("/img/landing_image.jpg")}
               alt="Friends' group studying"
             />
           </div>
@@ -149,7 +150,7 @@ export default function Landing() {
                 <img
                   className="card-img-bottom"
                   // src="https://images.prismic.io/quizlet-prod/31c85d7d-9e36-40a4-9fae-5027c355ddee_Flashcards-1.gif?auto=compress,format"
-                  src="/img/flashcard.gif"
+                  src={Basepath.get("/img/flashcard.gif")}
                   alt="Card image cap"
                 ></img>
               </div>
@@ -175,7 +176,7 @@ export default function Landing() {
               <div className="card-footer">
                 <img
                   className="card-img-bottom"
-                  src="/img/taking_notes.gif"
+                  src={Basepath.get("/img/taking_notes.gif")}
                   alt="Card image cap"
                 ></img>
               </div>
@@ -214,7 +215,7 @@ export default function Landing() {
                 </p>
                 <div className="d-flex justify-content-center">
                   <Image
-                    src={"/img/Premium.png"}
+                    src={Basepath.get("/img/Premium.png")}
                     alt="MindIndex Premium"
                     className={`${styles.logo}`}
                     width={300}

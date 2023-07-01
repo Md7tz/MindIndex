@@ -69,7 +69,7 @@ export default function NavBar() {
             href={Basepath.get("/")}
           >
             <Image
-              src={"/img/Logo.jpg"}
+              src={Basepath.get("/img/Logo.jpg")}
               alt="MindIndex"
               className={`me-1 ${styles.logo}`}
               width={40}
