@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import Model from "./index.mjs";
 import Profile from "./Profile.mjs";
 import Collection from "./Collection.mjs";
+import Payment from './Payment.mjs';
 import Note from "./Note.mjs";
 import { MAX_STRING_LENGTH } from "../config/constants.mjs";
 
@@ -32,7 +33,7 @@ export default class User extends Model {
   // Relations
   static get relationMappings() {
     return {
-      profiles: {
+      profile: {
         relation: Model.HasOneRelation,
         modelClass: Profile,
         join: {
@@ -44,16 +45,24 @@ export default class User extends Model {
         relation: Model.HasManyRelation,
         modelClass: Collection,
         join: {
-          from: "users.id",
-          to: "collections.user_id",
+          from: 'users.id',
+          to: 'collections.user_id',
         },
       },
       notes: {
         relation: Model.HasManyRelation,
         modelClass: Note,
         join: {
+          from: 'users.id',
+          to: 'notes.user_id',
+        },
+      },
+      subscription: {
+        relation: Model.HasOneRelation,
+        modelClass: Payment,
+        join: {
           from: "users.id",
-          to: "notes.user_id",
+          to: "payments.user_id",
         },
       },
     };
