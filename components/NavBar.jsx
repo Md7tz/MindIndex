@@ -114,7 +114,6 @@ export default function NavBar() {
                   className="nav-link dropdown-toggle active text-dark"
                   href="#"
                   role="button"
-                  data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
                   <FontAwesomeIcon icon={faFolderPlus} className="me-2" />
@@ -142,7 +141,6 @@ export default function NavBar() {
                 className="nav-link active text-dark"
                 aria-current="page"
                 href={Basepath.get("/profile")}
-                data-bs-toggle="modal"
               >
                 <div className="d-flex align-items-center ps-2">
                   <FontAwesomeIcon
