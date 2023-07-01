@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "../components/styles/Profile.module.css";
+import NoteForm from "./NoteForm";
 
 export default function UserNotes({
   notes,
@@ -15,13 +16,17 @@ export default function UserNotes({
           <ul className="list-group">
             {notes?.results?.length > 0
               ? notes?.results.map((note, index) => (
-                  <a
-                    href={`/notes/${index}`}
-                    key={index}
-                    className="list-group-item"
-                  >
-                    {note.title}
-                  </a>
+                  <>
+                    <a
+                      href={`#view${note.id}`}
+                      key={index}
+                      className="list-group-item"
+                      data-bs-toggle="modal"
+                    >
+                      {note.title}
+                    </a>
+                    <NoteForm mode={"view"} result={note} />
+                  </>
                 ))
               : "No notes found."}
 
