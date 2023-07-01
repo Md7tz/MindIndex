@@ -1,6 +1,8 @@
-import styles from "./styles/NoteForm.module.css";
 import React, { useEffect, useState } from "react";
 import ClientApi from "./ClientApi";
+import ViewMode from "./ViewMode";
+import CreateEditMode from "./CreateEditMode";
+import styles from "./styles/NoteForm.module.css";
 
 const NoteForm = ({ mode, result }) => {
   const [formMode, setFormMode] = useState(mode);
@@ -37,69 +39,6 @@ const NoteForm = ({ mode, result }) => {
     }
   };
 
-  const renderViewMode = () => {
-    return (
-      <div className={styles["view-mode-container"]}>
-        <h6 className={styles["view-mode-title"]}>{result.title}</h6>
-        <p className={styles["view-mode-text"]}>{result.body}</p>
-        <button
-          type="button"
-          className={`btn btn-primary ml-4 ${styles["note-form-button"]} text-center`}
-          onClick={() => {
-            setFormMode("edit");
-          }}
-        >
-          Update Note
-        </button>
-      </div>
-    );
-  };
-
-  const renderCreateEditMode = () => {
-    return (
-      <form onSubmit={onSubmit}>
-        <div className="mb-3">
-          <label
-            htmlFor="title"
-            className={`form-label ${styles["note-form-label"]}`}
-          >
-            Title
-          </label>
-          <input
-            type="text"
-            className="form-control note-form-control"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-        <div className="mb-3">
-          <label
-            htmlFor="body"
-            className={`form-label ${styles["note-form-label"]}`}
-          >
-            Body
-          </label>
-          <textarea
-            className={`form-control ${styles["note-form-control"]}`}
-            id="body"
-            rows="3"
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-          ></textarea>
-        </div>
-        <div className="text-center">
-          <button
-            type="submit"
-            className={`btn btn-primary ml-4 ${styles["note-form-button"]} text-center`}
-          >
-            {formMode === "create" ? "Create Note" : "Update Note"}
-          </button>
-        </div>
-      </form>
-    );
-  };
-
   return (
     <div
       className="modal fade note-modal"
@@ -127,7 +66,22 @@ const NoteForm = ({ mode, result }) => {
             ></button>
           </div>
           <div className={`modal-body ${styles["note-modal-body"]}`}>
-            {formMode === "view" ? renderViewMode() : renderCreateEditMode()}
+            {formMode === "view" ? (
+              <ViewMode
+                title={result.title}
+                body={result.body}
+                setFormMode={setFormMode}
+              />
+            ) : (
+              <CreateEditMode
+                onSubmit={onSubmit}
+                title={title}
+                setTitle={setTitle}
+                body={body}
+                setBody={setBody}
+                formMode={formMode}
+              />
+            )}
           </div>
           <div className="modal-footer">
             <button
