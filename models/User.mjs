@@ -76,8 +76,12 @@ export default class User extends Model {
       this.flashcards_count = this.collections.reduce((acc, collection) => {
         return acc + collection.flashcards.length;
       }, 0);
+      delete this.collections;
     }
-    if ('notes' in this) this.notes_count = this.notes.length;
+    if ('notes' in this) {
+      this.notes_count = this.notes.length;
+      delete this.notes;
+    }
   }
 
   // JSON schema for User objects
