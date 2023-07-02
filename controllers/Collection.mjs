@@ -11,7 +11,7 @@ export default class CollectionController {
    * /api/collections:
    *   get:
    *     summary: Get search collections by query.
-   *    security:
+   *     security:
    *      - bearerAuth: []
    *     parameters:
    *       - in: query
