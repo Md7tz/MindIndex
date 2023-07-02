@@ -34,13 +34,17 @@ export default function NavBar() {
     async function getSubscriptionStatus() {
       if (user?.id) {
         try {
-          const res = await fetch(`api/users/${user.id}/subscription`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${await ClientApi.getToken()}`,
-            },
-          });
+          const res = await fetch(
+            process.env.NEXT_PUBLIC_BASEPATH +
+              `/api/users/${user.id}/subscription`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${await ClientApi.getToken()}`,
+              },
+            }
+          );
 
           const data = await res.json();
           setSubscription(data.metadata);
@@ -63,7 +67,10 @@ export default function NavBar() {
       className={`${styles["custom-navbar"]} navbar navbar-expand-lg custom-navbar border-bottom`}
     >
       <div className="row container-fluid text-dark">
-        <div className={`col d-flex align-items-center ${styles.brand}`}>
+        <div
+          className={`col-2 d-flex align-items-center justify-content-center ${styles.brand} border-end`}
+          style={{ width: 190 }}
+        >
           <a
             className={`navbar-brand me-1 ${styles.logolink}`}
             href={Basepath.get("/") || "#"}
@@ -82,7 +89,12 @@ export default function NavBar() {
           >
             MindIndex
           </a>
-          <div className="border-end"></div>
+        </div>
+
+        <div
+          className="col-3 d-flex align-items-center justify-content-center"
+          style={{ width: 350 }}
+        >
           {subscription?.subscribed && (
             <div className="d-flex justify-content-center align-items-center mx-2">
               <h6 className="badge text-dark bg-warning mb-0">
@@ -100,26 +112,49 @@ export default function NavBar() {
                   fixedWidth
                 />
               </h6>
-
             </div>
           )}
-          {
-            subscription?.subscribed && user?.limits && user?.collections_count && user?.flashcards_count && user?.notes_count
-              ? (
-                <div className="d-flex justify-content-center align-items-center gap-1 ">
-                  <span title="Study sets" className="badge rounded-pill bg-dark text-white">S {user?.collections_count}/&infin;</span>
-                  <span title="Flashcards" className="badge rounded-pill bg-info text-dark">F {user?.flashcards_count}/&infin;</span>
-                  <span title="Notes" className="badge rounded-pill bg-success">N {user?.notes_count}/&infin;</span>
-                </div>
-              ) : (
-                <div className="d-flex justify-content-center align-items-center gap-1 ">
-                  <span title="Study sets" className="badge rounded-pill bg-dark text-white">S {user?.collections_count}/{user?.limits?.collections}</span>
-                  <span title="Flashcards" className="badge rounded-pill bg-info text-dark">F {user?.flashcards_count}/{user?.limits?.flashcards}</span>
-                  <span title="Notes" className="badge rounded-pill bg-success">N {user?.notes_count}/{user?.limits?.notes}</span>
-                </div>
-              )
-          }
-
+          {subscription?.subscribed &&
+          user?.limits &&
+          !isNaN(user?.collections_count) &&
+          !isNaN(user?.flashcards_count) &&
+          !isNaN(user?.notes_count) ? (
+            <div className="d-flex justify-content-center align-items-center gap-1 ">
+              <span
+                title="Study sets"
+                className="badge rounded-pill bg-dark text-white"
+              >
+                S {user?.collections_count}/&infin;
+              </span>
+              <span
+                title="Flashcards"
+                className="badge rounded-pill bg-info text-dark"
+              >
+                F {user?.flashcards_count}/&infin;
+              </span>
+              <span title="Notes" className="badge rounded-pill bg-success">
+                N {user?.notes_count}/&infin;
+              </span>
+            </div>
+          ) : (
+            <div className="d-flex justify-content-center align-items-center gap-1 ">
+              <span
+                title="Study sets"
+                className="badge rounded-pill bg-dark text-white"
+              >
+                S {user?.collections_count}/{user?.limits?.collections}
+              </span>
+              <span
+                title="Flashcards"
+                className="badge rounded-pill bg-info text-dark"
+              >
+                F {user?.flashcards_count}/{user?.limits?.flashcards}
+              </span>
+              <span title="Notes" className="badge rounded-pill bg-success">
+                N {user?.notes_count}/{user?.limits?.notes}
+              </span>
+            </div>
+          )}
         </div>
 
         {user?.id && <SearchBar />}
@@ -161,8 +196,7 @@ export default function NavBar() {
                 aria-current="page"
                 href={Basepath.get("/profile") || "#"}
               >
-                <div
-                  className="d-flex align-items-center ps-2 cursor">
+                <div className="d-flex align-items-center ps-2 cursor">
                   <FontAwesomeIcon
                     icon={faCircleUser}
                     style={{ color: "dark" }}
@@ -233,6 +267,6 @@ export default function NavBar() {
       </div>
       <LoginForm />
       <RegisterForm />
-    </nav >
+    </nav>
   );
 }
