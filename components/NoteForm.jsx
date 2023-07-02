@@ -3,6 +3,7 @@ import ClientApi from "./ClientApi";
 import ViewMode from "./ViewMode";
 import CreateEditMode from "./CreateEditMode";
 import styles from "./styles/NoteForm.module.css";
+import { toast } from "react-toastify";
 
 const NoteForm = ({ mode, result }) => {
   const [formMode, setFormMode] = useState(mode);
@@ -31,11 +32,13 @@ const NoteForm = ({ mode, result }) => {
 
     if (response.ok) {
       // Handle successful create or update operation
-      console.log(`Note ${formMode}d successfully!`);
       window.location.reload();
+      toast.success(`Note ${formMode}d successfully!`)
+
     } else {
       // Handle create or update operation failure
-      console.error(`Failed to ${formMode}d note.`);
+      toast.error(`Failed to ${formMode}d note.`);
+
     }
   };
 
