@@ -27,7 +27,12 @@ export default class BaseModel extends visibility(soft(Model)) {
 		return {
 			selectId(builder) {
 				builder.select('id');
-			}
+			},
+			currentMonth(query) {
+				const start = moment().startOf('month').format('YYYY-MM-DD HH:mm:ss');
+				const end = moment().endOf('month').format('YYYY-MM-DD HH:mm:ss');
+				query.whereBetween('created_at', [start, end]).debug();
+			},
 		};
 	}
 }

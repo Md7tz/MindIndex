@@ -17,7 +17,7 @@ export default class Passport {
                 const user = await User
                     .query()
                     .findById(decoded.sub)
-                    .withGraphFetched("[subscription,collections(selectId).[flashcards],notes(selectId)]");
+                    .withGraphFetched("[subscription,collections(selectId,currentMonth).[flashcards],notes(selectId,currentMonth)]");
 
                 console.log(user);
                 if (!user) {
