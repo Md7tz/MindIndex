@@ -19,7 +19,6 @@ export default class Passport {
                     .findById(decoded.sub)
                     .withGraphFetched("[subscription,collections(selectId,currentMonth).[flashcards],notes(selectId,currentMonth)]");
 
-                console.log(user);
                 if (!user) {
                     return done(null, false);
                 }

@@ -84,24 +84,42 @@ export default function NavBar() {
           </a>
           <div className="border-end"></div>
           {subscription?.subscribed && (
-            <div className="d-flex justify-content-center align-items-center">
-              <h2 className="badge text-dark bg-warning mb-0">
+            <div className="d-flex justify-content-center align-items-center mx-2">
+              <h6 className="badge text-dark bg-warning mb-0">
                 <FontAwesomeIcon
                   icon={faStar}
                   style={{ color: "dark" }}
-                  size="1x"
+                  size="2xs"
                   fixedWidth
                 />{" "}
                 Premium{" "}
                 <FontAwesomeIcon
                   icon={faStar}
                   style={{ color: "dark" }}
-                  size="1x"
+                  size="2xs"
                   fixedWidth
                 />
-              </h2>
+              </h6>
+
             </div>
           )}
+          {
+            subscription?.subscribed && user?.limits && user?.collections_count && user?.flashcards_count && user?.notes_count
+              ? (
+                <div className="d-flex justify-content-center align-items-center gap-1 ">
+                  <span title="Study sets" className="badge rounded-pill bg-dark text-white">S {user?.collections_count}/&infin;</span>
+                  <span title="Flashcards" className="badge rounded-pill bg-info text-dark">F {user?.flashcards_count}/&infin;</span>
+                  <span title="Notes" className="badge rounded-pill bg-success">N {user?.notes_count}/&infin;</span>
+                </div>
+              ) : (
+                <div className="d-flex justify-content-center align-items-center gap-1 ">
+                  <span title="Study sets" className="badge rounded-pill bg-dark text-white">S {user?.collections_count}/{user?.limits?.collections}</span>
+                  <span title="Flashcards" className="badge rounded-pill bg-info text-dark">F {user?.flashcards_count}/{user?.limits?.flashcards}</span>
+                  <span title="Notes" className="badge rounded-pill bg-success">N {user?.notes_count}/{user?.limits?.notes}</span>
+                </div>
+              )
+          }
+
         </div>
 
         {user?.id && <SearchBar />}
@@ -141,7 +159,7 @@ export default function NavBar() {
               <a
                 className="nav-link active text-dark"
                 aria-current="page"
-                href={Basepath.get("/profile")||"#"}
+                href={Basepath.get("/profile") || "#"}
               >
                 <div
                   className="d-flex align-items-center ps-2 cursor">
@@ -215,6 +233,6 @@ export default function NavBar() {
       </div>
       <LoginForm />
       <RegisterForm />
-    </nav>
+    </nav >
   );
 }
