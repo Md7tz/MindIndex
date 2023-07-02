@@ -8,6 +8,8 @@ export default class NoteController {
    * /api/notes:
    *   post:
    *     summary: Create a new note.
+   *     security:
+ *         - bearerAuth: []
    *     requestBody:
    *       required: true
    *       content:
@@ -43,6 +45,14 @@ export default class NoteController {
           errors: validation.errors.all(),
         });
       }
+
+      // pass note to next middleware
+      req.payload = { note: req.body }
+      next();
+      if (req.payload.restricted) {
+        return res.status(HTTP.FORBIDDEN).json({ message: req.payload.message });
+      }
+
       // Extract the note data from the request body
       const { title, body } = req.body;
       const user_id = req.user.id;
@@ -170,6 +180,8 @@ export default class NoteController {
    * /api/notes/{id}:
    *   put:
    *     summary: Update a note by ID.
+   *     security:
+   *       - bearerAuth: []
    *     parameters:
    *       - in: path
    *         name: id
@@ -214,6 +226,13 @@ export default class NoteController {
           message: "Validation failed.",
           errors: validation.errors.all(),
         });
+      }
+
+      req.payload = { note: req.body, noteId: id }
+
+      await next();
+      if (req.payload.restricted) {
+        return res.status(HTTP.FORBIDDEN).json({ message: req.payload.message });
       }
 
       // Extract the note data from the request body

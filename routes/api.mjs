@@ -35,8 +35,8 @@ router.get("/users/:id/subscription", Passport.bearerAuthenticate(), Payment.get
 // Notes Routes
 router.get("/notes", Passport.bearerAuthenticate(), Note.getNotes);
 router.get("/notes/:id", Passport.bearerAuthenticate(), Note.getNoteById);
-router.post("/notes", Passport.bearerAuthenticate(), Note.createNote);
-router.put("/notes/:id", Passport.bearerAuthenticate(), Note.updateNote);
+router.post("/notes", Passport.bearerAuthenticate(), Note.createNote, Restrict);
+router.put("/notes/:id", Passport.bearerAuthenticate(), Note.updateNote, Restrict);
 router.delete("/notes/:id", Passport.bearerAuthenticate(), Note.deleteNote);
 
 // Collection Routes
