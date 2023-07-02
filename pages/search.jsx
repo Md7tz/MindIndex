@@ -7,7 +7,7 @@ import TabBar from "/components/search/TabBar";
 import Results from "/components/search/Results";
 import Pagination from "/components/search/Pagination";
 
-const SearchPage = () => {
+export default function SearchPage() {
   const router = useRouter();
   const { query, type, page } = router.query;
   const [data, setData] = useState([]);
@@ -110,6 +110,4 @@ const SearchPage = () => {
       </div>
     </div>
   );
-};
-
-export default SearchPage;
+}

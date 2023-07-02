@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styles from "./styles/Navbar.module.css";
 import Image from "next/image";
-import LoginForm from "./LoginForm";
-import RegisterForm from "./RegisterForm";
 import NoteForm from "./NoteForm";
-
-import SearchBar from "./SearchBar";
+import LoginForm from "./auth/LoginForm";
+import RegisterForm from "./auth/RegisterForm";
+import SearchBar from "./search/SearchBar";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -14,13 +13,14 @@ import {
   faFolderPlus,
   faBook,
   faStickyNote,
+  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import Basepath from "./Basepath";
-import Navigate from "./Basepath";
 import ClientApi from "./ClientApi";
 
 export default function NavBar() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
+  const [subscription, setSubscription] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +29,29 @@ export default function NavBar() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    async function getSubscriptionStatus() {
+      if (user?.id) {
+        try {
+          const res = await fetch(`api/users/${user.id}/subscription`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${await ClientApi.getToken()}`,
+            },
+          });
+
+          const data = await res.json();
+          setSubscription(data.metadata);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
+
+    getSubscriptionStatus();
+  }, [user]);
 
   const onClickLogout = async () => {
     await ClientApi.logout();
@@ -40,13 +63,13 @@ export default function NavBar() {
       className={`${styles["custom-navbar"]} navbar navbar-expand-lg custom-navbar border-bottom`}
     >
       <div className="row container-fluid text-dark">
-        <div className={`col d-flex ${styles.brand}`}>
+        <div className={`col d-flex align-items-center ${styles.brand}`}>
           <a
             className={`navbar-brand me-1 ${styles.logolink}`}
-            href={Basepath.get("/")}
+            href={Basepath.get("/") || "#"}
           >
             <Image
-              src={"/img/Logo.jpg"}
+              src={Basepath.get("/img/Logo.jpg")}
               alt="MindIndex"
               className={`me-1 ${styles.logo}`}
               width={40}
@@ -55,11 +78,30 @@ export default function NavBar() {
           </a>
           <a
             className={`navbar-brand text-dark ${styles.milink} fs-7 pe-3 m-1`}
-            href={Basepath.get("/")}
+            href={Basepath.get("/") || "#"}
           >
             MindIndex
           </a>
           <div className="border-end"></div>
+          {subscription?.subscribed && (
+            <div className="d-flex justify-content-center align-items-center">
+              <h2 className="badge text-dark bg-warning mb-0">
+                <FontAwesomeIcon
+                  icon={faStar}
+                  style={{ color: "dark" }}
+                  size="1x"
+                  fixedWidth
+                />{" "}
+                Premium{" "}
+                <FontAwesomeIcon
+                  icon={faStar}
+                  style={{ color: "dark" }}
+                  size="1x"
+                  fixedWidth
+                />
+              </h2>
+            </div>
+          )}
         </div>
 
         {user?.id && <SearchBar />}
@@ -72,7 +114,6 @@ export default function NavBar() {
                   className="nav-link dropdown-toggle active text-dark"
                   href="#"
                   role="button"
-                  data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
                   <FontAwesomeIcon icon={faFolderPlus} className="me-2" />
@@ -81,7 +122,7 @@ export default function NavBar() {
                   <li>
                     <a
                       className="dropdown-item"
-                      href={Basepath.get("/study-set/add")}
+                      href={Basepath.get("/study-set/add") || "#"}
                     >
                       <FontAwesomeIcon icon={faBook} className="me-2" />
                       Study Set
@@ -103,10 +144,9 @@ export default function NavBar() {
               <a
                 className="nav-link active text-dark"
                 aria-current="page"
-                href={Basepath.get("/profile")}
-                data-bs-toggle="modal"
+                href={Basepath.get("/profile") || "#"}
               >
-                <div className="d-flex align-items-center ps-2">
+                <div className="d-flex align-items-center ps-2 cursor">
                   <FontAwesomeIcon
                     icon={faCircleUser}
                     style={{ color: "dark" }}
@@ -121,7 +161,6 @@ export default function NavBar() {
                 className="nav-link active text-dark border-0 bg-transparent"
                 aria-current="page"
                 onClick={onClickLogout}
-                data-bs-toggle="modal"
               >
                 <div className="d-flex align-items-center ps-2">
                   <FontAwesomeIcon
@@ -178,7 +217,7 @@ export default function NavBar() {
       </div>
       <LoginForm />
       <RegisterForm />
-      <NoteForm mode={"create"}/>
+      <NoteForm mode={"create"} />
     </nav>
   );
 }

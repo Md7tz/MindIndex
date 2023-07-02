@@ -3,8 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import FlashcardForm from "../../components/FlashcardForm";
+import FlashcardForm from "../../components/collection/FlashcardForm";
 import styles from "../../components/styles/AddSet.module.css";
+import { toast } from "react-toastify";
+import ClientApi from "../../components/ClientApi";
 
 export default function AddSet() {
   const [collection, setCollection] = useState({
@@ -16,12 +18,16 @@ export default function AddSet() {
     ],
   });
 
+  const [errors, setErrors] = useState({});
+
   const handleCollectionNameChange = (event) => {
     setCollection({ ...collection, name: event.target.value });
+    setErrors({ ...errors, name: "" });
   };
 
   const handleCollectionDescriptionChange = (event) => {
     setCollection({ ...collection, description: event.target.value });
+    setErrors({ ...errors, description: "" });
   };
 
   const handleQuestionChange = (id, event) => {
@@ -80,10 +86,55 @@ export default function AddSet() {
     setCollection({ ...collection, flashcards: flashcardsCopy });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // You can perform additional actions here, like saving the collection to a database
-    console.log(collection);
+
+    try {
+
+      const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH + "/api/collections", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await ClientApi.getToken()}`,
+
+        },
+        // body: JSON.stringify({ ...collection })
+        body: JSON.stringify({
+          name: collection.name,
+          description: collection.description,
+          flashcards: collection.flashcards.map((flashcard) => {
+            return {
+              question: flashcard.question,
+              answer: flashcard.answer,
+            };
+          }),
+        })
+
+      });
+      console.log(response);
+      if (response.ok) {
+        // Collection created successfully
+        const data = await response.json();
+        toast.success(data.message);
+
+        // Reset the form after successful submission
+        setCollection({
+          name: "",
+          description: "",
+          flashcards: [
+            { id: 1, question: "", answer: "" },
+            { id: 2, question: "", answer: "" },
+          ],
+        });
+      } else {
+        // Handle error case
+        const errorData = await response.json();
+        setErrors(errorData.errors);
+        toast.error(errorData.message);
+      }
+    } catch (error) {
+      toast.error(error);
+    }
   };
 
   return (
@@ -95,10 +146,10 @@ export default function AddSet() {
             Create
           </button>
         </div>
-        <div className={`row ${styles.group} px-3`}>
+        <div className={`row ${styles.group} px-3 has-validation`}>
           <input
             type="text"
-            className={`${styles.inputField}`}
+            className={`${styles.inputField} ${errors?.name ? "is-invalid" : ""}`}
             id="collectionName"
             placeholder="e.g. Biology 101"
             value={collection.name}
@@ -106,16 +157,17 @@ export default function AddSet() {
           />
           <span className={styles.highlight}></span>
           <span className={styles.bar}></span>
+          {errors?.name && <div className="invalid-feedback px-0">{errors.name[0]}</div>}
           <label
             htmlFor="collectionName"
-            className="form-label px-0 text-muted"
+            className="form-label px-0 text-muted has-validation"
           >
             TITLE
           </label>
         </div>
         <div className={`row ${styles.group} px-3`}>
           <textarea
-            className={`${styles.inputField}`}
+            className={`${styles.inputField} ${errors?.description ? "is-invalid" : ""}`}
             id="collectionDescription"
             rows={3}
             placeholder="e.g. This is a collection of flashcards for Biology 101"
@@ -124,6 +176,7 @@ export default function AddSet() {
           ></textarea>
           <span className={styles.highlight}></span>
           <span className={styles.bar}></span>
+          {errors?.name && <div className="invalid-feedback px-0">{errors.description[0]}</div>}
           <label
             htmlFor="collectionDescription"
             className="form-label px-0 text-muted"
@@ -134,8 +187,14 @@ export default function AddSet() {
         <div className="mb-3">
           <h4>Flashcards</h4>
           <DndProvider backend={HTML5Backend}>
-            <div className="card-container">
-              {collection.flashcards.map((flashcard, index) => (
+            <div className="card-container has-validation">
+              {Object?.keys(errors)?.some((key) => key.startsWith("flashcards")) && (
+                <>
+                  <div className="is-invalid"></div>
+                  <div className="invalid-feedback px-0">Fill in all the fields</div>
+                </>
+              )}
+              {collection?.flashcards?.map((flashcard, index) => (
                 <FlashcardForm
                   key={flashcard.id}
                   flashcard={flashcard}

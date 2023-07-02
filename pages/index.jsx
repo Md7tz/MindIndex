@@ -5,9 +5,12 @@ import { faStar, faRocket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Event from "../components/Event";
 import ClientApi from "../components/ClientApi";
+import Basepath from "../components/Basepath";
+import { toast } from "react-toastify";
 
 export default function Landing() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
+  const [subscription, setSubscription] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,8 +21,82 @@ export default function Landing() {
   }, []);
 
   useEffect(() => {
-    Event.off("welcome", () => {});
+    async function getSubscriptionStatus() {
+      if (user?.id) {
+        try {
+          const res = await fetch(process.env.NEXT_PUBLIC_BASEPATH + `/api/users/${user.id}/subscription`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${await ClientApi.getToken()}`,
+            },
+          });
+
+          const data = await res.json();
+          setSubscription(data.metadata);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
+
+    getSubscriptionStatus();
+  }, [user]);
+
+  useEffect(() => {
+    Event.off("welcome", () => { });
   }, []);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get("success");
+    const canceled = urlParams.get("canceled");
+
+    const handlePaymentStatus = (message) => {
+      toast[message.type](message.text);
+      setTimeout(() => {
+        window.location.replace(
+          window.location.href.replace(window.location.search, "")
+        );
+      }, 2000);
+    };
+
+    if (success === "true") {
+      handlePaymentStatus({ type: "success", text: "Payment was successful!" });
+    } else if (canceled === "true") {
+      handlePaymentStatus({ type: "error", text: "Payment was canceled!" });
+    }
+  }, []);
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!user || !user.id || !user.email) {
+      // Handle the case where the user or email is missing
+      ClientApi.logout();;
+    }
+
+    try {
+      const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH + "/api/stripe/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await ClientApi.getToken()}`,
+        },
+        body: JSON.stringify({
+          user: user,
+        }),
+      });
+
+      if (response.ok) {
+        const { url } = await response.json();
+        window.location.replace(url);
+      } else {
+        const error = await response.json();
+        throw new Error(error);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
     <>
@@ -28,7 +105,7 @@ export default function Landing() {
           <div className="col-lg-7">
             <img
               className="img-fluid rounded mb-4 mb-lg-0"
-              src="https://unitecloud.org/wp-content/uploads/2022/08/2.jpg"
+              src={Basepath.get("/img/landing_image.jpg")}
               alt="Friends' group studying"
             />
           </div>
@@ -73,7 +150,7 @@ export default function Landing() {
                 <img
                   className="card-img-bottom"
                   // src="https://images.prismic.io/quizlet-prod/31c85d7d-9e36-40a4-9fae-5027c355ddee_Flashcards-1.gif?auto=compress,format"
-                  src="https://global-uploads.webflow.com/611b774c624f22e8063bb429/6357f11b6cc0d06f175d4bb1_Flip%2520flashcards.gif"
+                  src={Basepath.get("/img/flashcard.gif")}
                   alt="Card image cap"
                 ></img>
               </div>
@@ -99,7 +176,7 @@ export default function Landing() {
               <div className="card-footer">
                 <img
                   className="card-img-bottom"
-                  src="https://gifdb.com/images/high/writing-notes-and-copying-npndvx442t7q6kt9.gif"
+                  src={Basepath.get("/img/taking_notes.gif")}
                   alt="Card image cap"
                 ></img>
               </div>
@@ -138,7 +215,7 @@ export default function Landing() {
                 </p>
                 <div className="d-flex justify-content-center">
                   <Image
-                    src={"/img/Premium.png"}
+                    src={Basepath.get("/img/Premium.png")}
                     alt="MindIndex Premium"
                     className={`${styles.logo}`}
                     width={300}
@@ -147,15 +224,41 @@ export default function Landing() {
                 </div>
               </div>
               <div className="card-footer d-flex justify-content-center">
-                <a className="btn btn-warning btn-block" href="#!">
-                  <span style={{ fontWeight: "bold" }}>Go Premium</span>
-                  <FontAwesomeIcon
-                    icon={faRocket}
-                    style={{ color: "dark" }}
-                    size="1x"
-                    fixedWidth
-                  />
-                </a>
+                {user?.id ? (
+                  <button
+                    className={`btn btn-warning btn-block ${subscription?.subscribed && "disabled"}`}
+                    onClick={subscription?.subscribed ? null : handleSubscribe}
+                  >
+                    <span style={{ fontWeight: "bold" }}>
+                      {subscription?.subscribed
+                        ? "You are subscribed! Enjoy Premium perks"
+                        : "Go Premium"}
+                    </span>
+                    <FontAwesomeIcon
+                      icon={faRocket}
+                      style={{ color: "dark" }}
+                      size="1x"
+                      fixedWidth
+                    />
+                  </button>
+                ) : (
+                  <a
+                    className="btn btn-warning btn-block"
+                    aria-current="page"
+                    href="#loginForm"
+                    data-bs-toggle="modal"
+                  >
+                    <span style={{ fontWeight: "bold" }}>
+                      Login and Go Premium
+                    </span>
+                    <FontAwesomeIcon
+                      icon={faRocket}
+                      style={{ color: "dark" }}
+                      size="1x"
+                      fixedWidth
+                    />
+                  </a>
+                )}
               </div>
             </div>
           </div>

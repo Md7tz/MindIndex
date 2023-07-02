@@ -2,7 +2,7 @@ export default class Basepath {
   static get(url) {
     // replace /# with # to avoid page reload
     url = `${process.env.NEXT_PUBLIC_BASEPATH || ''}${url}`;
-    url = url.replace(/\/#/g, "#");
+    // url = url.replace(/\/#/g, "#");
     return url;
   }
 }
