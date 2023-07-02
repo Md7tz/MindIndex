@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import styles from "./styles/Auth.module.css";
-import { Navigate } from "./Basepath";
-import ClientApi from "./ClientApi";
+import styles from "../styles/Auth.module.css";
+import { Navigate } from "../Basepath";
+import ClientApi from "../ClientApi";
 import { toast } from "react-toastify";
-import Event from "./Event";
+import Event from "../Event";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
@@ -93,7 +93,7 @@ export default function LoginForm() {
                   />
                 </div>
                 <div className="d-flex justify-content-evenly">
-                  <div className="custom-control custom-checkbox">
+                  {/* <div className="custom-control custom-checkbox">
                     <input
                       type="checkbox"
                       className="custom-control-input"
@@ -105,10 +105,10 @@ export default function LoginForm() {
                     >
                       Remember me
                     </label>
-                  </div>
-                  <p className="forgot-password text-right">
+                  </div> */}
+                  {/* <p className="forgot-password text-right">
                     <a href="#">Forgot password?</a>
-                  </p>
+                  </p> */}
                 </div>
                 <p className="forgot-password text-center">
                   Don't have an account yet? Register{" "}
