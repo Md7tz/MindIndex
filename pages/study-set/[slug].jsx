@@ -158,6 +158,7 @@ export default function Studyset({ slug }) {
         const data = await response.json();
         setCollection(data.collection);
         toast.success(data.message);
+        await ClientApi.updateUser();
       } else {
         // Handle error case
         const errorData = await response.json();

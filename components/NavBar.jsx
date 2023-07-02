@@ -17,6 +17,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Basepath from "./Basepath";
 import ClientApi from "./ClientApi";
+import Event from "./Event";
 
 export default function NavBar() {
   const [user, setUser] = useState({});
@@ -30,13 +31,17 @@ export default function NavBar() {
     fetchData();
   }, []);
 
+  Event.on("update:user", async (user) => {
+    setUser(user);
+  });
+
   useEffect(() => {
     async function getSubscriptionStatus() {
       if (user?.id) {
         try {
           const res = await fetch(
             process.env.NEXT_PUBLIC_BASEPATH +
-              `/api/users/${user.id}/subscription`,
+            `/api/users/${user.id}/subscription`,
             {
               method: "GET",
               headers: {
@@ -115,10 +120,10 @@ export default function NavBar() {
             </div>
           )}
           {subscription?.subscribed &&
-          user?.limits &&
-          !isNaN(user?.collections_count) &&
-          !isNaN(user?.flashcards_count) &&
-          !isNaN(user?.notes_count) ? (
+            user?.limits &&
+            !isNaN(user?.collections_count) &&
+            !isNaN(user?.flashcards_count) &&
+            !isNaN(user?.notes_count) ? (
             <div className="d-flex justify-content-center align-items-center gap-1 ">
               <span
                 title="Study sets"

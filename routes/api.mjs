@@ -8,6 +8,7 @@ import Note from "../controllers/Note.mjs";
 import Auth from "../controllers/Auth.mjs";
 import Search from "../controllers/Search.mjs";
 import Payment from "../controllers/Payment.mjs";
+import User from "../controllers/User.mjs";
 
 // Middleware
 import ErrorHandler from "../middlewares/ErrorHandler.mjs";
@@ -26,6 +27,7 @@ router.post("/auth/register", Auth.register);
 router.post("/auth/refresh", Passport.bearerAuthenticate(), Auth.refreshToken);
 
 // User Routes
+router.get("/users/:id", Passport.bearerAuthenticate(), User.getUserById);
 router.get("/users/:id/profile", Passport.bearerAuthenticate(), Profile.getProfileByUserId);
 router.put("/users/:id/profile", Passport.bearerAuthenticate(), Profile.updateProfile);
 router.get("/users/:id/notes", Passport.bearerAuthenticate(), Note.getNotesByUserId);

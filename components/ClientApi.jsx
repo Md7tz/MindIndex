@@ -108,6 +108,35 @@ class ClientApi {
         });
     }
 
+    async updateUser() {
+        try {
+          const response = await fetch(`${this.baseUrl}/api/users/${this.user.id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${this.token}`, // Include the token in the Authorization header
+            },
+          });
+      
+          if (response.ok) {
+            const data = await response.json();
+            const user = data.user;
+      
+            // Store the user data in localStorage
+            await this.storeUser(user);
+            Event.emit("update:user", user);
+            return user;
+          } else {
+            throw new Error("Failed to fetch user data");
+          }
+        } catch (error) {
+          console.error(error);
+          throw new Error("Failed to fetch user data");
+        }
+      }
+      
+
+
     async logout(redirect = true) {
         await Storage.remove(`${this.prefix}@token`);
         await Storage.remove(`${this.prefix}@user`);

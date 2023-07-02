@@ -127,6 +127,7 @@ export default function AddSet() {
           ],
         });
         setErrors({});
+        await ClientApi.updateUser();
       } else {
         // Handle error case
         const errorData = await response.json();
