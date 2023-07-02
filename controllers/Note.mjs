@@ -147,6 +147,37 @@ export default class NoteController {
     }
   }
 
+  /**
+   * @openapi
+   * /api/notes/{id}:
+   *   put:
+   *     summary: Update a note by ID.
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: ID of the note to update.
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               title:
+   *                 type: string
+   *               body:
+   *                 type: string
+   *     responses:
+   *       '200':
+   *         description: Note updated successfully.
+   *       '400':
+   *         description: Validation failed.
+   */
   static async getNotesByUserId(req, res, next) {
     try {
       const { id } = req.params;
@@ -269,6 +300,8 @@ export default class NoteController {
    * /api/notes/{id}:
    *   delete:
    *     summary: Delete a note by ID.
+   *     security:
+   *       - bearerAuth: []
    *     parameters:
    *       - in: path
    *         name: id

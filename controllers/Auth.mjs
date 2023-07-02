@@ -189,6 +189,8 @@ export default class Auth {
    * /api/auth/refresh:
    *   post:
    *     summary: Refresh user token
+   *     security:
+   *       - bearerAuth: []
    *     description: Refresh user token
    *     requestBody:
    *       required: true

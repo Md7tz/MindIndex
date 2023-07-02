@@ -11,6 +11,24 @@ export default class CollectionController {
    * /api/collections:
    *   get:
    *     summary: Get search collections by query.
+   *    security:
+   *      - bearerAuth: []
+   *     parameters:
+   *       - in: query
+   *         name: query
+   *         schema:
+   *           type: string
+   *         description: Search query.
+   *       - in: query
+   *         name: page
+   *         schema:
+   *           type: number
+   *         description: Page number for pagination.
+   *       - in: query
+   *         name: limit
+   *         schema:
+   *           type: number
+   *         description: Maximum number of collections to retrieve per page.
    *     responses:
    *       '200':
    *         description: Collections retrieved successfully.
@@ -75,6 +93,36 @@ export default class CollectionController {
     }
   }
 
+  /**
+   * @openapi
+   * /api/collections/{id}:
+   *   get:
+   *     summary: Get collections by user ID.
+   *     security:
+   *      - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: ID of the user to retrieve collections for.
+   *       - in: query
+   *         name: page
+   *         schema:
+   *           type: number
+   *         description: Page number for pagination.
+   *       - in: query
+   *         name: pagesize
+   *         schema:
+   *           type: number
+   *         description: Number of items per page for pagination.
+   *     responses:
+   *       '200':
+   *         description: Collections retrieved successfully.
+   *       '400':
+   *         description: Validation failed.
+   */
   static async getCollectionsByUserId(req, res, next) {
     try {
       const { id } = req.params;
@@ -107,6 +155,8 @@ export default class CollectionController {
    * /api/collections:
    *   post:
    *     summary: Create a new collection.
+   *     security:
+   *       - bearerAuth: []
    *     requestBody:
    *       required: true
    *       content:
@@ -189,6 +239,8 @@ export default class CollectionController {
    * /api/collections/{id}:
    *   put:
    *     summary: Update a collection and its associated flashcards.
+   *     security:
+   *       - bearerAuth: []
    *     parameters:
    *       - in: path
    *         name: id
@@ -307,6 +359,8 @@ export default class CollectionController {
    * /api/collections/{id}:
    *   delete:
    *     summary: Delete a collection and its associated flashcards.
+   *     security:
+   *       - bearerAuth: []
    *     parameters:
    *       - in: path
    *         name: id
