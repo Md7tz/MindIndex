@@ -114,6 +114,7 @@ export default function NavBar() {
                   className="nav-link dropdown-toggle active text-dark"
                   href="#"
                   role="button"
+                  data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
                   <FontAwesomeIcon icon={faFolderPlus} className="me-2" />

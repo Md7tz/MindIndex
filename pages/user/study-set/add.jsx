@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import FlashcardForm from "../../components/collection/FlashcardForm";
-import styles from "../../components/styles/AddSet.module.css";
+import FlashcardForm from "../../../components/collection/FlashcardForm";
+import styles from "../../../components/styles/AddSet.module.css";
 import { toast } from "react-toastify";
-import ClientApi from "../../components/ClientApi";
+import ClientApi from "../../../components/ClientApi";
 
 export default function AddSet() {
   const [collection, setCollection] = useState({
