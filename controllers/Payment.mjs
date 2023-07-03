@@ -3,7 +3,41 @@ import Stripe from "../config/stripe.mjs"
 import { HTTP } from "../config/constants.mjs";
 
 export default class PaymentController {
-  // Payment routes
+
+  /**
+   * @openapi
+   * /api/stripe/subscribe:
+   *   post:
+   *     summary: Create a new Stripe subscription session.
+   *     security:
+   *       - bearerAuth: []
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               user:
+   *                 type: object
+   *                 properties:
+   *                   id:
+   *                     type: string
+   *                   email:
+   *                     type: string
+   *     responses:
+   *       '200':
+   *         description: Success. Returns the URL of the Stripe checkout session.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 url:
+   *                   type: string
+   *       '500':
+   *         description: Internal Server Error.
+   */
   static async subscribeStripe(req, res) {
     try {
       const { user } = req.body;
@@ -37,6 +71,23 @@ export default class PaymentController {
     }
   }
 
+  /**
+   * @openapi
+   * /api/stripe/webhook:
+   *   post:
+   *     summary: Handle Stripe webhook events.
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *     responses:
+   *       '200':
+   *         description: Success. Webhook event successfully handled.
+   *       '400':
+   *         description: Bad Request. Error with the webhook payload or signature.
+   */
   static async callbackStripe(req, res) {
     const payload = req.body;
     const sig = req.headers["stripe-signature"];
@@ -92,7 +143,49 @@ export default class PaymentController {
     }
   }
 
-  // Get subscription by user ID.
+  /**
+   * @openapi
+   * /api/subscription/{id}:
+   *   get:
+   *     summary: Get subscription details by user ID.
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         description: User ID.
+   *         required: true
+   *         schema:
+   *           type: string
+   *     responses:
+   *       '200':
+   *         description: Success. Returns subscription details.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                 metadata:
+   *                   type: object
+   *                   properties:
+   *                     subscribed:
+   *                       type: boolean
+   *                     date:
+   *                       type: string
+   *                       format: date-time
+   *                     payment_status:
+   *                       type: string
+   *                     amount:
+   *                       type: number
+   *                     currency:
+   *                       type: string
+   *       '404':
+   *         description: Not Found. User is not subscribed or subscription not found.
+   *       '500':
+   *         description: Internal Server Error.
+   */
   static async getSubscriptionByUserId(req, res, next) {
     try {
       const { id } = req.params;
@@ -108,16 +201,7 @@ export default class PaymentController {
           .json({ message: "This user is not subscribed" });
       }
 
-      const subscriptionDate = subscription.updated_at
-        ? subscription.updated_at
-        : subscription.created_at;
-
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-      const isWithinThirtyDays = subscriptionDate > thirtyDaysAgo;
-
-      if (subscription.status !== "paid" || !isWithinThirtyDays) {
+      if (subscription.status !== "paid") {
         return res
           .status(HTTP.NOT_FOUND)
           .json({ message: "This user is not subscribed" });
@@ -127,7 +211,7 @@ export default class PaymentController {
         message: "User is subscribed.",
         metadata: {
           subscribed: true,
-          subscriptionDate,
+          date: subscription.created_at,
           payment_status: subscription.status,
           amount: subscription.amount,
           currency: subscription.currency,

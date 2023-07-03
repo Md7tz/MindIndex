@@ -126,10 +126,14 @@ export default function AddSet() {
             { id: 2, question: "", answer: "" },
           ],
         });
+        setErrors({});
+        await ClientApi.updateUser();
       } else {
         // Handle error case
         const errorData = await response.json();
-        setErrors(errorData.errors);
+        console.log(errorData);
+        if (errorData.errors)
+          setErrors(errorData.errors);
         toast.error(errorData.message);
       }
     } catch (error) {

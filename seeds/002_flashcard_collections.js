@@ -9,8 +9,9 @@ exports.seed = async function (knex) {
   const user = await knex('users').where({ username: process.env.DEFAULT_USER }).first()
   const user_id = user.id
 
-  // Deletes ALL existing entries
-  await knex('collections').del()
+  // Deletes ALL existing entries and restart identity
+  await knex('collections').truncate()
+
   await knex('collections').insert([
     { name: 'Biology', description: 'A set of science flashcards about general knowledge about biology topics', created_at: '2023-05-10 12:20:56.530593+08', user_id },
     { name: 'History', description: 'A collection of flashcards covering major historical events and figures', created_at: '2023-05-11 12:20:56.775846+08', user_id },
