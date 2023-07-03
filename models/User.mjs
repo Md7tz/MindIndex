@@ -32,7 +32,7 @@ export default class User extends Model {
   // Relations
   static get relationMappings() {
     return {
-      profiles: {
+      profile: {
         relation: Model.HasOneRelation,
         modelClass: Profile,
         join: {

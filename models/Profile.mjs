@@ -73,4 +73,15 @@ export default class Profile extends Model {
       deleted_at: { type: ["string", "null"] },
     },
   };
+
+  // model modifiers
+  // modifier to select avatar_url as avatar
+  static get modifiers() {
+    return {
+      ...super.modifiers,
+      selectAvatar(builder) {
+        builder.select("avatar_url");
+      },
+    };
+  }
 }

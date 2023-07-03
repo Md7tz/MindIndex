@@ -54,7 +54,7 @@ exports.seed = async function (knex) {
 
   await knex('collections').insert(collections.map((collection) => ({
     ...collection,
-    slug: slugify(collection.name),
+    slug: slugify(collection.name, { lower: true }),
     user_id,
   })));
 };

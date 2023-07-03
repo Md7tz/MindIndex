@@ -43,6 +43,7 @@ router.delete("/notes/:id", Passport.bearerAuthenticate(), Note.deleteNote);
 // Collection Routes
 router.get("/collections", Passport.bearerAuthenticate(), Collection.getCollections);
 router.post("/collections", Passport.bearerAuthenticate(), Collection.createCollection);
+router.get("/collections/:slug", Passport.bearerAuthenticate(), Collection.getCollectionBySlug);
 router.put("/collections/:id", Passport.bearerAuthenticate(), Collection.updateCollection);
 router.delete("/collections/:id", Passport.bearerAuthenticate(), Collection.deleteCollection);
 

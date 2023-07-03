@@ -4,6 +4,7 @@ import Flashcard from "../models/Flashcard.mjs";
 import Validator from "validatorjs";
 import { transaction } from "objection";
 import { HTTP } from "../config/constants.mjs";
+import slugify from "slugify";
 
 export default class CollectionController {
   /**
@@ -112,6 +113,61 @@ export default class CollectionController {
   }
 
   /**
+ * @openapi
+ * /api/collections/{slug}:
+ *   get:
+ *     summary: Retrieve a collection by slug
+ *     security:
+ *       - bearerAuth: []
+ *     description: Retrieve a collection by its slug.
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         description: The slug of the collection.
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Collection retrieved successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Collection'
+ *       '404':
+ *         description: Collection not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+  static async getCollectionBySlug(req, res, next) {
+    try {
+      const { slug } = req.params;
+      const collection = await Collection.query()
+        .where("slug", slug)
+        .withGraphFetched("[user.[profile(selectAvatar)], flashcards, notes]")
+        .whereNotDeleted()
+        .first();
+
+      console.log(collection);
+      if (!collection) {
+        return res.status(HTTP.NOT_FOUND).json({
+          message: "Collection not found.",
+        });
+      }
+
+      return res.status(HTTP.OK).json({
+        message: "Collection retrieved successfully.",
+        collection,
+      });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
+
+  /**
    * @openapi
    * /api/collections:
    *   post:
@@ -152,6 +208,7 @@ export default class CollectionController {
     try {
       const validation = new Validator(req.body, {
         name: "required|string",
+        slug: "required|string",
         description: "required|string",
         flashcards: "required|array",
         "flashcards.*.question": "required|string",
@@ -166,10 +223,24 @@ export default class CollectionController {
       }
 
       const { name, description, flashcards } = req.body;
+      // check if collection name or slug already exists
+      const existing = await Collection
+        .query()
+        .where({ name, })
+        .orWhere({ slug: slugify(name, { lower: true }) })
+        .first();
+
+      if (existing) {
+        return res.status(HTTP.CONFLICT).json({
+          message: "Collection name already exists.",
+        });
+      }
+
       const user_id = req.user.id;
       await transaction(Collection.knex(), async (trx) => {
         const collection = await Collection.query(trx).insertGraph({
           name,
+          slug: slugify(name, { lower: true }),
           description,
           flashcards,
           user_id,
