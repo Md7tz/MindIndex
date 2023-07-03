@@ -9,6 +9,7 @@ import { MAX_STRING_LENGTH } from "../config/constants.mjs";
  * @description Represents a flashcard in the database.
  *
  * @property {Number} id               - The incremental ID of the flashcard.
+ * @property {Number} collection_id    - The ID of the collection that the flashcard belongs to.
  * @property {String} question         - The question of the flashcard.
  * @property {String} answer           - The answer of the flashcard.
  * @property {Date} created_at         - The timestamp of when the flashcard was created.

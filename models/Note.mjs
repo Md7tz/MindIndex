@@ -10,6 +10,7 @@ import User from "./User.mjs";
  *
  * @property {Number} id               - The incremental ID of the note.
  * @property {Number} user_id          - The ID of the user who created the note.
+ * @property {Number|null} collection_id    - The ID of the collection the note belongs to.
  * @property {String} title            - The title of the note.
  * @property {String|Text} body        - The body of the note.
  * @property {Date} created_at         - The timestamp of when the note was created.
