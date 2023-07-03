@@ -60,7 +60,8 @@ export default class CollectionController {
 
       const collection = await Collection.query()
         .findById(id)
-        .withGraphFetched("flashcards");
+        .withGraphFetched("flashcards")
+        .whereNotDeleted();
 
       // check if collection belongs to user
       if (!!collection && collection?.user_id != userId) {
@@ -93,7 +94,9 @@ export default class CollectionController {
       const collections = await Collection.query()
         .where("user_id", id)
         .orderBy("created_at", "desc")
-        .page(page - 1, pagesize);
+        .page(page - 1, pagesize)
+        .whereNotDeleted()
+        ;
       if (!collections) {
         collections = [];
         return res.status(HTTP.OK).json({

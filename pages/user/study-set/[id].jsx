@@ -66,6 +66,29 @@ export default function Studyset({ id }) {
   }, [id]);
 
 
+  // delete collection
+  const onDelete = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASEPATH}/api/collections/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await ClientApi.getToken()}`,
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        toast.error(error.message);
+      }
+      toast.success("Collection deleted successfully.");
+      Navigate.replace('/');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleCollectionNameChange = (event) => {
     setCollection({ ...collection, name: event.target.value });
     setErrors({ ...errors, name: "" });
@@ -190,6 +213,12 @@ export default function Studyset({ id }) {
               </span>
               <button type="submit" className="btn btn-dark">
                 Save
+              </button>
+              <button type="button" className="btn btn-success" onClick={()=> Navigate.push("/study-set/" + collection.slug)} >
+                Preview
+              </button>
+              <button type="button" className="btn btn-danger" onClick={onDelete} >
+                delete
               </button>
             </div>
           </div>

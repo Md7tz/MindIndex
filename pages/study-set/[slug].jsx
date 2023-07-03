@@ -10,7 +10,6 @@ import NoteListing from '../../components/collection/NoteListing';
 
 export default function PublicStudySet({ slug }) {
 	const [collection, setCollection] = useState({
-		id: 1,
 		user: {
 			username: "username",
 			avatar: "https://via.placeholder.com/150",
