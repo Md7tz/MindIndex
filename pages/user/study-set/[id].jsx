@@ -26,6 +26,7 @@ export default function Studyset({ id }) {
   );
 
   const [errors, setErrors] = useState({});
+  const [notFound, setNotFound] = useState(false);
 
 
   // fetch collection data from the API
@@ -43,20 +44,19 @@ export default function Studyset({ id }) {
             },
           }
         );
+        const json = await response.json();
+        console.log(response);
         if (!response.ok) {
-          const error = await response.json();
-          toast.error(error.message);
-        }
-        const data = await response.json();
-        const authorId = data.collection.user_id;
-
-        await ClientApi.getUser().then((user) => {
-          if (authorId != user.id) {
+          if (response.status === 404) {
+            setNotFound(true);
+          } else if (response.status === 403) {
             toast.error("You are not authorized to edit this collection.");
             Navigate.replace('/');
-          }
-        });
-        setCollection(data.collection);
+          } else
+            toast.error(json.message);
+        } else toast.success(json.message);
+
+        setCollection(json.collection);
       } catch (error) {
         console.log(error);
       }
@@ -80,6 +80,7 @@ export default function Studyset({ id }) {
 
       if (!response.ok) {
         const error = await response.json();
+
         toast.error(error.message);
       }
       toast.success("Collection deleted successfully.");
@@ -189,11 +190,12 @@ export default function Studyset({ id }) {
       } else {
         // Handle error case
         const errorData = await response.json();
+
         setErrors(errorData.errors);
         toast.error(errorData.errors[Object.keys(errorData.errors)[0]][0]);
       }
     } catch (error) {
-      toast.error(error);
+      toast.error(error.props.message);
     }
   };
 
@@ -214,7 +216,7 @@ export default function Studyset({ id }) {
               <button type="submit" className="btn btn-dark">
                 Save
               </button>
-              <button type="button" className="btn btn-success" onClick={()=> Navigate.push("/study-set/" + collection.slug)} >
+              <button type="button" className="btn btn-success" onClick={() => Navigate.push("/study-set/" + collection.slug)} >
                 Preview
               </button>
               <button type="button" className="btn btn-danger" onClick={onDelete} >
@@ -298,7 +300,17 @@ export default function Studyset({ id }) {
           </div>
         </form>
       </div>
-    ) : <Error statusCode={404} />
+    ) : notFound ? (
+      <Error statusCode={404} />
+    ) : (
+      <div className="container my-3 py-3">
+        <div className="d-flex justify-content-center align-items-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+    )
   );
 }
 
