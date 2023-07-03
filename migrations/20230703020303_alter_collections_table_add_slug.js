@@ -4,6 +4,7 @@ exports.up = function (knex) {
   return knex.schema
     .alterTable("collections", function (table) {
       table.string("slug").unique().nullable();
+			table.string("name").unique().notNullable().alter();
     })
     .then(() => {
       // Update the "slug" column based on the existing "name" values
@@ -35,5 +36,6 @@ exports.up = function (knex) {
 exports.down = function (knex) {
   return knex.schema.alterTable("collections", function (table) {
     table.dropColumn("slug");
+		table.string("name").notNullable().alter();
   });
 };
