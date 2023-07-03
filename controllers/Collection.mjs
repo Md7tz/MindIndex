@@ -63,7 +63,7 @@ export default class CollectionController {
         .withGraphFetched("flashcards");
 
       // check if collection belongs to user
-      if (!!collection && collection?.user_id !== userId) {
+      if (!!collection && collection?.user_id != userId) {
         return res.status(HTTP.FORBIDDEN).json({
           message: "You are not authorized to edit this collection.",
         });

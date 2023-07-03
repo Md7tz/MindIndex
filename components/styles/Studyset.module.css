@@ -72,3 +72,9 @@
     user-select: none;
     /* Non-prefixed version, currently supported by Chrome and Opera */
 }
+
+.note {
+    border-left: 2px solid #ccc;
+    padding-left: 10px;
+    margin: 10px 0;
+}

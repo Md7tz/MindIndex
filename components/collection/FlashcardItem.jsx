@@ -11,11 +11,15 @@ export default function FlashcardItem({ card, clickHandler, flipped, flipStyle }
 		<div className={styles['flashcardItem']} onClick={clickHandler}>
 			<div className={styles['flashcardItemInner']} style={frontStyle}>
 				<div className={styles['flashcardItemHelper']}>front</div>
-				{card?.question}
+				<span className='d-flex justify-content-center align-items-center p-2 text-center'>
+					{card?.question}
+				</span>
 			</div>
 			<div className={styles['flashcardItemInner']} style={backStyle}>
 				<div className={styles['flashcardItemHelper']}>back</div>
-				{flipped ? card?.answer : ""}
+				<span className='d-flex justify-content-center align-items-center p-2 text-center'>
+					{flipped ? card?.answer : ""}
+				</span>
 			</div>
 		</div>
 	);

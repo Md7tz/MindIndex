@@ -49,7 +49,7 @@ export default function Studyset({ id }) {
         }
         const data = await response.json();
         const authorId = data.collection.user_id;
-        
+
         await ClientApi.getUser().then((user) => {
           if (authorId != user.id) {
             toast.error("You are not authorized to edit this collection.");
@@ -182,8 +182,10 @@ export default function Studyset({ id }) {
             <h2>Editing study set </h2>
             <div className="d-flex justify-content-center align-items-center gap-3">
               <span className="text-muted">
-                Last updated on {collection?.updated_at ? moment(collection.updated_at).format("MMMM Do YYYY, h:mm a")
-                  : "never"
+                {
+                  collection?.updated_at
+                    ? "Last updated " + moment(collection.updated_at).fromNow()
+                    : "Created " + moment(collection.created_at).fromNow()
                 }
               </span>
               <button type="submit" className="btn btn-dark">
