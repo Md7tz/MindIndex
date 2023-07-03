@@ -39,6 +39,11 @@ export default function FlashcardsViewer ({ cards }) {
                 flipStyle={flipStyle}
                 />
 			</div>
+			<ViewerNavButtons
+				arrowHandler={arrowHandler}
+				cardIndex={cardIndex}
+				cardLength={cards.length}
+			/>
 		</div>
 	);
 };
