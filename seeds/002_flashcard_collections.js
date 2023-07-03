@@ -42,6 +42,5 @@ exports.seed = async function (knex) {
     { name: 'Journalism', description: 'A collection of flashcards to study journalism ethics, news writing, and media literacy', created_at: '2023-06-06 12:34:14.799607+08', user_id },
     { name: 'Architecture', description: 'Flashcards covering architectural styles, famous buildings, and design principles', created_at: '2023-06-07 12:34:19.092787+08', user_id },
     { name: 'Astronomy', description: 'A set of flashcards to study celestial bodies, astronomical phenomena, and the universe', created_at: '2023-06-08 12:34:23.676198+08', user_id },
-    { name: 'Architecture', description: 'Flashcards covering architectural styles, famous buildings, and design principles', created_at: '2023-06-07 13:21:46.311677+08', user_id },
   ]);
 };
