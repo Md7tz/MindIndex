@@ -1,4 +1,5 @@
 import { useState } from "react";
+import slugify from "slugify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { DndProvider } from "react-dnd";
@@ -7,10 +8,12 @@ import FlashcardForm from "../../../components/collection/FlashcardForm";
 import styles from "../../../components/styles/AddSet.module.css";
 import { toast } from "react-toastify";
 import ClientApi from "../../../components/ClientApi";
+import { Navigate } from "../../../components/Basepath";
 
 export default function AddSet() {
   const [collection, setCollection] = useState({
     name: "",
+    slug: "",
     description: "",
     flashcards: [
       { id: 1, question: "", answer: "" },
@@ -21,7 +24,7 @@ export default function AddSet() {
   const [errors, setErrors] = useState({});
 
   const handleCollectionNameChange = (event) => {
-    setCollection({ ...collection, name: event.target.value });
+    setCollection({ ...collection, name: event.target.value, slug: slugify(event.target.value, { lower: true }) });
     setErrors({ ...errors, name: "" });
   };
 
@@ -101,6 +104,7 @@ export default function AddSet() {
         // body: JSON.stringify({ ...collection })
         body: JSON.stringify({
           name: collection.name,
+          slug: collection.slug,
           description: collection.description,
           flashcards: collection.flashcards.map((flashcard) => {
             return {
@@ -111,25 +115,19 @@ export default function AddSet() {
         })
 
       });
-      console.log(response);
+
       if (response.ok) {
         // Collection created successfully
         const data = await response.json();
         toast.success(data.message);
 
-        // Reset the form after successful submission
-        setCollection({
-          name: "",
-          description: "",
-          flashcards: [
-            { id: 1, question: "", answer: "" },
-            { id: 2, question: "", answer: "" },
-          ],
-        });
+        setErrors({});
+        Navigate.push("/study-set/" + collection.slug);
       } else {
         // Handle error case
         const errorData = await response.json();
-        setErrors(errorData.errors);
+        if (errorData.errors)
+          setErrors(errorData.errors);
         toast.error(errorData.message);
       }
     } catch (error) {
@@ -141,7 +139,9 @@ export default function AddSet() {
     <div className="container my-3 py-3">
       <form onSubmit={handleSubmit}>
         <div className="d-flex justify-content-between align-items-center">
-          <h2>Create a new study set</h2>
+          <h2>Create a new study set
+            <span className="text-muted mx-2 px-2 fs-5">url slug: {collection.slug}</span>
+          </h2>
           <button type="submit" className="btn btn-dark">
             Create
           </button>

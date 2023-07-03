@@ -150,7 +150,6 @@ export default class CollectionController {
         .whereNotDeleted()
         .first();
 
-      console.log(collection);
       if (!collection) {
         return res.status(HTTP.NOT_FOUND).json({
           message: "Collection not found.",
