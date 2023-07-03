@@ -30,6 +30,7 @@ router.get("/users/:id/profile", Passport.bearerAuthenticate(), Profile.getProfi
 router.put("/users/:id/profile", Passport.bearerAuthenticate(), Profile.updateProfile);
 router.get("/users/:id/notes", Passport.bearerAuthenticate(), Note.getNotesByUserId);
 router.get("/users/:id/collections", Passport.bearerAuthenticate(), Collection.getCollectionsByUserId);
+router.get("/users/:id/collections/:id", Passport.bearerAuthenticate(), Collection.getUserCollectionById);
 router.get("/users/:id/subscription", Passport.bearerAuthenticate(), Payment.getSubscriptionByUserId);
 
 // Notes Routes
@@ -41,7 +42,6 @@ router.delete("/notes/:id", Passport.bearerAuthenticate(), Note.deleteNote);
 
 // Collection Routes
 router.get("/collections", Passport.bearerAuthenticate(), Collection.getCollections);
-router.get("/collections/:id", Passport.bearerAuthenticate(), Collection.getCollectionById);
 router.post("/collections", Passport.bearerAuthenticate(), Collection.createCollection);
 router.put("/collections/:id", Passport.bearerAuthenticate(), Collection.updateCollection);
 router.delete("/collections/:id", Passport.bearerAuthenticate(), Collection.deleteCollection);

@@ -11,7 +11,7 @@ import styles from "../../../components/styles/AddSet.module.css";
 import ClientApi from "../../../components/ClientApi";
 import { Navigate } from "../../../components/Basepath";
 
-export default function Studyset({ slug }) {
+export default function Studyset({ id }) {
   const [collection, setCollection] = useState(
     {
       name: "",
@@ -32,8 +32,9 @@ export default function Studyset({ slug }) {
   useEffect(() => {
     const fetchCollection = async () => {
       try {
+        const userId = await ClientApi.getUser().then((user) => user.id);
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASEPATH}/api/collections/${slug}`,
+          `${process.env.NEXT_PUBLIC_BASEPATH}/api/users/${userId}/collections/${id}`,
           {
             method: "GET",
             headers: {
@@ -42,9 +43,13 @@ export default function Studyset({ slug }) {
             },
           }
         );
+        if (!response.ok) {
+          const error = await response.json();
+          toast.error(error.message);
+        }
         const data = await response.json();
         const authorId = data.collection.user_id;
-
+        
         await ClientApi.getUser().then((user) => {
           if (authorId != user.id) {
             toast.error("You are not authorized to edit this collection.");
@@ -58,7 +63,7 @@ export default function Studyset({ slug }) {
     };
 
     fetchCollection();
-  }, [slug]);
+  }, [id]);
 
 
   const handleCollectionNameChange = (event) => {
@@ -133,7 +138,7 @@ export default function Studyset({ slug }) {
     event.preventDefault();
 
     try {
-      const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH + "/api/collections/" + slug, {
+      const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH + "/api/collections/" + id, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -267,11 +272,11 @@ export default function Studyset({ slug }) {
 }
 
 export async function getServerSideProps(context) {
-  const { slug } = context.query;
+  const { id } = context.query;
 
   return {
     props: {
-      slug
+      id
     },
   };
 }

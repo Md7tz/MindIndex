@@ -35,7 +35,8 @@ export default class CollectionController {
 
   /**
    * @openapi
-   * /api/collections/{id}:
+   * /api/users/{id}/collections/{id}:
+   * 
    *   get:
    *     summary: Get a collection by its ID.
    *     parameters:
@@ -51,13 +52,21 @@ export default class CollectionController {
    *       '404':
    *         description: Collection not found.
    */
-  static async getCollectionById(req, res, next) {
+  static async getUserCollectionById(req, res, next) {
     try {
       const { id } = req.params;
+      const userId = req.user.id;
 
       const collection = await Collection.query()
         .findById(id)
         .withGraphFetched("flashcards");
+
+      // check if collection belongs to user
+      if (!!collection && collection?.user_id !== userId) {
+        return res.status(HTTP.FORBIDDEN).json({
+          message: "You are not authorized to edit this collection.",
+        });
+      }
 
       if (!collection) {
         return res.status(HTTP.NOT_FOUND).json({
