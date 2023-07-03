@@ -13,8 +13,11 @@ export default class Passport {
                 if (moment().isAfter(moment(decoded.exp * 1000))) {
                     return done(null, false)
                 }
-
-                const user = await User.query().findById(decoded.sub);
+                // get the user with the subscription and collections select count and notes select count
+                const user = await User
+                    .query()
+                    .findById(decoded.sub)
+                    .withGraphFetched("[subscription,collections(selectId,currentMonth).[flashcards],notes(selectId,currentMonth)]");
 
                 if (!user) {
                     return done(null, false);

@@ -121,11 +121,12 @@ export default function AddSet() {
         const data = await response.json();
         toast.success(data.message);
 
-        setErrors({});
+        await ClientApi.updateUser();
         Navigate.push("/study-set/" + collection.slug);
       } else {
         // Handle error case
         const errorData = await response.json();
+        // console.log(errorData);
         if (errorData.errors)
           setErrors(errorData.errors);
         toast.error(errorData.message);

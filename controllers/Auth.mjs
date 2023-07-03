@@ -4,6 +4,7 @@ import { transaction } from "objection";
 import User from "../models/User.mjs";
 import Profile from "../models/Profile.mjs";
 import Token from "../config/token.mjs";
+import { LIMITS } from "../middlewares/Restrict.mjs";
 
 export default class Auth {
 
@@ -153,13 +154,14 @@ export default class Auth {
     const { username, password } = req.body;
 
     try {
-      const user = await User.query()
+      let user = await User.query()
         .where((builder) => {
           builder
             .where({ username })
             .orWhere('email', username)
         })
         .first()
+        .withGraphFetched("[subscription,collections(selectId,currentMonth).[flashcards],notes(selectId,currentMonth)]")
         .whereNotDeleted();
 
       if (!user) {
@@ -174,6 +176,7 @@ export default class Auth {
         });
       }
       const token = Token.generate(user.id);
+      user.limits = LIMITS;
 
       return res.status(HTTP.OK).json({
         message: "User logged in successfuly.",
@@ -189,6 +192,8 @@ export default class Auth {
    * /api/auth/refresh:
    *   post:
    *     summary: Refresh user token
+   *     security:
+   *       - bearerAuth: []
    *     description: Refresh user token
    *     requestBody:
    *       required: true

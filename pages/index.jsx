@@ -44,7 +44,7 @@ export default function Landing() {
   }, [user]);
 
   useEffect(() => {
-    Event.off("welcome", () => { });
+    Event.off("welcome", () => {});
   }, []);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function Landing() {
     e.preventDefault();
     if (!user || !user.id || !user.email) {
       // Handle the case where the user or email is missing
-      ClientApi.logout();;
+      ClientApi.logout();
     }
 
     try {

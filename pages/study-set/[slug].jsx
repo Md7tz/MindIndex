@@ -33,6 +33,7 @@ export default function PublicStudySet({ slug }) {
 			{ title: 'Alchemy: From Elements to Elixirs', body: 'Unraveling the secrets of chemistry and its transformative powers.', created_at: '2023-06-03 11:45:00', },
 		]
 	});
+	const [notFound, setNotFound] = useState(false);
 
 	useEffect(() => {
 		const fetchCollection = async () => {
@@ -47,15 +48,18 @@ export default function PublicStudySet({ slug }) {
 
 				if (!response.ok) {
 					const error = await response.json();
-					throw new Error(error.message);
+
+					if (response.status === 404) {
+						setNotFound(true);
+					}
+					throw new Error(error);
 				}
 
 				const data = await response.json();
-				
+
 				setCollection(data.collection);
 			} catch (error) {
-				console.error(error);
-				toast.error(error.message);
+				toast.error(error.props.message);
 			}
 		};
 
@@ -105,7 +109,17 @@ export default function PublicStudySet({ slug }) {
 					</div>
 				</form>
 			</div>
-		) : <Error statusCode={404} />
+		) : notFound ? (
+			<Error statusCode={404} />
+		) : (
+			<div className="container my-3 py-3">
+				<div className="d-flex justify-content-center align-items-center">
+					<div className="spinner-border text-primary" role="status">
+						<span className="visually-hidden">Loading...</span>
+					</div>
+				</div>
+			</div>
+		)
 	);
 }
 

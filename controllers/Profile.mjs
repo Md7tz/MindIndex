@@ -8,6 +8,8 @@ export default class ProfileController {
    * /api/users/{id}/profile:
    *   get:
    *     summary: Get the profile of a user by his ID.
+   *     security:
+   *       - bearerAuth: []
    *     parameters:
    *       - in: path
    *         name: id
@@ -47,49 +49,51 @@ export default class ProfileController {
     }
   }
 
-  /**
-   * @openapi
-   * /api/users/{id}/profiles:
-   *   post:
-   *     summary: Create an empty profile for the user. Will be used if no profile is found for a user.
-   *     parameters:
-   *        - in: path
-   *          name: id
-   *          required: true
-   *          schema:
-   *            type: string
-   *          description: The ID of the user to create a profile for.
-   *     responses:
-   *       '201':
-   *         description: Profile created successfully.
-   *       '400':
-   *         description: Validation failed.
-   */
-  static async createProfile(req, res, next) {
-    try {
-      // Get the user ID from the URL parameters
-      const { id } = req.params;
+  // /**
+  //  * @openapi
+  //  * /api/users/{id}/profiles:
+  //  *   post:
+  //  *     summary: Create an empty profile for the user. Will be used if no profile is found for a user.
+  //  *     parameters:
+  //  *        - in: path
+  //  *          name: id
+  //  *          required: true
+  //  *          schema:
+  //  *            type: string
+  //  *          description: The ID of the user to create a profile for.
+  //  *     responses:
+  //  *       '201':
+  //  *         description: Profile created successfully.
+  //  *       '400':
+  //  *         description: Validation failed.
+  //  */
+  // static async createProfile(req, res, next) {
+  //   try {
+  //     // Get the user ID from the URL parameters
+  //     const { id } = req.params;
 
-      await Profile.transaction(async (trx) => {
-        const newProfile = await Profile.query(trx).insert({ user_id: id });
+  //     await Profile.transaction(async (trx) => {
+  //       const newProfile = await Profile.query(trx).insert({ user_id: id });
 
-        res.status(HTTP.CREATED).json({
-          message: "Profile created successfully",
-          profile: newProfile,
-        });
-      });
-    } catch (error) {
-      console.error(error);
-      // If an error occurs, pass it to the next middleware
-      next(error);
-    }
-  }
+  //       res.status(HTTP.CREATED).json({
+  //         message: "Profile created successfully",
+  //         profile: newProfile,
+  //       });
+  //     });
+  //   } catch (error) {
+  //     console.error(error);
+  //     // If an error occurs, pass it to the next middleware
+  //     next(error);
+  //   }
+  // }
 
   /**
    * @openapi
    * /api/users/{id}/profiles:
    *   put:
    *     summary: Update a profile.
+   *     security:
+   *       - bearerAuth: []
    *     parameters:
    *       - in: path
    *         name: id

@@ -10,6 +10,8 @@ export default class SearchController {
    * /api/search:
    *   get:
    *     summary: Search collections and notes
+   *     security:
+   *       - bearerAuth: []
    *     description: Search collections and notes by name, description, title, and body to be used as suggestions
    *     parameters:
    *       - in: query

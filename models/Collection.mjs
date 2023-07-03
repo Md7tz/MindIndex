@@ -49,6 +49,7 @@ export default class Collection extends Model {
           from: "collections.id",
           to: "flashcards.collection_id",
         },
+        filter: (query) => query.whereNotDeleted(),
       },
       notes: {
         relation: Model.HasManyRelation,
@@ -111,6 +112,4 @@ export default class Collection extends Model {
       total: totalNonDeletedItems,
     };
   }
-
-
 }
