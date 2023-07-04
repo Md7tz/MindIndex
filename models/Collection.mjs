@@ -1,6 +1,7 @@
 import Model from "./index.mjs";
 import Flashcard from "./Flashcard.mjs";
 import User from "./User.mjs";
+import Note from "./Note.mjs";
 import { MAX_STRING_LENGTH, MAX_TEXT_LENGTH } from "../config/constants.mjs";
 
 /**
@@ -47,6 +48,15 @@ export default class Collection extends Model {
         join: {
           from: "collections.id",
           to: "flashcards.collection_id",
+        },
+        filter: (query) => query.whereNotDeleted(),
+      },
+      notes: {
+        relation: Model.HasManyRelation,
+        modelClass: Note,
+        join: {
+          from: "collections.id",
+          to: "notes.collection_id",
         },
       },
       user: {
@@ -102,6 +112,4 @@ export default class Collection extends Model {
       total: totalNonDeletedItems,
     };
   }
-
-
 }

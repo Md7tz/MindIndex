@@ -9,8 +9,9 @@ exports.seed = async function (knex) {
   const user = await knex('users').where({ username: process.env.DEFAULT_USER }).first()
   const user_id = user.id
 
-  // Deletes ALL existing entries
-  await knex('notes').del()
+  // Deletes ALL existing entries and restart identity
+  await knex('notes').truncate()
+
   await knex('notes').insert([
     { title: 'The Art of Problem Solving', body: 'Unlocking the beauty of mathematics through problem-solving techniques.', created_at: '2023-06-01 09:00:00', user_id },
     { title: 'Exploring the Cosmos', body: 'Journeying through the wonders of the universe and the mysteries of physics.', created_at: '2023-06-02 10:30:00', user_id },

@@ -9,6 +9,8 @@ export default class FlashcardController {
  * /api/flashcards/{id}:
  *   delete:
  *     summary: Delete a flashcard.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -62,6 +64,8 @@ export default class FlashcardController {
    * /api/flashcards/{id}:
    *   put:
    *     summary: Update a flashcard.
+   *     security:
+   *       - bearerAuth: []
    *     parameters:
    *       - in: path
    *         name: id

@@ -4,6 +4,7 @@ import Flashcard from "../models/Flashcard.mjs";
 import Validator from "validatorjs";
 import { transaction } from "objection";
 import { HTTP } from "../config/constants.mjs";
+import slugify from "slugify";
 
 export default class CollectionController {
   /**
@@ -11,6 +12,24 @@ export default class CollectionController {
    * /api/collections:
    *   get:
    *     summary: Get search collections by query.
+   *     security:
+   *      - bearerAuth: []
+   *     parameters:
+   *       - in: query
+   *         name: query
+   *         schema:
+   *           type: string
+   *         description: Search query.
+   *       - in: query
+   *         name: page
+   *         schema:
+   *           type: number
+   *         description: Page number for pagination.
+   *       - in: query
+   *         name: limit
+   *         schema:
+   *           type: number
+   *         description: Maximum number of collections to retrieve per page.
    *     responses:
    *       '200':
    *         description: Collections retrieved successfully.
@@ -35,7 +54,8 @@ export default class CollectionController {
 
   /**
    * @openapi
-   * /api/collections/{id}:
+   * /api/users/{id}/collections/{id}:
+   * 
    *   get:
    *     summary: Get a collection by its ID.
    *     parameters:
@@ -51,13 +71,22 @@ export default class CollectionController {
    *       '404':
    *         description: Collection not found.
    */
-  static async getCollectionById(req, res, next) {
+  static async getUserCollectionById(req, res, next) {
     try {
       const { id } = req.params;
+      const userId = req.user.id;
 
       const collection = await Collection.query()
         .findById(id)
-        .withGraphFetched("flashcards");
+        .withGraphFetched("flashcards")
+        .whereNotDeleted();
+
+      // check if collection belongs to user
+      if (!!collection && collection?.user_id != userId) {
+        return res.status(HTTP.FORBIDDEN).json({
+          message: "You are not authorized to edit this collection.",
+        });
+      }
 
       if (!collection) {
         return res.status(HTTP.NOT_FOUND).json({
@@ -75,6 +104,36 @@ export default class CollectionController {
     }
   }
 
+  /**
+   * @openapi
+   * /api/collections/{id}:
+   *   get:
+   *     summary: Get collections by user ID.
+   *     security:
+   *      - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: ID of the user to retrieve collections for.
+   *       - in: query
+   *         name: page
+   *         schema:
+   *           type: number
+   *         description: Page number for pagination.
+   *       - in: query
+   *         name: pagesize
+   *         schema:
+   *           type: number
+   *         description: Number of items per page for pagination.
+   *     responses:
+   *       '200':
+   *         description: Collections retrieved successfully.
+   *       '400':
+   *         description: Validation failed.
+   */
   static async getCollectionsByUserId(req, res, next) {
     try {
       const { id } = req.params;
@@ -83,7 +142,9 @@ export default class CollectionController {
       const collections = await Collection.query()
         .where("user_id", id)
         .orderBy("created_at", "desc")
-        .page(page - 1, pagesize);
+        .page(page - 1, pagesize)
+        .whereNotDeleted()
+        ;
       if (!collections) {
         collections = [];
         return res.status(HTTP.OK).json({
@@ -103,10 +164,66 @@ export default class CollectionController {
   }
 
   /**
+ * @openapi
+ * /api/collections/{slug}:
+ *   get:
+ *     summary: Retrieve a collection by slug
+ *     security:
+ *       - bearerAuth: []
+ *     description: Retrieve a collection by its slug.
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         description: The slug of the collection.
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Collection retrieved successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Collection'
+ *       '404':
+ *         description: Collection not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+  static async getCollectionBySlug(req, res, next) {
+    try {
+      const { slug } = req.params;
+      const collection = await Collection.query()
+        .where("slug", slug)
+        .withGraphFetched("[user.[profile(selectAvatar)], flashcards, notes]")
+        .whereNotDeleted()
+        .first();
+
+      if (!collection) {
+        return res.status(HTTP.NOT_FOUND).json({
+          message: "Collection not found.",
+        });
+      }
+
+      return res.status(HTTP.OK).json({
+        message: "Collection retrieved successfully.",
+        collection,
+      });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
+
+  /**
    * @openapi
    * /api/collections:
    *   post:
    *     summary: Create a new collection.
+   *     security:
+   *       - bearerAuth: []
    *     requestBody:
    *       required: true
    *       content:
@@ -143,6 +260,7 @@ export default class CollectionController {
     try {
       const validation = new Validator(req.body, {
         name: "required|string",
+        slug: "required|string",
         description: "required|string",
         flashcards: "required|array",
         "flashcards.*.question": "required|string",
@@ -156,11 +274,32 @@ export default class CollectionController {
         });
       }
 
+      // pass collection to next middleware
+      req.payload = { collection: req.body }
+      next();
+      if (req.payload.restricted) {
+        return res.status(HTTP.FORBIDDEN).json({ message: req.payload.message });
+      }
+
       const { name, description, flashcards } = req.body;
+      // check if collection name or slug already exists
+      const existing = await Collection
+        .query()
+        .where({ name, })
+        .orWhere({ slug: slugify(name, { lower: true }) })
+        .first();
+
+      if (existing) {
+        return res.status(HTTP.CONFLICT).json({
+          message: "Collection name already exists.",
+        });
+      }
+
       const user_id = req.user.id;
       await transaction(Collection.knex(), async (trx) => {
         const collection = await Collection.query(trx).insertGraph({
           name,
+          slug: slugify(name, { lower: true }),
           description,
           flashcards,
           user_id,
@@ -182,6 +321,8 @@ export default class CollectionController {
    * /api/collections/{id}:
    *   put:
    *     summary: Update a collection and its associated flashcards.
+   *     security:
+   *       - bearerAuth: []
    *     parameters:
    *       - in: path
    *         name: id
@@ -247,6 +388,15 @@ export default class CollectionController {
         });
       }
 
+      // pass collection to next middleware
+      const currentFlashcards = await Flashcard.query().where("collection_id", id);
+      req.payload = { collection: req.body, collectionId: id, currentFlashcardCount: currentFlashcards.length }
+
+      await next();
+      if (req.payload.restricted) {
+        return res.status(HTTP.FORBIDDEN).json({ message: req.payload.message });
+      }
+
       const { name, description, flashcards } = req.body;
 
       await transaction(Collection.knex(), async (trx) => {
@@ -291,6 +441,8 @@ export default class CollectionController {
    * /api/collections/{id}:
    *   delete:
    *     summary: Delete a collection and its associated flashcards.
+   *     security:
+   *       - bearerAuth: []
    *     parameters:
    *       - in: path
    *         name: id

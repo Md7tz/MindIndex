@@ -2,6 +2,23 @@ import Model from "./index.mjs";
 import { MAX_STRING_LENGTH, MAX_TEXT_LENGTH } from "../config/constants.mjs";
 import User from "./User.mjs";
 
+/**
+ * @class Payment
+ * @extends Model
+ * @memberof Model
+ * @description Represents a payment in the database.
+ * 
+ * @property {Number} id               - The incremental ID of the payment.
+ * @property {Number} user_id          - The ID of the user who made the payment.
+ * @property {String} gateway          - The payment gateway used to make the payment.
+ * @property {Number} amount           - The amount of the payment.
+ * @property {String} currency         - The currency of the payment.
+ * @property {String} status           - The status of the payment.
+ * @property {String} transaction_id   - The transaction ID of the payment.
+ * @property {Date} created_at         - The timestamp of when the payment was created.
+ * @property {Date|null} updated_at    - The timestamp of when the payment was last updated, or null if it has not been updated.
+ * @property {Date|null} deleted_at    - The timestamp of when the payment was deleted, or null if it has not been deleted.
+ */
 export default class Payment extends Model {
   static tableName = "payments";
 

@@ -1,277 +1,133 @@
-import Error from "next/error";
-import moment from "moment";
-import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import FlashcardForm from "../../components/collection/FlashcardForm";
-import styles from "../../components/styles/AddSet.module.css";
-import ClientApi from "../../components/ClientApi";
-import { Navigate } from "../../components/Basepath";
+import { useState, useEffect } from 'react'
+import Error from 'next/error';
+import moment from 'moment';
+import FlashcardsViewer from '../../components/collection/FlashcardViewer';
+import ClientApi from '../../components/ClientApi';
+import { toast } from 'react-toastify';
+import FlashcardListing from '../../components/collection/FlashcardListing';
+import styles from '../../components/styles/Studyset.module.css';
+import NoteListing from '../../components/collection/NoteListing';
 
-export default function Studyset({ slug }) {
-  const [collection, setCollection] = useState(
-    {
-      name: "",
-      description: "",
-      flashcards: [
-        { id: 1, question: "", answer: "" },
-        { id: 2, question: "", answer: "" },
-      ],
-      created_at: "",
-      updated_at: "",
-    }
-  );
+export default function PublicStudySet({ slug }) {
+	const [collection, setCollection] = useState({
+		user: {
+			username: "username",
+			avatar: "https://via.placeholder.com/150",
+		},
+		name: "Collection",
+		description: "",
+		flashcards: [
+			{ id: "1", question: 'Hej', answer: 'Hello' },
+			{ id: "2", question: 'Varsågod', answer: 'You\'re welcome' },
+			{ id: "3", question: 'Snälla', answer: 'Please' },
+			{ id: "4", question: 'Ursäkta mig', answer: 'Excuse me' },
+			{ id: "5", question: 'Jag förstår inte', answer: 'I do not understand' },
+			{ id: "6", question: 'Talar du engelska?', answer: 'Do you speak English?' },
+			{ id: "7", question: 'Vad heter du?', answer: 'What is your name?' },
+			{ id: "8", question: 'Offentlig telefon', answer: 'Public telephone' },
+			{ id: "9", question: 'Nyhetsbyrå', answer: 'News agency' }
+		],
+		notes: [
+			{ title: 'The Art of Problem Solving', body: 'Unlocking the beauty of mathematics through problem-solving techniques.', created_at: '2023-06-01 09:00:00', },
+			{ title: 'Exploring the Cosmos', body: 'Journeying through the wonders of the universe and the mysteries of physics.', created_at: '2023-06-02 10:30:00', },
+			{ title: 'Alchemy: From Elements to Elixirs', body: 'Unraveling the secrets of chemistry and its transformative powers.', created_at: '2023-06-03 11:45:00', },
+		]
+	});
+	const [notFound, setNotFound] = useState(false);
 
-  const [errors, setErrors] = useState({});
+	useEffect(() => {
+		const fetchCollection = async () => {
+			try {
+				const response = await fetch(`${process.env.NEXT_PUBLIC_BASEPATH}/api/collections/${slug}`, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${await ClientApi.getToken()}`
+					}
+				});
+
+				if (!response.ok) {
+					const error = await response.json();
+
+					if (response.status === 404) {
+						setNotFound(true);
+					}
+					throw new Error(error);
+				}
+
+				const data = await response.json();
+
+				setCollection(data.collection);
+			} catch (error) {
+				toast.error(error.props.message);
+			}
+		};
+
+		fetchCollection();
+	}, [slug]);
 
 
-  // fetch collection data from the API
-  useEffect(() => {
-    const fetchCollection = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASEPATH}/api/collections/${slug}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${await ClientApi.getToken()}`,
-            },
-          }
-        );
-        const data = await response.json();
-        const authorId = data.collection.user_id;
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+	}
 
-        await ClientApi.getUser().then((user) => {
-          if (authorId != user.id) {
-            toast.error("You are not authorized to edit this collection.");
-            Navigate.replace('/');
-          }
-        });
-        setCollection(data.collection);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+	return (
+		collection?.id ? (
+			<div className="container my-3 py-3">
+				<form onSubmit={handleSubmit}>
+					<div className="d-flex justify-content-between align-items-center">
+						<h2>{collection?.name}</h2>
+						<div className="d-flex justify-content-center align-items-center gap-3">
+							<span className="text-muted">
+								{
+									collection?.updated_at
+										? "Last updated " + moment(collection.updated_at).fromNow()
+										: "Created " + moment(collection.created_at).fromNow()
+								}
+							</span>
+							<img src={collection?.user?.profile?.avatar_url || "http://www.gravatar.com/avatar/?d=mp"} alt="avatar" className="rounded-circle" width="50" height="50" />
+							<span className="text-muted">{collection?.user?.username}</span>
+						</div>
+					</div>
+					<div>
+						<blockquote className={`blockquote ${styles.note}`}>
+							<p class="mb-0">
+								{collection?.description}
+							</p>
+						</blockquote>
+					</div>
 
-    fetchCollection();
-  }, [slug]);
-
-
-  const handleCollectionNameChange = (event) => {
-    setCollection({ ...collection, name: event.target.value });
-    setErrors({ ...errors, name: "" });
-  };
-
-  const handleCollectionDescriptionChange = (event) => {
-    setCollection({ ...collection, description: event.target.value });
-    setErrors({ ...errors, description: "" });
-  };
-
-  const handleQuestionChange = (id, event) => {
-    const updatedFlashcards = collection.flashcards.map((flashcard) => {
-      if (flashcard.id === id) {
-        return { ...flashcard, question: event.target.value };
-      }
-      return flashcard;
-    });
-    setCollection({ ...collection, flashcards: updatedFlashcards });
-  };
-
-  const handleAnswerChange = (id, event) => {
-    const updatedFlashcards = collection.flashcards.map((flashcard) => {
-      if (flashcard.id === id) {
-        return { ...flashcard, answer: event.target.value };
-      }
-      return flashcard;
-    });
-    setCollection({ ...collection, flashcards: updatedFlashcards });
-  };
-
-  const addFlashcard = () => {
-    const flashcards = collection.flashcards;
-    const maxId = flashcards.length > 0 ? Math.max(...flashcards.map((flashcard) => flashcard.id)) : 0;
-    const newId = maxId + 1;
-
-    const newFlashcard = { id: newId, question: "", answer: "" };
-    setCollection({
-      ...collection,
-      flashcards: [...collection.flashcards, newFlashcard],
-    });
-  };
-
-  const removeFlashcard = (id) => {
-    if (collection.flashcards.length === 2) return;
-
-    const updatedFlashcards = collection.flashcards.filter(
-      (flashcard) => flashcard.id !== id
-    );
-    setCollection({ ...collection, flashcards: updatedFlashcards });
-  };
-
-  const moveFlashcard = (dragIndex, hoverIndex) => {
-    if (dragIndex === hoverIndex) {
-      // No need to reorder if the dragIndex and hoverIndex are the same
-      return;
-    }
-
-    const flashcardsCopy = [...collection.flashcards];
-
-    // Remove the dragged flashcard from its original position
-    const [draggedFlashcard] = flashcardsCopy.splice(dragIndex, 1);
-
-    // Insert the dragged flashcard at the hoverIndex
-    flashcardsCopy.splice(hoverIndex, 0, draggedFlashcard);
-
-    setCollection({ ...collection, flashcards: flashcardsCopy });
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    try {
-      const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH + "/api/collections/" + slug, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${await ClientApi.getToken()}`,
-
-        },
-        // body: JSON.stringify({ ...collection })
-        body: JSON.stringify({
-          name: collection.name,
-          description: collection.description,
-          flashcards: collection.flashcards.map((flashcard) => {
-            return {
-              question: flashcard.question,
-              answer: flashcard.answer,
-            };
-          }),
-        })
-
-      });
-      if (response.ok) {
-        // Collection created successfully
-        const data = await response.json();
-        setCollection(data.collection);
-        toast.success(data.message);
-      } else {
-        // Handle error case
-        const errorData = await response.json();
-        setErrors(errorData.errors);
-        toast.error(errorData.errors[Object.keys(errorData.errors)[0]][0]);
-      }
-    } catch (error) {
-      toast.error(error);
-    }
-  };
-
-  return (
-    collection?.id ? (
-      <div className="container my-3 py-3">
-        <form onSubmit={handleSubmit}>
-          <div className="d-flex justify-content-between align-items-center">
-            <h2>Editing study set </h2>
-            <div className="d-flex justify-content-center align-items-center gap-3">
-              <span className="text-muted">
-                Last updated on {collection?.updated_at ? moment(collection.updated_at).format("MMMM Do YYYY, h:mm a")
-                  : "never"
-                }
-              </span>
-              <button type="submit" className="btn btn-dark">
-                Save
-              </button>
-            </div>
-          </div>
-          <div className={`row ${styles.group} px-3 has-validation`}>
-            <input
-              type="text"
-              className={`${styles.inputField} ${errors?.name ? "is-invalid" : ""}`}
-              id="collectionName"
-              placeholder="e.g. Biology 101"
-              value={collection.name}
-              onChange={handleCollectionNameChange}
-            />
-            <span className={styles.highlight}></span>
-            <span className={styles.bar}></span>
-            {errors?.name && <div className="invalid-feedback px-0">{errors.name[0]}</div>}
-            <label
-              htmlFor="collectionName"
-              className="form-label px-0 text-muted has-validation"
-            >
-              TITLE
-            </label>
-          </div>
-          <div className={`row ${styles.group} px-3`}>
-            <textarea
-              className={`${styles.inputField} ${errors?.description ? "is-invalid" : ""}`}
-              id="collectionDescription"
-              rows={3}
-              placeholder="e.g. This is a collection of flashcards for Biology 101"
-              value={collection.description}
-              onChange={handleCollectionDescriptionChange}
-            ></textarea>
-            <span className={styles.highlight}></span>
-            <span className={styles.bar}></span>
-            {errors?.name && <div className="invalid-feedback px-0">{errors.description[0]}</div>}
-            <label
-              htmlFor="collectionDescription"
-              className="form-label px-0 text-muted"
-            >
-              DESCRIPTION
-            </label>
-          </div>
-          <div className="mb-3">
-            <h4>Flashcards</h4>
-            <DndProvider backend={HTML5Backend}>
-              <div className="card-container has-validation">
-
-                {!!errors && Object?.keys(errors)?.some((key) => key.startsWith("flashcards")) && (
-                  <>
-                    <div className="is-invalid"></div>
-                    <div className="invalid-feedback px-0">
-                      {collection?.flashcards?.length < 2
-                        ? "you need to add at least 2 flashcards"
-                        : "Fill in all the fields"}
-                    </div>
-                  </>
-                )}
-                {collection?.flashcards?.map((flashcard, index) => (
-                  <FlashcardForm
-                    key={flashcard.id}
-                    flashcard={flashcard}
-                    index={index}
-                    moveFlashcard={moveFlashcard}
-                    removeFlashcard={removeFlashcard}
-                    handleQuestionChange={handleQuestionChange}
-                    handleAnswerChange={handleAnswerChange}
-                    count={collection.flashcards.length}
-                  />
-                ))}
-              </div>
-            </DndProvider>
-            <div className="card my-4" onClick={addFlashcard}>
-              <div className="card-body d-flex justify-content-center align-items-center fw-bolder">
-                <FontAwesomeIcon icon={faPlus} />
-                <span className={styles.highlight}></span>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    ) : <Error statusCode={404} />
-  );
+					<div className="mb-3">
+						<div className="card-container">
+							<FlashcardsViewer cards={collection.flashcards} />
+						</div>
+						<hr />
+						<FlashcardListing flashcards={collection.flashcards || []} />
+						<hr />
+						<h3>Notes</h3>
+						<NoteListing notes={collection.notes || []} />
+					</div>
+				</form>
+			</div>
+		) : notFound ? (
+			<Error statusCode={404} />
+		) : (
+			<div className="container my-3 py-3">
+				<div className="d-flex justify-content-center align-items-center">
+					<div className="spinner-border text-primary" role="status">
+						<span className="visually-hidden">Loading...</span>
+					</div>
+				</div>
+			</div>
+		)
+	);
 }
 
 export async function getServerSideProps(context) {
-  const { slug } = context.query;
+	const { slug } = context.query
 
-  return {
-    props: {
-      slug
-    },
-  };
-}
+	return {
+		props: { slug },
+	}
+}   // Path: pages\user\study-set\[slug].jsx
+

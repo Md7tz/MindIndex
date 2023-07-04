@@ -35,11 +35,11 @@ export default function LoginForm() {
         Navigate.push("/");
       } else {
         const error = await response.json();
-        toast.error("Error: " + error.message);
+        toast.error("Email or Password is incorrect");
       }
     } catch (error) {
       // console.error("Error:", error);
-      toast.error("Error: " + error);
+      console.log("Error: " + error);
     }
   };
 

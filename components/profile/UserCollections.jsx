@@ -18,7 +18,7 @@ export default function UserCollections({
             {collections?.results?.length > 0
               ? collections?.results.map((collection, index) => (
                   <a
-                    href={`/study-set/${collection.id}`}
+                    href={`/user/study-set/${collection.id}`}
                     key={index}
                     className="list-group-item"
                   >

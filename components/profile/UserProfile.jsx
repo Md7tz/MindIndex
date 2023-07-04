@@ -25,7 +25,7 @@ export default function UserProfile({
           <div className={`${styles.cardBody}`}>
             <div className="d-flex flex-column align-items-center text-center">
               <img
-                src={profile?.avatar_url}
+                src={profile?.avatar_url || "http://www.gravatar.com/avatar/?d=mp"}
                 alt="Profile Picture"
                 className="rounded-circle"
                 width={150}
