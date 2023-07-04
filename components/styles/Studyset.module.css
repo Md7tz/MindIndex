@@ -1,0 +1,80 @@
+.flashcardViewer {
+    position: relative;
+    /* width: 50%; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.flashcardItemWrapper {
+    width: 50%;
+}
+
+.flashcardItem {
+    height: 0;
+    width: 100%;
+    padding-top: 60%;
+    margin: 0.5rem;
+    position: relative;
+    perspective: 1000px;
+}
+
+.flashcardItemInner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: #4e4e4e6e 2px 2px 2px 2px;
+    background: white;
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+}
+
+.flashcardItemHelper {
+    position: absolute;
+    padding: 2px;
+    font-size: 1rem;
+    color: #00000050;
+    top: 0;
+    left: 0;
+}
+
+.navButtonsWrapper {
+    color: black;
+    font-size: 1.5rem;
+    margin: 1rem 0;
+}
+
+.navArrowBtn {
+    display: inline-block;
+    margin: 0 2rem;
+    cursor: pointer;
+}
+
+.noSelect {
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.note {
+    border-left: 2px solid #ccc;
+    padding-left: 10px;
+    margin: 10px 0;
+}

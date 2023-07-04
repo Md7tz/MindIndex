@@ -181,7 +181,7 @@ export default function NavBar() {
                   <li>
                     <a
                       className="dropdown-item"
-                      href={Basepath.get("/study-set/add") || "#"}
+                      href={Basepath.get("/user/study-set/add") || "#"}
                     >
                       <FontAwesomeIcon icon={faBook} className="me-2" />
                       Study Set
