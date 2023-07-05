@@ -36,7 +36,7 @@ static async createNote(req, res, next) {
     const validationRules = {
       title: "required|string",
       body: "required|string",
-      collection_id: "integer|nullable" // Add nullable rule to allow null value
+      collection_id: "integer"
     };
 
     // Create a new validator instance with the data and validation rules
@@ -258,7 +258,7 @@ static async updateNote(req, res, next) {
     const validationRules = {
       title: "string|required",
       body: "string|required",
-      collection_id: "integer|nullable",
+      collection_id: "integer",
     };
 
     // Create a new validator instance with the data and validation rules
@@ -280,7 +280,7 @@ static async updateNote(req, res, next) {
       const updatedNote = await Note.query(trx).patchAndFetchById(id, {
         title,
         body,
-        collection_id: collection_id,
+        collection_id: collection_id !== null ? Number(collection_id) : null,
       });
 
       // If no note was found, return a 404 response
