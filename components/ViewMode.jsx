@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 
 const ViewMode = ({id, title, body, setFormMode }) => {
   const onDelete = async (e) => {
-
+    const confirmation = window.confirm("Are you sure you want to delete this note?");
+    if(!confirmation) return;
     const authenticationToken = await ClientApi.getToken();
 
     // Make an API call to create or update a note
@@ -23,7 +24,7 @@ const ViewMode = ({id, title, body, setFormMode }) => {
     if (response.ok) {
       // Handle successful create or update operation
       window.location.reload();
-      toast.success(`Note deleted successfully!`)
+      toast.success(`Note has been deleted successfully!`)
 
     } else {
       // Handle create or update operation failure

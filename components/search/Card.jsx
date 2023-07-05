@@ -15,12 +15,17 @@ const Card = ({ result }) => {
             : result.description || result.body}
         </p>
         <div className="mt-auto d-flex justify-content-end">
-          <a href={`#view${result.id}`} className="btn btn-primary" data-bs-toggle="modal">
+          {/* either for collection view or note */}
+          <a
+            href={result.title ? `#view${result.id}` : "#"}
+            className="btn btn-primary"
+            data-bs-toggle="modal"
+          >
             View
           </a>
         </div>
       </div>
-      <NoteForm mode={"view"} result={result}/>
+      {result.title && <NoteForm mode={"view"} result={result} />}
     </div>
   );
 };
