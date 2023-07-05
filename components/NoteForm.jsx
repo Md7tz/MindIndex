@@ -14,14 +14,14 @@ const NoteForm = ({ mode, result }) => {
   );
   const [id, setId] = useState(result ? result.id : 0);
 
-  useEffect(() => {}, [formMode, result]);
+  useEffect(() => { }, [formMode, result]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     const authenticationToken = await ClientApi.getToken();
 
     // Make an API call to create or update a note
-    const response = await fetch(
+    const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH +
       `/api/notes${formMode === "edit" ? `/${result.id}` : ""}`,
       {
         method: formMode === "create" ? "POST" : "PUT",
@@ -44,7 +44,7 @@ const NoteForm = ({ mode, result }) => {
   };
 
   const onClose = () => {
-    if(formMode === "edit") window.location.reload();
+    if (formMode === "edit") window.location.reload();
   };
 
   return (
@@ -63,8 +63,8 @@ const NoteForm = ({ mode, result }) => {
               {formMode === "view"
                 ? "View Note"
                 : formMode === "create"
-                ? "Create Note"
-                : "Edit Note"}
+                  ? "Create Note"
+                  : "Edit Note"}
             </h5>
             <button
               type="button"

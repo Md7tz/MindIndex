@@ -15,22 +15,30 @@ const CreateEditMode = ({
   formMode,
 }) => {
   const [collectionOptions, setCollectionOptions] = useState([]);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [query]);
 
   const fetchData = async () => {
     try {
       const authenticationToken = await ClientApi.getToken();
+      let response;
 
-      const url = `/api/collections`;
-
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${authenticationToken}`,
-        },
-      });
+      if (query.length > 0) {
+        response = await axios.get(process.env.NEXT_PUBLIC_BASEPATH + `/api/collections?query=${query}`, {
+          headers: {
+            Authorization: `Bearer ${authenticationToken}`,
+          },
+        });
+      } else {
+        response = await axios.get(process.env.NEXT_PUBLIC_BASEPATH + `/api/collections`, {
+          headers: {
+            Authorization: `Bearer ${authenticationToken}`,
+          },
+        });
+      }
 
       const collections = response.data.collections.results;
 
@@ -110,6 +118,7 @@ const CreateEditMode = ({
           options={collectionOptions}
           value={selectedCollectionOption}
           onChange={handleCollectionChange}
+          onInputChange={(keyword) => setQuery(keyword)}
           instanceId="react-select"
           styles={{
             option: (provided, state) => ({

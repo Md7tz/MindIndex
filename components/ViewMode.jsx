@@ -10,7 +10,7 @@ const ViewMode = ({id, title, body, setFormMode }) => {
     const authenticationToken = await ClientApi.getToken();
 
     // Make an API call to create or update a note
-    const response = await fetch(
+    const response = await fetch(process.env.NEXT_PUBLIC_BASEPATH +
       `/api/notes/${id}`,
       {
         method: "DELETE",

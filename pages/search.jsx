@@ -23,7 +23,7 @@ export default function SearchPage() {
         query: query,
         page: currentPage,
       };
-      const url = `/api/${type}`;
+      const url = process.env.NEXT_PUBLIC_BASEPATH + `/api/${type}`;
 
       const response = await axios.get(url, {
         params,
