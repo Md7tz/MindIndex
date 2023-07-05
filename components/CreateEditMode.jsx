@@ -111,6 +111,16 @@ const CreateEditMode = ({
           value={selectedCollectionOption}
           onChange={handleCollectionChange}
           instanceId="react-select"
+          styles={{
+            option: (provided, state) => ({
+              ...provided,
+              color: "black",
+            }),
+            singleValue: (provided, state) => ({
+              ...provided,
+              color: "black",
+            }),
+          }}
         />
       </div>
       <div className="text-center">
