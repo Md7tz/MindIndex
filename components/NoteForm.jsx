@@ -9,6 +9,7 @@ const NoteForm = ({ mode, result }) => {
   const [formMode, setFormMode] = useState(mode);
   const [title, setTitle] = useState(result ? result.title : "");
   const [body, setBody] = useState(result ? result.body : "");
+  const [collection_id, setCollection_id] = useState(result ? result.collection_id : "");
   const [id, setId] = useState(result ? result.id : 0);
 
   useEffect(() => {}, [formMode, result]);
@@ -27,7 +28,7 @@ const NoteForm = ({ mode, result }) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authenticationToken}`,
         },
-        body: JSON.stringify({ title, body }),
+        body: JSON.stringify({ title, body, collection_id }),
       }
     );
 
@@ -85,6 +86,8 @@ const NoteForm = ({ mode, result }) => {
                 setTitle={setTitle}
                 body={body}
                 setBody={setBody}
+                setCollection_id={setCollection_id}
+                collection_id={collection_id}
                 formMode={formMode}
               />
             )}
