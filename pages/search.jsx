@@ -23,7 +23,7 @@ export default function SearchPage() {
         query: query,
         page: currentPage,
       };
-      const url = `/api/${type}`;
+      const url = process.env.NEXT_PUBLIC_BASEPATH + `/api/${type}`;
 
       const response = await axios.get(url, {
         params,
@@ -82,7 +82,10 @@ export default function SearchPage() {
     <div>
       <header className="py-3 text-black">
         <div className="container-fluid">
-          <TabBar query={query} type={type} handleTabClick={handleTabClick} />
+          {router.isReady && (
+            <TabBar query={query} type={type} handleTabClick={handleTabClick} />
+          )}
+
           <h1 className="mt-3">Results for "{query}"</h1>
         </div>
       </header>

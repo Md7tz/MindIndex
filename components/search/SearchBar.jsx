@@ -18,7 +18,7 @@ export default function SearchBar() {
 
       try {
         const authenticationToken = await ClientApi.getToken();
-        const response = await axios.get(`/api/search?query=${searchQuery}`, {
+        const response = await axios.get(process.env.NEXT_PUBLIC_BASEPATH + `/api/search?query=${searchQuery}`, {
           headers: {
             Authorization: `Bearer ${authenticationToken}`,
           },

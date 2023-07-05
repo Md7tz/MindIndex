@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styles from "./styles/Navbar.module.css";
 import Image from "next/image";
+import NoteForm from "./NoteForm";
 import LoginForm from "./auth/LoginForm";
 import RegisterForm from "./auth/RegisterForm";
-
 import SearchBar from "./search/SearchBar";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -188,7 +188,11 @@ export default function NavBar() {
                     </a>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <a
+                      className="dropdown-item"
+                      href="#create"
+                      data-bs-toggle="modal"
+                    >
                       <FontAwesomeIcon icon={faStickyNote} className="me-2" />
                       Note
                     </a>
@@ -272,6 +276,7 @@ export default function NavBar() {
       </div>
       <LoginForm />
       <RegisterForm />
+      <NoteForm mode={"create"} />
     </nav>
   );
 }
