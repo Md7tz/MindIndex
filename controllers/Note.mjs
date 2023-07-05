@@ -216,7 +216,7 @@ static async createNote(req, res, next) {
     }
   }
 
-  /**
+ /**
  * @openapi
  * /api/notes/{id}:
  *   put:
@@ -258,7 +258,7 @@ static async updateNote(req, res, next) {
     const validationRules = {
       title: "string|required",
       body: "string|required",
-      collection_id: "integer" 
+      collection_id: "integer|nullable",
     };
 
     // Create a new validator instance with the data and validation rules
@@ -280,7 +280,7 @@ static async updateNote(req, res, next) {
       const updatedNote = await Note.query(trx).patchAndFetchById(id, {
         title,
         body,
-        collection_id: Number(collection_id), 
+        collection_id: collection_id,
       });
 
       // If no note was found, return a 404 response
@@ -289,6 +289,7 @@ static async updateNote(req, res, next) {
           message: "Note not found.",
         });
       }
+
       // Return the updated note as JSON
       return res.status(HTTP.OK).json({
         message: "Note updated successfully.",

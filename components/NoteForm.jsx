@@ -9,7 +9,9 @@ const NoteForm = ({ mode, result }) => {
   const [formMode, setFormMode] = useState(mode);
   const [title, setTitle] = useState(result ? result.title : "");
   const [body, setBody] = useState(result ? result.body : "");
-  const [collection_id, setCollection_id] = useState(result ? result.collection_id : null);
+  const [collection_id, setCollection_id] = useState(
+    result ? result.collection_id : null
+  );
   const [id, setId] = useState(result ? result.id : 0);
 
   useEffect(() => {}, [formMode, result]);
@@ -40,7 +42,11 @@ const NoteForm = ({ mode, result }) => {
       toast.error(`Failed to ${formMode}d note.`);
     }
   };
-  
+
+  const onClose = () => {
+    if(formMode === "edit") window.location.reload();
+  };
+
   return (
     <div
       className="modal fade note-modal"
@@ -65,6 +71,7 @@ const NoteForm = ({ mode, result }) => {
               className="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
+              onClick={onClose}
             ></button>
           </div>
           <div className={`modal-body ${styles["note-modal-body"]}`}>
@@ -93,7 +100,7 @@ const NoteForm = ({ mode, result }) => {
               type="button"
               className="btn btn-secondary"
               data-bs-dismiss="modal"
-
+              onClick={onClose}
             >
               Close
             </button>
