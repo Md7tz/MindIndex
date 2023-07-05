@@ -9,14 +9,13 @@ const NoteForm = ({ mode, result }) => {
   const [formMode, setFormMode] = useState(mode);
   const [title, setTitle] = useState(result ? result.title : "");
   const [body, setBody] = useState(result ? result.body : "");
-  const [collection_id, setCollection_id] = useState(result ? result.collection_id : "");
+  const [collection_id, setCollection_id] = useState(result ? result.collection_id : null);
   const [id, setId] = useState(result ? result.id : 0);
 
   useEffect(() => {}, [formMode, result]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
     const authenticationToken = await ClientApi.getToken();
 
     // Make an API call to create or update a note
@@ -41,10 +40,7 @@ const NoteForm = ({ mode, result }) => {
       toast.error(`Failed to ${formMode}d note.`);
     }
   };
-  const onCancel = () => {
-    // Handle cancel action
-    setFormMode("view");
-  };
+  
   return (
     <div
       className="modal fade note-modal"
@@ -97,7 +93,7 @@ const NoteForm = ({ mode, result }) => {
               type="button"
               className="btn btn-secondary"
               data-bs-dismiss="modal"
-              onClick={onCancel}
+
             >
               Close
             </button>

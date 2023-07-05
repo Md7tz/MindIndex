@@ -23,6 +23,7 @@ export default class NoteController {
  *                 type: string
  *               collection_id:
  *                 type: integer
+ *                 nullable: true // Add nullable property to allow null value
  *     responses:
  *       '201':
  *         description: Note created successfully.
@@ -35,7 +36,7 @@ static async createNote(req, res, next) {
     const validationRules = {
       title: "required|string",
       body: "required|string",
-      collection_id: "integer" // Add the validation rule for collection_id field
+      collection_id: "integer|nullable" // Add nullable rule to allow null value
     };
 
     // Create a new validator instance with the data and validation rules
@@ -63,7 +64,7 @@ static async createNote(req, res, next) {
       const newNote = await Note.query(trx).insert({
         title,
         body,
-        collection_id: Number(collection_id), // Convert collection_id to an integer
+        collection_id: collection_id,
         user_id,
       });
 
