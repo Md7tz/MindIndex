@@ -9,6 +9,7 @@ const NoteForm = ({ mode, result }) => {
   const [formMode, setFormMode] = useState(mode);
   const [title, setTitle] = useState(result ? result.title : "");
   const [body, setBody] = useState(result ? result.body : "");
+  const [id, setId] = useState(result ? result.id : 0);
 
   useEffect(() => {}, [formMode, result]);
 
@@ -33,15 +34,16 @@ const NoteForm = ({ mode, result }) => {
     if (response.ok) {
       // Handle successful create or update operation
       window.location.reload();
-      toast.success(`Note ${formMode}d successfully!`)
-
+      toast.success(`Note ${formMode}d successfully!`);
     } else {
       // Handle create or update operation failure
       toast.error(`Failed to ${formMode}d note.`);
-
     }
   };
-
+  const onCancel = () => {
+    // Handle cancel action
+    setFormMode("view");
+  };
   return (
     <div
       className="modal fade note-modal"
@@ -71,6 +73,7 @@ const NoteForm = ({ mode, result }) => {
           <div className={`modal-body ${styles["note-modal-body"]}`}>
             {formMode === "view" ? (
               <ViewMode
+                id={result.id}
                 title={result.title}
                 body={result.body}
                 setFormMode={setFormMode}
@@ -91,6 +94,7 @@ const NoteForm = ({ mode, result }) => {
               type="button"
               className="btn btn-secondary"
               data-bs-dismiss="modal"
+              onClick={onCancel}
             >
               Close
             </button>

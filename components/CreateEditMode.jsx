@@ -37,7 +37,7 @@ const CreateEditMode = ({ onSubmit, title, setTitle, body, setBody, formMode }) 
       <div className="text-center">
         <button
           type="submit"
-          className={`btn btn-primary ml-4 ${styles["note-form-button"]} text-center`}
+          className={`btn btn-primary ml-4 ${styles["note-form-update-button"]} text-center`}
         >
           {formMode === "create" ? "Create Note" : "Update Note"}
         </button>
