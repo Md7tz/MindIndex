@@ -1,0 +1,41 @@
+name: GCP Deployment
+
+on:
+  push:
+    branches: [ "dev" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        # Step 1: Checkout the repository code into the workflow's workspace
+
+      - name: Set up SSH and create env file
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_DEPLOY_KEY" > ~/.ssh/id_rsa
+          sudo chmod 600 ~/.ssh/id_rsa
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        shell: bash
+        env:
+          SSH_DEPLOY_KEY: ${{secrets.SSH_DEPLOY_KEY}}
+          SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+        # Step 2: Set up SSH configuration and create the environment file
+
+      - name: Create env file
+        run: |
+          touch ./.env
+          echo DEPLOY_KEY_PATH=~/.ssh/id_rsa >> ./.env
+          cat ./.env
+        # Step 3: Create the environment file (.env) with the SSH private key path
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+        # Step 4: Set up Node.js version 16 for the deployment process
+
+      - name: Deploy
+        run: sudo npm install -g pm2 && npm install && git reset --hard HEAD && pm2 deploy production update
+        # Step 5: Deploy the application using PM2
