@@ -10,6 +10,7 @@ import User from "./User.mjs";
  *
  * @property {Number} id               - The incremental ID of the note.
  * @property {Number} user_id          - The ID of the user who created the note.
+ * @property {Number|null} collection_id    - The ID of the collection the note belongs to.
  * @property {String} title            - The title of the note.
  * @property {String|Text} body        - The body of the note.
  * @property {Date} created_at         - The timestamp of when the note was created.
@@ -30,6 +31,7 @@ export default class Note extends Model {
       title: { type: "string", maxLength: MAX_STRING_LENGTH },
       body: { type: "string", maxLength: MAX_TEXT_LENGTH },
       user_id: { type: "integer" },
+      collection_id: { type: ["integer", "null"] },
       created_at: { type: "string" },
       updated_at: { type: ["string", "null"] },
       deleted_at: { type: ["string", "null"] },

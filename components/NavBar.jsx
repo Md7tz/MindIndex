@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styles from "./styles/Navbar.module.css";
 import Image from "next/image";
-import LoginForm from "./LoginForm";
-import RegisterForm from "./RegisterForm";
-
-import SearchBar from "./SearchBar";
+import NoteForm from "./NoteForm";
+import LoginForm from "./auth/LoginForm";
+import RegisterForm from "./auth/RegisterForm";
+import SearchBar from "./search/SearchBar";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,13 +13,15 @@ import {
   faFolderPlus,
   faBook,
   faStickyNote,
+  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import Basepath from "./Basepath";
-import Navigate from "./Basepath";
 import ClientApi from "./ClientApi";
+import Event from "./Event";
 
 export default function NavBar() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
+  const [subscription, setSubscription] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,6 +30,37 @@ export default function NavBar() {
 
     fetchData();
   }, []);
+
+  Event.on("update:user", async (user) => {
+    setUser(user);
+  });
+
+  useEffect(() => {
+    async function getSubscriptionStatus() {
+      if (user?.id) {
+        try {
+          const res = await fetch(
+            process.env.NEXT_PUBLIC_BASEPATH +
+            `/api/users/${user.id}/subscription`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${await ClientApi.getToken()}`,
+              },
+            }
+          );
+
+          const data = await res.json();
+          setSubscription(data.metadata);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
+
+    getSubscriptionStatus();
+  }, [user]);
 
   const onClickLogout = async () => {
     await ClientApi.logout();
@@ -39,13 +72,16 @@ export default function NavBar() {
       className={`${styles["custom-navbar"]} navbar navbar-expand-lg custom-navbar border-bottom`}
     >
       <div className="row container-fluid text-dark">
-        <div className={`col d-flex ${styles.brand}`}>
+        <div
+          className={`col-2 d-flex align-items-center justify-content-center ${styles.brand} border-end`}
+          style={{ width: 190 }}
+        >
           <a
             className={`navbar-brand me-1 ${styles.logolink}`}
-            href={Basepath.get("/")}
+            href={Basepath.get("/") || "#"}
           >
             <Image
-              src={"/img/Logo.jpg"}
+              src={Basepath.get("/img/Logo.jpg")}
               alt="MindIndex"
               className={`me-1 ${styles.logo}`}
               width={40}
@@ -54,11 +90,76 @@ export default function NavBar() {
           </a>
           <a
             className={`navbar-brand text-dark ${styles.milink} fs-7 pe-3 m-1`}
-            href={Basepath.get("/")}
+            href={Basepath.get("/") || "#"}
           >
             MindIndex
           </a>
-          <div className="border-end"></div>
+        </div>
+
+        <div
+          className="col-3 d-flex align-items-center justify-content-center"
+          style={{ width: 350 }}
+        >
+          {subscription?.subscribed && (
+            <div className="d-flex justify-content-center align-items-center mx-2">
+              <h6 className="badge text-dark bg-warning mb-0">
+                <FontAwesomeIcon
+                  icon={faStar}
+                  style={{ color: "dark" }}
+                  size="2xs"
+                  fixedWidth
+                />{" "}
+                Premium{" "}
+                <FontAwesomeIcon
+                  icon={faStar}
+                  style={{ color: "dark" }}
+                  size="2xs"
+                  fixedWidth
+                />
+              </h6>
+            </div>
+          )}
+          {subscription?.subscribed &&
+            user?.limits &&
+            !isNaN(user?.collections_count) &&
+            !isNaN(user?.flashcards_count) &&
+            !isNaN(user?.notes_count) ? (
+            <div className="d-flex justify-content-center align-items-center gap-1 ">
+              <span
+                title="Study sets"
+                className="badge rounded-pill bg-dark text-white"
+              >
+                S {user?.collections_count}/&infin;
+              </span>
+              <span
+                title="Flashcards"
+                className="badge rounded-pill bg-info text-dark"
+              >
+                F {user?.flashcards_count}/&infin;
+              </span>
+              <span title="Notes" className="badge rounded-pill bg-success">
+                N {user?.notes_count}/&infin;
+              </span>
+            </div>
+          ) : (
+            <div className="d-flex justify-content-center align-items-center gap-1 ">
+              <span
+                title="Study sets"
+                className="badge rounded-pill bg-dark text-white"
+              >
+                S {user?.collections_count}/{user?.limits?.collections}
+              </span>
+              <span
+                title="Flashcards"
+                className="badge rounded-pill bg-info text-dark"
+              >
+                F {user?.flashcards_count}/{user?.limits?.flashcards}
+              </span>
+              <span title="Notes" className="badge rounded-pill bg-success">
+                N {user?.notes_count}/{user?.limits?.notes}
+              </span>
+            </div>
+          )}
         </div>
 
         {user?.id && <SearchBar />}
@@ -80,14 +181,18 @@ export default function NavBar() {
                   <li>
                     <a
                       className="dropdown-item"
-                      href={Basepath.get("/study-set/add")}
+                      href={Basepath.get("/user/study-set/add") || "#"}
                     >
                       <FontAwesomeIcon icon={faBook} className="me-2" />
                       Study Set
                     </a>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <a
+                      className="dropdown-item"
+                      href="#create"
+                      data-bs-toggle="modal"
+                    >
                       <FontAwesomeIcon icon={faStickyNote} className="me-2" />
                       Note
                     </a>
@@ -98,10 +203,9 @@ export default function NavBar() {
               <a
                 className="nav-link active text-dark"
                 aria-current="page"
-                href={Basepath.get("/profile")}
-                data-bs-toggle="modal"
+                href={Basepath.get("/profile") || "#"}
               >
-                <div className="d-flex align-items-center ps-2">
+                <div className="d-flex align-items-center ps-2 cursor">
                   <FontAwesomeIcon
                     icon={faCircleUser}
                     style={{ color: "dark" }}
@@ -116,7 +220,6 @@ export default function NavBar() {
                 className="nav-link active text-dark border-0 bg-transparent"
                 aria-current="page"
                 onClick={onClickLogout}
-                data-bs-toggle="modal"
               >
                 <div className="d-flex align-items-center ps-2">
                   <FontAwesomeIcon
@@ -173,6 +276,7 @@ export default function NavBar() {
       </div>
       <LoginForm />
       <RegisterForm />
+      <NoteForm mode={"create"} />
     </nav>
   );
 }

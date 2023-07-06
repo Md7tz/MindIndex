@@ -21,6 +21,7 @@ import { MAX_STRING_LENGTH } from "../config/constants.mjs";
  * @property {string} created_at    - The timestamp when the profile record was created.
  * @property {string} updated_at    - The timestamp when the profile record was last updated.
  * @property {string} deleted_at    - The timestamp when the profile record was soft-deleted.
+ * @property {Number} user_id       - The ID of the user that owns this profile.
  */
 
 export default class Profile extends Model {
@@ -72,4 +73,15 @@ export default class Profile extends Model {
       deleted_at: { type: ["string", "null"] },
     },
   };
+
+  // model modifiers
+  // modifier to select avatar_url as avatar
+  static get modifiers() {
+    return {
+      ...super.modifiers,
+      selectAvatar(builder) {
+        builder.select("avatar_url");
+      },
+    };
+  }
 }
