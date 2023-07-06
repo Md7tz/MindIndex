@@ -14,7 +14,7 @@ module.exports = {
     production: {
       key: process.env.DEPLOY_KEY_PATH,
       user: 'medhatusama',
-      host: '34.124.227.222',
+      host: '35.197.136.120',
       ref: 'origin/dev',
       repo: 'git@github.com:ScientiaLiber/MindIndex.git',
       path: '/home/ubuntu/code/MindIndex',
